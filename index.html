@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PROG2002 – løypa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Recursive:wght,CASL,MONO@300..1000,0..1,0..1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#18213A; --muted:#56607A; --rule:#D3D9E3;
+  --red:#C2303D; --green:#0F8476; --blue:#2A58AC; --yellow:#B98A10;
+  --code-bg:#E7EBF2; --screen:#141B2A; --hl:#FFF3BF; --ok:#0F8476;
+  --font:"Recursive", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"Recursive", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1420; --surface:#171E2D; --ink:#E5E9F1; --muted:#9AA3B6; --rule:#2B3448;
+    --red:#F0707A; --green:#4CC7B5; --blue:#86A9F0; --yellow:#E6C25A;
+    --code-bg:#1F2739; --screen:#0B101A; --hl:#3A3417; --ok:#4CC7B5;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1420; --surface:#171E2D; --ink:#E5E9F1; --muted:#9AA3B6; --rule:#2B3448;
+  --red:#F0707A; --green:#4CC7B5; --blue:#86A9F0; --yellow:#E6C25A;
+  --code-bg:#1F2739; --screen:#0B101A; --hl:#3A3417; --ok:#4CC7B5;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font);
+  font-size:17px; line-height:1.62; font-variation-settings:"CASL" 0.15;
+  -webkit-text-size-adjust:100%;
+}
+html[lang="nb"] [data-l="en"], html[lang="en"] [data-l="no"]{display:none !important}
+
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--blue); outline-offset:2px; border-radius:3px}
+h1,h2,h3,h4{line-height:1.2; font-variation-settings:"CASL" 0.55; letter-spacing:-0.01em}
+h1{font-size:clamp(2.1rem,5.4vw,3.6rem); font-weight:850; margin:0 0 .6rem}
+h2{font-size:1.75rem; font-weight:800; margin:2.6rem 0 .7rem}
+h3{font-size:1.2rem; font-weight:750; margin:2rem 0 .5rem}
+h4{font-size:1rem; font-weight:750; margin:1.4rem 0 .3rem}
+p,li{max-width:68ch}
+code, pre, kbd, .mono{font-family:var(--mono); font-variation-settings:"MONO" 1, "CASL" 0}
+code{background:var(--code-bg); padding:.08em .35em; border-radius:4px; font-size:.9em}
+pre{background:var(--code-bg); padding:.9rem 1rem; border-radius:6px; overflow-x:auto; font-size:.88rem; line-height:1.55; margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
+  padding:.9rem clamp(1rem,3vw,2rem); border-bottom:1px solid var(--rule); background:var(--surface);
+}
+.brand{font-weight:850; font-size:1.05rem; font-variation-settings:"CASL" .7; margin-right:auto; display:flex; align-items:center; gap:.55rem}
+.brand svg{flex:none}
+.progress{display:flex; align-items:center; gap:.6rem; font-size:.9rem}
+.bar{width:9rem; height:.5rem; background:var(--code-bg); border-radius:99px; overflow:hidden}
+.bar span{display:block; height:100%; width:0; background:var(--green); transition:width .3s}
+.langswitch{display:flex; border:1px solid var(--rule); border-radius:6px; overflow:hidden}
+.langswitch button{
+  font:inherit; font-size:.88rem; padding:.35rem .75rem; border:0; background:transparent; color:var(--muted); cursor:pointer;
+}
+.langswitch button[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+
+/* ---------- layout ---------- */
+.layout{display:grid; grid-template-columns:15.5rem minmax(0,1fr); gap:clamp(1.5rem,4vw,3.5rem); padding:0 clamp(1rem,3vw,2rem)}
+nav.route{position:sticky; top:0; align-self:start; padding:1.6rem 0; max-height:100vh; overflow-y:auto}
+nav.route ol{list-style:none; margin:0; padding:0; position:relative}
+nav.route ol::before{content:""; position:absolute; left:.72rem; top:.6rem; bottom:.6rem; width:2px; background:var(--rule)}
+nav.route li{margin:0}
+nav.route button{
+  all:unset; box-sizing:border-box; display:flex; gap:.7rem; align-items:baseline; width:100%;
+  padding:.42rem .5rem .42rem 0; cursor:pointer; color:var(--muted); font-size:.95rem; line-height:1.3;
+}
+nav.route button .dot{
+  flex:none; width:1.5rem; height:1.5rem; border-radius:50%; background:var(--bg); border:2px solid var(--rule);
+  display:grid; place-items:center; font-size:.72rem; font-weight:800; position:relative; top:.32rem; color:var(--muted);
+  font-family:var(--mono); font-variation-settings:"MONO" 1;
+}
+nav.route button[aria-current="true"]{color:var(--ink); font-weight:750}
+nav.route button[aria-current="true"] .dot{border-color:var(--ink); background:var(--ink); color:var(--bg)}
+nav.route button.later{opacity:.6}
+nav.route button:focus-visible{outline:3px solid var(--blue)}
+main{padding:1.6rem 0 5rem; min-width:0; max-width:48rem}
+
+section.mod{display:none}
+section.mod.active{display:block}
+.modhead{border-bottom:1px solid var(--rule); padding-bottom:1rem; margin-bottom:1.2rem}
+.modhead .issues{display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.6rem}
+.tag{display:inline-block; font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:.8rem; padding:.12rem .5rem; border-radius:99px; border:1px solid var(--rule); background:var(--surface); white-space:nowrap}
+.tag.graded{border-color:var(--green); color:var(--green)}
+.tag.skip{text-decoration:line-through; color:var(--muted)}
+
+.goal{background:var(--surface); border-left:4px solid var(--green); padding:.8rem 1rem; border-radius:0 6px 6px 0; margin:1rem 0}
+.goal p{margin:.2rem 0}
+.note{background:var(--hl); padding:.75rem 1rem; border-radius:6px; margin:1rem 0}
+.note p{margin:.25rem 0}
+.warn{border-left:4px solid var(--red); background:var(--surface); padding:.75rem 1rem; border-radius:0 6px 6px 0; margin:1rem 0}
+
+/* hero */
+.hero{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:2rem; align-items:center; margin:.5rem 0 1.5rem}
+.hero p{font-size:1.1rem}
+.hero canvas{width:100%; aspect-ratio:1; border-radius:8px; display:block; background:var(--screen)}
+.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:8px; overflow:hidden; margin:1.5rem 0}
+.facts div{background:var(--surface); padding:.8rem 1rem}
+.facts dt{font-size:.85rem; color:var(--muted)}
+.facts dd{margin:.15rem 0 0; font-weight:750; line-height:1.35}
+
+/* steps */
+ol.steps{counter-reset:s; list-style:none; padding:0; margin:1rem 0}
+ol.steps > li{counter-increment:s; position:relative; padding-left:2.6rem; margin:0 0 1.1rem}
+ol.steps > li::before{
+  content:counter(s); position:absolute; left:0; top:.05rem; width:1.8rem; height:1.8rem; border-radius:50%;
+  background:var(--ink); color:var(--bg); display:grid; place-items:center; font-weight:800; font-size:.85rem;
+}
+ol.steps > li > strong:first-child{display:block}
+
+.cmd{position:relative; margin:.6rem 0}
+.copy{
+  font:inherit; font-size:.78rem; position:absolute; top:.45rem; right:.45rem; padding:.2rem .55rem; border-radius:4px;
+  border:1px solid var(--rule); background:var(--surface); color:var(--ink); cursor:pointer;
+}
+.copy.done{border-color:var(--green); color:var(--green)}
+.cmd pre{padding-right:5rem}
+.template pre{white-space:pre-wrap; font-variation-settings:"MONO" 0, "CASL" 0; font-family:var(--font); font-size:.93rem}
+
+.cols{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0}
+.cols > div{background:var(--surface); border:1px solid var(--rule); border-radius:8px; padding:.4rem 1rem .8rem}
+.cols h4{margin-top:.6rem}
+.cols ul{padding-left:1.1rem; margin:.3rem 0}
+.yes h4{color:var(--green)} .no h4{color:var(--red)}
+
+/* quiz */
+details.q{border:1px solid var(--rule); border-radius:6px; background:var(--surface); margin:.5rem 0}
+details.q summary{cursor:pointer; padding:.65rem 1rem; font-weight:650; list-style:none; position:relative; padding-right:2.5rem}
+details.q summary::-webkit-details-marker{display:none}
+details.q summary::after{content:"+"; position:absolute; right:1rem; top:.55rem; font-weight:800; color:var(--muted)}
+details.q[open] summary::after{content:"–"}
+details.q .a{padding:0 1rem .8rem; border-top:1px dashed var(--rule)}
+details.q .a p{margin:.6rem 0 0}
+
+/* pipeline strip */
+.pipe{display:flex; flex-wrap:wrap; gap:.35rem; align-items:stretch; margin:1rem 0}
+.pipe span{flex:1 1 7rem; background:var(--surface); border:1px solid var(--rule); border-radius:6px; padding:.5rem .6rem; font-size:.85rem; line-height:1.3}
+.pipe span b{display:block; font-size:.9rem}
+.pipe span.prog{border-color:var(--blue); box-shadow:inset 0 3px 0 var(--blue)}
+
+/* plan table */
+.tablewrap{overflow-x:auto; margin:1rem 0; border:1px solid var(--rule); border-radius:8px}
+table{border-collapse:collapse; width:100%; font-size:.93rem; background:var(--surface)}
+th,td{text-align:left; padding:.55rem .75rem; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font-size:.82rem; color:var(--muted); font-weight:650}
+tr:last-child td{border-bottom:0}
+td.day{white-space:nowrap; font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:.85rem}
+.chk{display:inline-flex; align-items:center; gap:.3rem; margin:0 .5rem .2rem 0; white-space:nowrap; cursor:pointer}
+.chk input{width:1.05rem; height:1.05rem; accent-color:var(--green); margin:0}
+.chk input:checked + span{color:var(--green); text-decoration:line-through}
+tr.today td{background:var(--hl)}
+
+/* playground */
+.play{background:var(--surface); border:1px solid var(--rule); border-radius:10px; padding:1rem; margin:1.4rem 0}
+.play .stage{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,15rem); gap:1rem}
+.play canvas{width:100%; aspect-ratio:1; background:var(--screen); border-radius:6px; touch-action:none; cursor:grab; display:block}
+.play canvas.dragging{cursor:grabbing}
+.controls{display:flex; flex-wrap:wrap; gap:.8rem 1.2rem; align-items:center; margin-top:.8rem; font-size:.9rem}
+.controls label{display:flex; align-items:center; gap:.45rem}
+.controls input[type=range]{width:9rem; accent-color:var(--blue)}
+.seg{display:inline-flex; border:1px solid var(--rule); border-radius:6px; overflow:hidden}
+.seg button{font:inherit; font-size:.85rem; padding:.3rem .7rem; border:0; background:transparent; color:var(--muted); cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+.btn{font:inherit; font-size:.88rem; padding:.35rem .8rem; border-radius:6px; border:1px solid var(--rule); background:var(--surface); color:var(--ink); cursor:pointer}
+.btn.primary{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.btn:disabled{opacity:.45; cursor:default}
+.datatable{font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:.8rem}
+.datatable table{font-size:.8rem}
+.datatable th,.datatable td{padding:.3rem .45rem}
+.sw{display:inline-block; width:.8rem; height:.8rem; border-radius:2px; vertical-align:-1px}
+.readout{font-size:.85rem; margin-top:.6rem}
+
+/* render loop stepper */
+.loop{background:var(--surface); border:1px solid var(--rule); border-radius:10px; padding:1rem; margin:1.4rem 0}
+.loopgrid{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:1.2rem}
+.loop ol{list-style:none; margin:0; padding:0; font-size:.9rem}
+.loop li{padding:.3rem .6rem; border-left:4px solid var(--rule); margin:.15rem 0; border-radius:0 4px 4px 0; color:var(--muted)}
+.loop li.setup{border-left-color:var(--blue)}
+.loop li.loopstep{border-left-color:var(--yellow); margin-left:1rem}
+.loop li.teardown{border-left-color:var(--green)}
+.loop li.cur{background:var(--hl); color:var(--ink); font-weight:700}
+.buffers{display:grid; gap:.7rem}
+.buf{border:1px solid var(--rule); border-radius:6px; overflow:hidden}
+.buf .lbl{font-size:.8rem; padding:.3rem .55rem; background:var(--code-bg)}
+.buf .px{height:5.2rem; display:grid; place-items:center; transition:background-color .25s}
+.buf .px.empty{background:repeating-linear-gradient(45deg,var(--code-bg) 0 8px,transparent 8px 16px)}
+.buf .px.clear,.buf .px.tri{background:#2E6F86}
+.buf .px svg{display:none}
+.buf .px.tri svg{display:block}
+.frames{font-size:.9rem}
+.loopmsg{min-height:2.8rem; font-size:.9rem; margin:.7rem 0 0}
+
+.later-list{list-style:none; padding:0}
+.later-list li{border-top:1px solid var(--rule); padding:.9rem 0}
+.later-list li b{display:block}
+
+footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); margin-top:3rem; padding-top:1rem}
+
+@media (max-width: 860px){
+  .topbar{gap:.5rem 1rem; padding:.6rem 1rem}
+  .langswitch{order:2}
+  .progress{order:3; width:100%; font-size:.82rem}
+  .progress .bar{flex:1}
+  .layout{grid-template-columns:minmax(0,1fr); gap:0}
+  nav.route{position:sticky; top:0; z-index:5; background:var(--bg); padding:.5rem 0; border-bottom:1px solid var(--rule); max-height:none; overflow-x:auto}
+  nav.route ol{display:flex; gap:.2rem}
+  nav.route ol::before{display:none}
+  nav.route button{width:auto; white-space:nowrap; padding:.3rem .6rem .3rem .2rem; align-items:center}
+  nav.route button .dot{top:0}
+  nav.route .navtext{display:none}
+  nav.route button[aria-current="true"] .navtext{display:inline}
+  .hero,.play .stage,.loopgrid,.cols{grid-template-columns:minmax(0,1fr)}
+  .hero canvas{max-width:22rem}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg width="22" height="20" viewBox="0 0 22 20" aria-hidden="true"><polygon points="11,1 21,19 1,19" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="11" cy="1.8" r="1.8" fill="#C2303D"/><circle cx="20.2" cy="18.2" r="1.8" fill="#0F8476"/><circle cx="1.8" cy="18.2" r="1.8" fill="#2A58AC"/></svg>
+    <span data-l="no">PROG2002 – løypa</span><span data-l="en">PROG2002 – the route</span>
+  </div>
+  <div class="progress" title="">
+    <div class="bar" aria-hidden="true"><span id="barfill"></span></div>
+    <span><b id="donecount">0</b> / 26 <span data-l="no">issues ferdig</span><span data-l="en">issues done</span></span>
+  </div>
+  <div class="langswitch" role="group" aria-label="Språk / Language">
+    <button type="button" data-setlang="nb" aria-pressed="true">Norsk</button>
+    <button type="button" data-setlang="en" aria-pressed="false">English</button>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="route" aria-label="Moduler / Modules">
+  <ol>
+    <li><button type="button" data-go="start"><span class="dot">0</span><span class="navtext"><span data-l="no">Start her</span><span data-l="en">Start here</span></span></button></li>
+    <li><button type="button" data-go="plan"><span class="dot">≡</span><span class="navtext"><span data-l="no">Dagsplanen</span><span data-l="en">Day plan</span></span></button></li>
+    <li><button type="button" data-go="m1"><span class="dot">1</span><span class="navtext"><span data-l="no">Verktøy og arbeidsflyt</span><span data-l="en">Tools and workflow</span></span></button></li>
+    <li><button type="button" data-go="m2"><span class="dot">2</span><span class="navtext"><span data-l="no">Vindu og render-loop</span><span data-l="en">Window and render loop</span></span></button></li>
+    <li><button type="button" data-go="m3"><span class="dot">3</span><span class="navtext"><span data-l="no">Pipelinen og første trekant</span><span data-l="en">The pipeline and a first triangle</span></span></button></li>
+    <li><button type="button" data-go="later" class="later"><span class="dot">4</span><span class="navtext"><span data-l="no">Resten av løypa</span><span data-l="en">The rest of the route</span></span></button></li>
+  </ol>
+</nav>
+
+<main>
+<!-- =============================== START =============================== -->
+<section class="mod" id="start">
+  <div class="hero">
+    <div>
+      <h1 data-l="no">Tre punkter inn, piksler ut.</h1>
+      <h1 data-l="en">Three points in, pixels out.</h1>
+      <p data-l="no">Det er grafikkprogrammering i én setning. Om 17 dager har du bygd et lite sjakkbrettspill på akkurat dette – med din egen kode. Denne siden er forelesningene du gikk glipp av, i den rekkefølgen du trenger dem.</p>
+      <p data-l="en">That is graphics programming in one sentence. In 17 days you will have built a small chessboard game on exactly this – with your own code. This page is the lectures you missed, in the order you need them.</p>
+    </div>
+    <canvas id="herocanvas" aria-label="Pixelated triangle with red, green and blue corners" role="img"></canvas>
+  </div>
+
+  <dl class="facts">
+    <div><dt data-l="no">Frist</dt><dt data-l="en">Deadline</dt><dd data-l="no">Fredag 30. oktober kl. 23:59</dd><dd data-l="en">Friday 30 October, 23:59</dd></div>
+    <div><dt data-l="no">Det som teller</dt><dt data-l="en">What is graded</dt><dd data-l="no">18 issues merket «Deliverable»</dd><dd data-l="en">18 issues labelled «Deliverable»</dd></div>
+    <div><dt data-l="no">Levert betyr</dt><dt data-l="en">Delivered means</dt><dd data-l="no">Kode som virker, merget inn i main</dd><dd data-l="en">Working code merged into main</dd></div>
+    <div><dt data-l="no">Vurdering</dt><dt data-l="en">Grading</dt><dd data-l="no">Bestått / ikke bestått</dd><dd data-l="en">Pass / fail</dd></div>
+  </dl>
+
+  <h2 data-l="no">Det er mindre enn det ser ut som</h2>
+  <h2 data-l="en">It is smaller than it looks</h2>
+  <div data-l="no">
+    <p>Repoet ditt har 44 issues, og det er derfor det virker uoverkommelig. Men teksturer, lys, ImGui og instancing er <em>ikke</em> en del av oppgaven. Du trenger 26 issues: de 18 som teller, pluss 8 labber som lærer deg det de tellende bygger på. De fleste av dem er godt beskrevet, mange med guidet gjennomgang. Det som mangler for deg, er forklaringen på <em>hvorfor</em> – og den får du her.</p>
+    <h4>Gjør disse (grønne teller)</h4>
+  </div>
+  <div data-l="en">
+    <p>Your repository has 44 issues, which is why it feels impossible. But textures, lighting, ImGui and instancing are <em>not</em> part of the assignment. You need 26 issues: the 18 that are graded, plus 8 labs that teach what the graded ones build on. Most of them are well described, many with a guided walkthrough. What you are missing is the <em>why</em> – and that is what this page gives you.</p>
+    <h4>Do these (green ones are graded)</h4>
+  </div>
+  <p class="issues" style="display:flex;flex-wrap:wrap;gap:.35rem">
+    <span class="tag">#1</span><span class="tag">#2</span><span class="tag">#3</span><span class="tag graded">#4</span><span class="tag graded">#5</span><span class="tag graded">#6</span><span class="tag graded">#7</span><span class="tag graded">#8</span><span class="tag">#9</span><span class="tag graded">#10</span><span class="tag graded">#11</span><span class="tag graded">#12</span><span class="tag">#14</span><span class="tag">#15</span><span class="tag graded">#17</span><span class="tag graded">#18</span><span class="tag graded">#20</span><span class="tag graded">#21</span><span class="tag graded">#24</span><span class="tag graded">#25</span><span class="tag">#26</span><span class="tag graded">#27</span><span class="tag">#28</span><span class="tag graded">#29</span><span class="tag graded">#30</span><span class="tag graded">#33</span>
+  </p>
+  <h4 data-l="no">La disse ligge</h4>
+  <h4 data-l="en">Leave these alone</h4>
+  <p style="display:flex;flex-wrap:wrap;gap:.35rem">
+    <span class="tag skip">#13</span><span class="tag skip">#16</span><span class="tag skip">#19</span><span class="tag skip">#22</span><span class="tag skip">#23</span><span class="tag skip">#31</span><span class="tag skip">#32</span><span class="tag skip">#34–#44</span>
+  </p>
+
+  <h2 data-l="no">I dag</h2>
+  <h2 data-l="en">Today</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>Send e-post til emneansvarlig om sykdommen.</strong> Malen står lenger ned. Spør også studieveilederen om NTNU har et eget skjema for sykdom og obligatoriske arbeidskrav i ditt program.</li>
+    <li><strong>Installer verktøyene og bygg prosjektet.</strong> Det er modul 1, og det er hele dagens jobb. Klarer du det, har du gjort den vanskeligste starten.</li>
+    <li><strong>Les reglene om AI under.</strong> Vil du bruke en AI-chat til å få forklart ting, så bruk veileder-instruksen.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Email the course coordinator about your illness.</strong> The template is further down. Also ask your student advisor whether NTNU has a specific form for illness and mandatory coursework in your programme.</li>
+    <li><strong>Install the tools and build the project.</strong> That is module 1, and it is the whole of today's job. Manage that, and you have done the hardest start.</li>
+    <li><strong>Read the AI rules below.</strong> If you want to use an AI chat to have things explained, use the tutor instruction.</li>
+  </ol>
+
+  <h2 data-l="no">Reglene om AI – kort</h2>
+  <h2 data-l="en">The AI rules – in short</h2>
+  <div class="cols">
+    <div class="yes">
+      <h4 data-l="no">Lov</h4><h4 data-l="en">Allowed</h4>
+      <ul data-l="no">
+        <li>Få begreper forklart – av denne siden, av en AI-chat eller av hvem som helst.</li>
+        <li>Lese issuene, eksemplene i <code>examples/</code> og ressursene issuene lenker til.</li>
+        <li>Kompilatorens feilmeldinger og vanlig IntelliSense (fullføring av navn).</li>
+      </ul>
+      <ul data-l="en">
+        <li>Having concepts explained – by this page, by an AI chat, or by anyone.</li>
+        <li>Reading the issues, the examples in <code>examples/</code>, and the resources the issues link to.</li>
+        <li>Compiler error messages and ordinary IntelliSense (name completion).</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4 data-l="no">Ikke lov</h4><h4 data-l="en">Not allowed</h4>
+      <ul data-l="no">
+        <li>At en AI skriver kode, shadere eller tekst du leverer – ikke engang én funksjon eller én blokk.</li>
+        <li>AI-fullføring i editoren: GitHub Copilot og IntelliCode må være slått av (se modul 1).</li>
+        <li>At et annet menneske skriver koden for deg.</li>
+      </ul>
+      <ul data-l="en">
+        <li>An AI writing code, shaders or text that you deliver – not even one function or one block.</li>
+        <li>AI completion in the editor: GitHub Copilot and IntelliCode must be switched off (see module 1).</li>
+        <li>Another person writing the code for you.</li>
+      </ul>
+    </div>
+  </div>
+  <p data-l="no">Denne siden inneholder ingen kode til issuene dine. Øvelsene foregår med vilje i andre sammenhenger enn oppgaven – sekskanter i stedet for sjakkbrett, for eksempel – slik at det du lærer er prinsippet, og alt du leverer er ditt eget.</p>
+  <p data-l="en">This page contains no code for your issues. The exercises deliberately use other settings than the assignment – hexagons instead of chessboards, for example – so what you learn is the principle, and everything you deliver is your own.</p>
+
+  <h3 data-l="no">E-post til emneansvarlig</h3>
+  <h3 data-l="en">Email to the course coordinator</h3>
+  <p data-l="no">Emneansvarlig er Rafael Palomar, og emnefeltet må starte med <code>[PROG2002 -- Question]</code>. Skriv den gjerne om med egne ord og fyll inn datoene. E-posten er ikke en del av innleveringen, så malen er trygg å bruke.</p>
+  <p data-l="en">The course coordinator is Rafael Palomar, and the subject line must start with <code>[PROG2002 -- Question]</code>. Rewrite it in your own words if you like and fill in the dates. The email is not part of the delivery, so using the template is fine.</p>
+  <div class="cmd template">
+    <button type="button" class="copy" data-copy="mail"><span data-l="no">Kopier</span><span data-l="en">Copy</span></button>
+<pre id="mail">To: rafael.palomar@ntnu.no
+Subject: [PROG2002 -- Question] Illness and the assignment deadline
+
+Hi Rafael,
+
+I have been ill from <date> to <date> and missed the PROG2002 lectures and labs during that period. I can provide documentation from my doctor.
+
+I have now started on the assignment and am working through the issues in order. Given the illness, would it be possible to get an extension of the assignment deadline, or some other adjustment? I would also be grateful for advice on how best to get help from the teaching assistants while I catch up.
+
+Best regards,
+<full name> (<NTNU username>)</pre>
+  </div>
+
+  <h3 data-l="no">Veileder-instruks for en AI-chat</h3>
+  <h3 data-l="en">Tutor instruction for an AI chat</h3>
+  <p data-l="no">Lim denne inn som første melding i hver nye chat (for eksempel en gratis Claude-konto). Den gjør chatten om til en lærer som forklarer og spør, men ikke skriver kode. Grensen du selv må holde: ikke lim inn din egen kode for å få den rettet. Spør heller lærerassistentene i issuet.</p>
+  <p data-l="en">Paste this as the first message in every new chat (for example a free Claude account). It turns the chat into a teacher that explains and asks, but does not write code. The line you have to hold yourself: do not paste your own code to get it fixed. Ask the teaching assistants in the issue instead.</p>
+  <div class="cmd template" data-l="no">
+    <button type="button" class="copy" data-copy="tutor-no">Kopier</button>
+<pre id="tutor-no">Du er min studieveileder i faget PROG2002 Grafikkprogrammering (C++, OpenGL, GLFW, CMake) ved NTNU. Jeg har ikke lov til å bruke AI til å lage noe av det jeg leverer, så disse reglene gjelder hele samtalen:
+
+1. Skriv aldri kode for meg – ingen C++, GLSL, CMake eller pseudokode som kan oversettes linje for linje. Det gjelder også små biter og «bare et eksempel».
+2. Forklar begreper med ord, analogier og enkle tegninger i tekst. Pek gjerne på hvor i dokumentasjonen (docs.gl, learnopengl.com, GLFW-dokumentasjonen) jeg bør lese.
+3. Still meg ett eller to kontrollspørsmål etter hver forklaring, så jeg merker om jeg har forstått.
+4. Hvis jeg limer inn en feilmelding, forklar hva meldingen betyr generelt og hvilket begrep jeg bør se på – men ikke skriv rettelsen.
+5. Hvis jeg ber deg om kode, si nei og minn meg på hvorfor.
+
+Svar på norsk.</pre>
+  </div>
+  <div class="cmd template" data-l="en">
+    <button type="button" class="copy" data-copy="tutor-en">Copy</button>
+<pre id="tutor-en">You are my study tutor for the course PROG2002 Graphics Programming (C++, OpenGL, GLFW, CMake) at NTNU. I am not allowed to use AI to produce anything I deliver, so these rules apply to the whole conversation:
+
+1. Never write code for me – no C++, GLSL, CMake, or pseudocode that translates line by line. This includes small snippets and "just an example".
+2. Explain concepts with words, analogies and simple text drawings. Feel free to point me to where in the documentation (docs.gl, learnopengl.com, the GLFW docs) I should read.
+3. Ask me one or two check questions after each explanation, so I notice whether I have understood.
+4. If I paste an error message, explain what the message means in general and which concept I should look at – but do not write the fix.
+5. If I ask you for code, say no and remind me why.
+
+Answer in English.</pre>
+  </div>
+
+  <h3 data-l="no">Når du står fast</h3>
+  <h3 data-l="en">When you are stuck</h3>
+  <ol class="steps" data-l="no">
+    <li><strong>Les den første feilmeldingen, ikke den siste.</strong> Senere feil er ofte bare følgefeil.</li>
+    <li><strong>Gå tilbake til «Sjekk deg selv» i modulen.</strong> Klarer du ikke å svare, er det der hullet er.</li>
+    <li><strong>Spør veileder-chatten om begrepet</strong> – ikke om koden.</li>
+    <li><strong>Kommenter på issuet i ditt repo og nevn <code>@rafaelp</code>.</strong> Lim inn feilmeldingen og skriv hva du har prøvd. Uten @ blir ingen varslet.</li>
+    <li><strong>Gå på labtimen.</strong> Det er lov å komme med «jeg skjønner ingenting», og det er der du får mest hjelp på kortest tid.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Read the first error message, not the last.</strong> Later errors are often just consequences.</li>
+    <li><strong>Go back to «Check yourself» in the module.</strong> If you cannot answer, that is where the gap is.</li>
+    <li><strong>Ask the tutor chat about the concept</strong> – not about the code.</li>
+    <li><strong>Comment on the issue in your repository and mention <code>@rafaelp</code>.</strong> Paste the error and write what you have tried. Without the @ nobody is notified.</li>
+    <li><strong>Go to the lab session.</strong> «I understand nothing» is a fine thing to arrive with, and it is where you get the most help in the least time.</li>
+  </ol>
+</section>
+
+<!-- =============================== PLAN =============================== -->
+<section class="mod" id="plan">
+  <div class="modhead">
+    <h1 data-l="no">Dagsplanen</h1>
+    <h1 data-l="en">The day plan</h1>
+    <p data-l="no" class="muted">Ett til to issues om dagen, med siste dag som buffer. Kryss av når issuet er <em>merget inn i main</em> – ikke før. Avkryssingen lagres i denne nettleseren.</p>
+    <p data-l="en" class="muted">One or two issues a day, with the last day as a buffer. Tick an issue when it is <em>merged into main</em> – not before. Your ticks are saved in this browser.</p>
+  </div>
+  <div class="tablewrap">
+  <table id="plantable">
+    <thead><tr>
+      <th><span data-l="no">Dag</span><span data-l="en">Day</span></th>
+      <th>Issues</th>
+      <th><span data-l="no">Hva</span><span data-l="en">What</span></th>
+      <th><span data-l="no">Modul</span><span data-l="en">Module</span></th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+  <div class="note" data-l="no">
+    <p><b>Henger du etter?</b> Ikke hopp over noe – rekkefølgen er der fordi hvert issue bygger på det forrige. Skyv heller planen og bruk helgene. Og merge det som virker før du går videre: et issue som er halvferdig på en branch, teller ingenting.</p>
+  </div>
+  <div class="note" data-l="en">
+    <p><b>Falling behind?</b> Do not skip anything – the order exists because each issue builds on the one before. Push the plan instead and use the weekends. And merge what works before moving on: an issue half-finished on a branch counts for nothing.</p>
+  </div>
+</section>
+
+<!-- =============================== M1 =============================== -->
+<section class="mod" id="m1">
+  <div class="modhead">
+    <h1 data-l="no">1 · Verktøy og arbeidsflyt</h1>
+    <h1 data-l="en">1 · Tools and workflow</h1>
+    <div class="issues"><span class="tag">#1 Toolchain &amp; CMake</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> prosjektet bygger på PC-en din, det første eksempelet åpner et vindu, og du har levert din første merge request med grønn pipeline.</p>
+    <p data-l="en"><b>When you are done:</b> the project builds on your PC, the first example opens a window, and you have delivered your first merge request with a green pipeline.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Kompilering og linking</h3>
+    <p>Hver <code>.cpp</code>-fil oversettes for seg til en objektfil – det er <em>kompilering</em>. Deretter setter <em>linkeren</em> sammen alle objektfilene og bibliotekene til én <code>.exe</code>. Feil i én fil gir kompileringsfeil med linjenummer. Feil som «unresolved external symbol» er linkerfeil: noe er deklarert, men linkeren finner ikke koden – som regel et bibliotek eller en <code>.cpp</code> som ikke er med i byggingen.</p>
+    <h3>CMake</h3>
+    <p>CMake er en oppskrift på byggingen som ikke er knyttet til én editor eller ett operativsystem. På Windows lager den en Visual Studio-løsning, på Linux lager den Makefiles. Du skriver oppskriften én gang i <code>CMakeLists.txt</code>, og den virker overalt. Det er to steg: <em>konfigurere</em> (CMake leser oppskriften og lager byggefiler i <code>build/</code>) og <em>bygge</em> (kompilatoren gjør jobben).</p>
+    <p>Innstillingene øverst i rot-<code>CMakeLists.txt</code> er <em>cache-variabler</em>. CMake husker dem i <code>build/</code>, så hvis du endrer dem i fila etter at du har konfigurert, må du slette <code>build/</code> og konfigurere på nytt.</p>
+    <h3>Submoduler</h3>
+    <p>Bibliotekene i <code>external/</code> (GLFW, glm, glad, stb, tinyobjloader) er ikke kopiert inn i repoet ditt. De er <em>submoduler</em>: pekere til en bestemt versjon i et annet git-repo. Derfor må du klone med <code>--recursive</code>, ellers får du tomme mapper.</p>
+    <h3>CI – pipelinen</h3>
+    <p>Hver gang du pusher, bygger GitLab prosjektet på en nøytral Linux-maskin. Grønn betyr «bygger der». Det er den byggingen som brukes ved vurderingen, så hvis det virker hos deg, men er rødt i pipelinen, er det pipelinen som har rett. Les loggen.</p>
+  </div>
+  <div data-l="en">
+    <h3>Compiling and linking</h3>
+    <p>Each <code>.cpp</code> file is translated on its own into an object file – that is <em>compiling</em>. Then the <em>linker</em> joins all object files and libraries into one <code>.exe</code>. A mistake in one file gives a compile error with a line number. Errors like «unresolved external symbol» are linker errors: something is declared, but the linker cannot find the code – usually a library or a <code>.cpp</code> that is not part of the build.</p>
+    <h3>CMake</h3>
+    <p>CMake is a recipe for the build that is not tied to one editor or operating system. On Windows it generates a Visual Studio solution, on Linux it generates Makefiles. You write the recipe once in <code>CMakeLists.txt</code>, and it works everywhere. There are two steps: <em>configure</em> (CMake reads the recipe and writes build files into <code>build/</code>) and <em>build</em> (the compiler does the work).</p>
+    <p>The settings at the top of the root <code>CMakeLists.txt</code> are <em>cache variables</em>. CMake remembers them in <code>build/</code>, so if you change them in the file after configuring, you must delete <code>build/</code> and configure again.</p>
+    <h3>Submodules</h3>
+    <p>The libraries in <code>external/</code> (GLFW, glm, glad, stb, tinyobjloader) are not copied into your repository. They are <em>submodules</em>: pointers to a specific version in another git repository. That is why you must clone with <code>--recursive</code>, or you get empty folders.</p>
+    <h3>CI – the pipeline</h3>
+    <p>Every time you push, GitLab builds the project on a neutral Linux machine. Green means «builds there». That build is the one used for grading, so if it works for you but is red in the pipeline, the pipeline is right. Read the log.</p>
+  </div>
+
+  <h2 data-l="no">Gjør det</h2>
+  <h2 data-l="en">Do it</h2>
+
+  <h3 data-l="no">Steg 1 – Installer verktøyene (Windows 11)</h3>
+  <h3 data-l="en">Step 1 – Install the tools (Windows 11)</h3>
+  <ol class="steps" data-l="no">
+    <li><strong>Visual Studio Community (gratis)</strong> fra visualstudio.microsoft.com. Huk av arbeidsmengden <em>Desktop development with C++</em> i installeren. Den gir deg kompilatoren (MSVC).</li>
+    <li><strong>CMake 4, Git og Python</strong> – åpne PowerShell og kjør kommandoene under. Får du spørsmål om å godta vilkår, svar ja. Alternativt kan du hente installerne fra cmake.org, git-scm.com og python.org; for Python må du da huke av «Add python.exe to PATH».</li>
+    <li><strong>Lukk PowerShell og åpne et nytt vindu</strong>, så det nye innholdet i PATH blir med. Installer så Jinja2 og sjekk versjonene.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Visual Studio Community (free)</strong> from visualstudio.microsoft.com. Tick the <em>Desktop development with C++</em> workload in the installer. It gives you the compiler (MSVC).</li>
+    <li><strong>CMake 4, Git and Python</strong> – open PowerShell and run the commands below. If asked to accept terms, say yes. Alternatively, get the installers from cmake.org, git-scm.com and python.org; for Python you must then tick «Add python.exe to PATH».</li>
+    <li><strong>Close PowerShell and open a new window</strong>, so the new PATH is picked up. Then install Jinja2 and check the versions.</li>
+  </ol>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-install">Kopier</button>
+<pre id="c-install">winget install Kitware.CMake
+winget install Git.Git
+winget install Python.Python.3.12</pre></div>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-check">Kopier</button>
+<pre id="c-check">python -m pip install jinja2
+cmake --version
+git --version
+python -c "import jinja2; print('jinja2 ok')"</pre></div>
+  <p data-l="no"><code>cmake --version</code> må vise <b>4.0 eller høyere</b>. Visual Studio har sin egen CMake innebygd, som kan være eldre. Bruk derfor vanlig PowerShell, ikke «Developer PowerShell for VS». Viser den feil versjon, finner du ut hvilken som brukes med <code>where.exe cmake</code>.</p>
+  <p data-l="en"><code>cmake --version</code> must show <b>4.0 or higher</b>. Visual Studio has its own built-in CMake, which may be older. So use ordinary PowerShell, not «Developer PowerShell for VS». If it shows the wrong version, find out which one is used with <code>where.exe cmake</code>.</p>
+
+  <h3 data-l="no">Steg 2 – Slå av AI i editoren</h3>
+  <h3 data-l="en">Step 2 – Switch off AI in the editor</h3>
+  <div class="warn">
+    <p data-l="no">Visual Studio leveres med AI-fullføring som kan skrive hele linjer og blokker for deg – det er nøyaktig det reglene forbyr, selv om du ikke ba om det. Gå til <b>Tools → Options</b>, søk etter <b>IntelliCode</b> og <b>Copilot</b>, og slå av alt du finner. Ikke logg inn på GitHub Copilot. Vanlig IntelliSense (forslag til navn på funksjoner og variabler) er lov og blir værende.</p>
+    <p data-l="en">Visual Studio ships with AI completion that can write whole lines and blocks for you – exactly what the rules forbid, even if you did not ask for it. Go to <b>Tools → Options</b>, search for <b>IntelliCode</b> and <b>Copilot</b>, and switch off everything you find. Do not sign in to GitHub Copilot. Ordinary IntelliSense (suggesting names of functions and variables) is allowed and stays on.</p>
+  </div>
+
+  <h3 data-l="no">Steg 3 – Hent repoet ditt</h3>
+  <h3 data-l="en">Step 3 – Get your repository</h3>
+  <p data-l="no">Logg inn på <code>git.gvk.idi.ntnu.no</code> og finn <em>ditt eget</em> grupperepo (ikke det felles «reference»-repoet). Trykk <b>Code</b> og kopier HTTPS-adressen. Bytt ut <code>&lt;URL&gt;</code> og <code>&lt;repo-name&gt;</code> under.</p>
+  <p data-l="en">Log in to <code>git.gvk.idi.ntnu.no</code> and find <em>your own</em> group repository (not the shared «reference» one). Press <b>Code</b> and copy the HTTPS address. Replace <code>&lt;URL&gt;</code> and <code>&lt;repo-name&gt;</code> below.</p>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-clone">Kopier</button>
+<pre id="c-clone">New-Item -ItemType Directory -Force "$HOME\source\repos" | Out-Null
+cd "$HOME\source\repos"
+git clone --recursive &lt;URL&gt;
+cd &lt;repo-name&gt;
+git submodule status</pre></div>
+  <p data-l="no"><code>git submodule status</code> skal liste glfw, glm, glad, stb og tinyobjloader. Ber git om passord og det vanlige ikke virker, lager du et <em>Personal Access Token</em> i GitLab (profilen din → Access tokens) med tilgangene <code>read_repository</code> og <code>write_repository</code>, og bruker det som passord. Legg aldri tokenet i en fil i repoet.</p>
+  <p data-l="en"><code>git submodule status</code> should list glfw, glm, glad, stb and tinyobjloader. If git asks for a password and your normal one does not work, create a <em>Personal Access Token</em> in GitLab (your profile → Access tokens) with the scopes <code>read_repository</code> and <code>write_repository</code>, and use it as the password. Never put the token in a file in the repository.</p>
+
+  <h3 data-l="no">Steg 4 – Bygg og kjør</h3>
+  <h3 data-l="en">Step 4 – Build and run</h3>
+  <p data-l="no">Stå i rotmappen til repoet. Første konfigurering tar en stund, fordi GLFW bygges og OpenGL-loaderen genereres.</p>
+  <p data-l="en">Stand in the root folder of the repository. The first configure takes a while, because GLFW is built and the OpenGL loader is generated.</p>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-build">Kopier</button>
+<pre id="c-build">cmake -S . -B build
+cmake --build build
+.\build\bin\Debug\01_hello_window.exe</pre></div>
+  <p data-l="no">Issue #1 kaller eksempelet <code>example_1</code>, men i repoet heter det <code>01_hello_window</code>. Visual Studio legger programmene i en undermappe per konfigurasjon, derfor <code>Debug\</code>. Prøv også <code>02_first_triangle.exe</code> – den trekanten skal du lage selv om to dager.</p>
+  <p data-l="en">Issue #1 calls the example <code>example_1</code>, but in the repository it is named <code>01_hello_window</code>. Visual Studio puts programs in a subfolder per configuration, hence <code>Debug\</code>. Also try <code>02_first_triangle.exe</code> – you will make that triangle yourself in two days.</p>
+
+  <h3 data-l="no">Steg 5 – Åpne prosjektet i Visual Studio</h3>
+  <h3 data-l="en">Step 5 – Open the project in Visual Studio</h3>
+  <p data-l="no">CMake har laget en Visual Studio-løsning inne i <code>build/</code>. Åpne <code>build\PROG2002.sln</code> (den kan også hete <code>.slnx</code>). Høyreklikk prosjektet du vil kjøre og velg <b>Set as Startup Project</b>; da starter F5 akkurat det. Når du endrer en <code>CMakeLists.txt</code>, kjører Visual Studio CMake på nytt av seg selv. Fordelen med denne måten: alt Visual Studio lager, havner i <code>build/</code>, som git allerede ignorerer – og byggingen er den samme som pipelinen kjører.</p>
+  <p data-l="en">CMake has generated a Visual Studio solution inside <code>build/</code>. Open <code>build\PROG2002.sln</code> (it may also be called <code>.slnx</code>). Right-click the project you want to run and choose <b>Set as Startup Project</b>; F5 then starts exactly that. When you change a <code>CMakeLists.txt</code>, Visual Studio re-runs CMake by itself. The advantage of doing it this way: everything Visual Studio creates lands in <code>build/</code>, which git already ignores – and the build is the same one the pipeline runs.</p>
+
+  <h3 data-l="no">Steg 6 – Rytmen for hvert eneste issue</h3>
+  <h3 data-l="en">Step 6 – The rhythm for every single issue</h3>
+  <div class="warn">
+    <p data-l="no">Dette er et krav, ikke et råd: hele utviklingen skal skje i repoet ditt, med én branch og én merge request per issue. Å jobbe lokalt og laste opp alt til slutt er grunnlag for ikke bestått. Commit gjerne flere ganger per issue – det viser at du har jobbet jevnt selv.</p>
+    <p data-l="en">This is a requirement, not advice: all development happens in your repository, with one branch and one merge request per issue. Working locally and uploading everything at the end is grounds for a fail. Commit several times per issue if you like – it shows you have worked steadily yourself.</p>
+  </div>
+  <ol class="steps" data-l="no">
+    <li><strong>Åpne issuet i GitLab og trykk «Create merge request».</strong> Det lager en branch med navn som starter med issuenummeret, for eksempel <code>1-toolchain-cmake-hello-world</code>. Branch-navnet står i merge requesten.</li>
+    <li><strong>Hent branchen og bytt til den.</strong></li>
+    <li><strong>Jobb, bygg og test.</strong></li>
+    <li><strong>Sjekk hva som er endret</strong> med <code>git status</code>. Bare dine egne filer skal være med – aldri <code>build/</code>.</li>
+    <li><strong>Commit og push.</strong></li>
+    <li><strong>Følg pipelinen i merge requesten.</strong> Grønn og ferdig? Trykk <b>Merge</b>. Issuet lukkes av seg selv.</li>
+    <li><strong>Tilbake til main</strong> og hent det du nettopp merget. Kryss av i dagsplanen her og i issue #45.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Open the issue in GitLab and press «Create merge request».</strong> It creates a branch whose name starts with the issue number, for example <code>1-toolchain-cmake-hello-world</code>. The branch name is shown in the merge request.</li>
+    <li><strong>Fetch the branch and switch to it.</strong></li>
+    <li><strong>Work, build and test.</strong></li>
+    <li><strong>Check what changed</strong> with <code>git status</code>. Only your own files belong – never <code>build/</code>.</li>
+    <li><strong>Commit and push.</strong></li>
+    <li><strong>Watch the pipeline in the merge request.</strong> Green and done? Press <b>Merge</b>. The issue closes by itself.</li>
+    <li><strong>Back to main</strong> and pull what you just merged. Tick it in the day plan here and in issue #45.</li>
+  </ol>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-flow">Kopier</button>
+<pre id="c-flow">git fetch origin
+git switch &lt;branch-name&gt;
+
+git status
+git add &lt;your-files&gt;
+git commit -m "Describe what you did"
+git push
+
+git switch main
+git pull</pre></div>
+
+  <h3 data-l="no">Øvelsen i issue #1</h3>
+  <h3 data-l="en">The exercise in issue #1</h3>
+  <p data-l="no">Issuet ber deg endre <code>CMAKE_CXX_STANDARD</code> fra 17 til 20 og bygge på nytt. Issuet viser Linux-kommandoen <code>rm -rf build</code>; i PowerShell sletter du mappen slik, og konfigurerer og bygger så på nytt som i steg 4:</p>
+  <p data-l="en">The issue asks you to change <code>CMAKE_CXX_STANDARD</code> from 17 to 20 and rebuild. The issue shows the Linux command <code>rm -rf build</code>; in PowerShell you delete the folder like this, then configure and build again as in step 4:</p>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-rm">Kopier</button>
+<pre id="c-rm">Remove-Item -Recurse -Force build</pre></div>
+
+  <h2 data-l="no">Vanlige feil</h2>
+  <h2 data-l="en">Common errors</h2>
+  <div data-l="no">
+    <details class="q"><summary>«CMake 4.0 or higher is required»</summary><div class="a"><p>Feil CMake brukes. Kjør <code>where.exe cmake</code>; den øverste er den som brukes. Bruk vanlig PowerShell, og åpne et nytt vindu etter installasjon.</p></div></details>
+    <details class="q"><summary>Python ikke funnet, eller «No module named jinja2»</summary><div class="a"><p>Jinja2 må installeres i den samme Pythonen som CMake finner. Kjør <code>python -m pip install jinja2</code> i et nytt PowerShell-vindu, slett <code>build/</code> og konfigurer på nytt.</p></div></details>
+    <details class="q"><summary>Mappene i <code>external/</code> er tomme</summary><div class="a"><p>Du klonet uten <code>--recursive</code>. Kjør <code>git submodule update --init --recursive</code> i rotmappen.</p></div></details>
+    <details class="q"><summary>Push avvist: «Branch name … does not follow the pattern»</summary><div class="a"><p>Du står på en branch du har laget selv. Lag branchen fra issuet med «Create merge request» (steg 6) og jobb der.</p></div></details>
+    <details class="q"><summary>Det virker hos meg, men pipelinen er rød</summary><div class="a"><p>Åpne jobben og les loggen ovenfra. De vanligste årsakene: en fil du glemte å <code>git add</code>, eller store og små bokstaver i et filnavn (Windows bryr seg ikke, Linux gjør det).</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>«CMake 4.0 or higher is required»</summary><div class="a"><p>The wrong CMake is used. Run <code>where.exe cmake</code>; the top one is the one used. Use ordinary PowerShell, and open a new window after installing.</p></div></details>
+    <details class="q"><summary>Python not found, or «No module named jinja2»</summary><div class="a"><p>Jinja2 must be installed into the same Python that CMake finds. Run <code>python -m pip install jinja2</code> in a new PowerShell window, delete <code>build/</code> and configure again.</p></div></details>
+    <details class="q"><summary>The folders in <code>external/</code> are empty</summary><div class="a"><p>You cloned without <code>--recursive</code>. Run <code>git submodule update --init --recursive</code> in the root folder.</p></div></details>
+    <details class="q"><summary>Push rejected: «Branch name … does not follow the pattern»</summary><div class="a"><p>You are on a branch you created yourself. Create the branch from the issue with «Create merge request» (step 6) and work there.</p></div></details>
+    <details class="q"><summary>It works for me, but the pipeline is red</summary><div class="a"><p>Open the job and read the log from the top. The usual causes: a file you forgot to <code>git add</code>, or upper/lower case in a file name (Windows does not care, Linux does).</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hva er forskjellen på en kompileringsfeil og en linkerfeil?</summary><div class="a"><p>En kompileringsfeil gjelder én fil og har linjenummer: koden er ikke gyldig C++. En linkerfeil kommer etterpå: alt kompilerte, men linkeren finner ikke koden til noe som er brukt – typisk et bibliotek som ikke er lenket, eller en <code>.cpp</code> som ikke er med i <code>CMakeLists.txt</code>.</p></div></details>
+    <details class="q"><summary>Du endrer C++-standarden i <code>CMakeLists.txt</code> og bygger, men ingenting skjer. Hvorfor?</summary><div class="a"><p>Det er en cache-variabel. CMake husker den gamle verdien i <code>build/</code>. Slett <code>build/</code> og konfigurer på nytt.</p></div></details>
+    <details class="q"><summary>Hva er de fire mappene <code>framework/</code>, <code>labs/</code>, <code>assignment/</code> og <code>external/</code> til?</summary><div class="a"><p><code>framework/</code>: motoren du bygger og som vurderes. <code>labs/</code>: øvingsplassen din. <code>assignment/</code>: spillet, som også vurderes. <code>external/</code>: bibliotekene som submoduler – dem rører du aldri.</p></div></details>
+    <details class="q"><summary>Hvorfor er issuet ikke levert bare fordi du har lukket det?</summary><div class="a"><p>Levert betyr kode som virker, i <code>main</code>. Det skjer først når merge requesten er merget med grønn pipeline.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>What is the difference between a compile error and a linker error?</summary><div class="a"><p>A compile error concerns one file and has a line number: the code is not valid C++. A linker error comes afterwards: everything compiled, but the linker cannot find the code for something that is used – typically a library that is not linked, or a <code>.cpp</code> that is missing from <code>CMakeLists.txt</code>.</p></div></details>
+    <details class="q"><summary>You change the C++ standard in <code>CMakeLists.txt</code> and build, but nothing happens. Why?</summary><div class="a"><p>It is a cache variable. CMake remembers the old value in <code>build/</code>. Delete <code>build/</code> and configure again.</p></div></details>
+    <details class="q"><summary>What are the four folders <code>framework/</code>, <code>labs/</code>, <code>assignment/</code> and <code>external/</code> for?</summary><div class="a"><p><code>framework/</code>: the engine you build, which is graded. <code>labs/</code>: your practice space. <code>assignment/</code>: the game, also graded. <code>external/</code>: the libraries as submodules – you never touch them.</p></div></details>
+    <details class="q"><summary>Why is an issue not delivered just because you closed it?</summary><div class="a"><p>Delivered means working code in <code>main</code>. That only happens when the merge request is merged with a green pipeline.</p></div></details>
+  </div>
+</section>
+
+<!-- =============================== M2 =============================== -->
+<section class="mod" id="m2">
+  <div class="modhead">
+    <h1 data-l="no">2 · Vindu, kontekst og render-loop</h1>
+    <h1 data-l="en">2 · Window, context and render loop</h1>
+    <div class="issues"><span class="tag">#2 Window &amp; OpenGL context</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> <code>labs/lab01</code> åpner et vindu som fylles med én farge hver frame, helt til du lukker det.</p>
+    <p data-l="en"><b>When you are done:</b> <code>labs/lab01</code> opens a window that is filled with one colour every frame, until you close it.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Hvem gjør hva</h3>
+    <p><b>OpenGL</b> er ikke et vanlig bibliotek med kode i. Det er en spesifikasjon – en avtale om hvilke funksjoner som finnes – og det er skjermkortdriveren som faktisk gjør jobben. <b>GLFW</b> er biblioteket som snakker med Windows (eller Linux, eller macOS): det lager vinduet, gir deg en OpenGL-kontekst og leser tastatur og mus. <b>GLAD</b> henter OpenGL-funksjonene fra driveren.</p>
+    <h3>Konteksten</h3>
+    <p>En OpenGL-kontekst er all tilstanden OpenGL har for vinduet ditt: alle buffere, shadere og innstillinger lever i den. Den lages sammen med vinduet og må gjøres <em>gjeldende</em> (current) før du kan bruke den. Tenk på den som et arbeidsbord: du kan ikke legge noe på bordet før det står der.</p>
+    <h3>Hvorfor GLAD trengs</h3>
+    <p>De moderne OpenGL-funksjonene finnes ikke når programmet linkes. Adressene deres må slås opp i driveren mens programmet kjører, og det går først når det finnes en gjeldende kontekst. Det er GLAD sin jobb. Før GLAD har lastet funksjonene, er de bare tomme pekere – kaller du en av dem, krasjer programmet.</p>
+    <h3>Versjonen</h3>
+    <p>Før vinduet lages, forteller du GLFW hvilken OpenGL-versjon du vil ha og at du vil ha <em>core profile</em> (bare den moderne delen av OpenGL). Det gjøres med <em>window hints</em>. Versjonen bør stemme med det loaderen er generert for (<code>PROG2002_GLAD_API</code>, 4.6 på Windows). Eksemplene ber om 4.1, som er kursets minimum og fungerer overalt.</p>
+    <h3>Render-loopen og dobbel buffering</h3>
+    <p>Et grafikkprogram tegner hele bildet på nytt mange ganger i sekundet. Hver runde er én <em>frame</em>: tøm, tegn, bytt buffere, behandle hendelser. Du tegner aldri rett på skjermen. Du tegner på en <em>bakside</em> mens skjermen viser <em>forsiden</em>, og når bildet er ferdig, bytter du dem. Ellers ville brukeren sett halvferdige bilder som flimrer.</p>
+    <p>Å behandle hendelser (poll events) er det som lar vinduet reagere – på taster, mus og lukkeknappen. Glemmer du det, tror Windows at programmet har hengt seg.</p>
+  </div>
+  <div data-l="en">
+    <h3>Who does what</h3>
+    <p><b>OpenGL</b> is not an ordinary library with code in it. It is a specification – an agreement about which functions exist – and the graphics driver does the actual work. <b>GLFW</b> is the library that talks to Windows (or Linux, or macOS): it creates the window, gives you an OpenGL context, and reads keyboard and mouse. <b>GLAD</b> fetches the OpenGL functions from the driver.</p>
+    <h3>The context</h3>
+    <p>An OpenGL context is all the state OpenGL keeps for your window: every buffer, shader and setting lives in it. It is created together with the window and must be made <em>current</em> before you can use it. Think of it as a workbench: you cannot put anything on the bench before it is there.</p>
+    <h3>Why GLAD is needed</h3>
+    <p>The modern OpenGL functions do not exist when the program is linked. Their addresses must be looked up in the driver while the program runs, and that only works once there is a current context. That is GLAD's job. Before GLAD has loaded the functions they are just empty pointers – call one and the program crashes.</p>
+    <h3>The version</h3>
+    <p>Before the window is created, you tell GLFW which OpenGL version you want and that you want the <em>core profile</em> (only the modern part of OpenGL). That is done with <em>window hints</em>. The version should match what the loader was generated for (<code>PROG2002_GLAD_API</code>, 4.6 on Windows). The examples ask for 4.1, which is the course minimum and works everywhere.</p>
+    <h3>The render loop and double buffering</h3>
+    <p>A graphics program redraws the whole image many times a second. Each round is one <em>frame</em>: clear, draw, swap buffers, process events. You never draw straight to the screen. You draw on a <em>back buffer</em> while the screen shows the <em>front buffer</em>, and when the image is finished, you swap them. Otherwise the user would see half-finished, flickering images.</p>
+    <p>Processing events (polling) is what lets the window react – to keys, mouse and the close button. Forget it, and Windows thinks the program has hung.</p>
+  </div>
+
+  <div class="loop" id="loopdemo">
+    <h3 style="margin-top:0" data-l="no">Gå gjennom ett program, steg for steg</h3>
+    <h3 style="margin-top:0" data-l="en">Walk through one program, step by step</h3>
+    <div class="loopgrid">
+      <ol id="loopsteps"></ol>
+      <div>
+        <div class="buffers">
+          <div class="buf"><div class="lbl" id="lbl-a"></div><div class="px empty" id="buf-a"><svg width="60" height="52" viewBox="0 0 60 52" aria-hidden="true"><polygon points="30,4 56,48 4,48" fill="#F2D06B"/></svg></div></div>
+          <div class="buf"><div class="lbl" id="lbl-b"></div><div class="px empty" id="buf-b"><svg width="60" height="52" viewBox="0 0 60 52" aria-hidden="true"><polygon points="30,4 56,48 4,48" fill="#F2D06B"/></svg></div></div>
+        </div>
+        <p class="frames"><span data-l="no">Frames vist:</span><span data-l="en">Frames shown:</span> <b id="framecount">0</b></p>
+      </div>
+    </div>
+    <p class="loopmsg" id="loopmsg" aria-live="polite"></p>
+    <div class="controls">
+      <button type="button" class="btn primary" id="loopnext"><span data-l="no">Neste steg</span><span data-l="en">Next step</span></button>
+      <button type="button" class="btn" id="loopplay"><span data-l="no">Spill av</span><span data-l="en">Play</span></button>
+      <button type="button" class="btn" id="loopclose"><span data-l="no">Klikk lukkeknappen</span><span data-l="en">Click the close button</span></button>
+      <button type="button" class="btn" id="loopreset"><span data-l="no">Start på nytt</span><span data-l="en">Restart</span></button>
+    </div>
+  </div>
+
+  <h2 data-l="no">Før du skriver noe</h2>
+  <h2 data-l="en">Before you write anything</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>Les <code>examples/01_hello_window/main.cpp</code> som en tekst.</strong> Skriv den ut eller ha den på skjermen, og marker med tre farger: oppstart, loopen og opprydding. Sammenlign med steg-for-steg-figuren over.</li>
+    <li><strong>Les issue #2 fra start til slutt.</strong> Den guidede gjennomgangen er kursmateriell og helt lov å følge. Men skriv koden selv, linje for linje, og still deg spørsmålet issuet stiller: hva ville gått galt uten denne linjen?</li>
+    <li><strong>Legg merke til at labben må kobles inn i byggingen.</strong> Issuet viser hvordan <code>labs/</code> blir med i rot-<code>CMakeLists.txt</code>.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Read <code>examples/01_hello_window/main.cpp</code> as a text.</strong> Print it or keep it on screen, and mark it in three colours: start-up, the loop, and clean-up. Compare with the step-by-step figure above.</li>
+    <li><strong>Read issue #2 from start to finish.</strong> The guided walkthrough is course material and fine to follow. But write the code yourself, line by line, and ask yourself the question the issue asks: what would break without this line?</li>
+    <li><strong>Note that the lab has to be wired into the build.</strong> The issue shows how <code>labs/</code> joins the root <code>CMakeLists.txt</code>.</li>
+  </ol>
+
+  <h2 data-l="no">Øvelser – forutsi før du prøver</h2>
+  <h2 data-l="en">Exercises – predict before you try</h2>
+  <p data-l="no">Svar i hodet eller på papir først. Når lab01 virker, kan du teste svarene dine ved å gjøre endringen og se hva som skjer – og så sette den tilbake.</p>
+  <p data-l="en">Answer in your head or on paper first. Once lab01 works, you can test your answers by making the change and watching what happens – then put it back.</p>
+  <div data-l="no">
+    <details class="q"><summary>Du kaller en <code>gl</code>-funksjon før GLAD har lastet funksjonene. Hva skjer?</summary><div class="a"><p>Programmet krasjer, ofte med «access violation» eller «read access violation». Funksjonspekeren er tom, og programmet hopper til adresse null.</p></div></details>
+    <details class="q"><summary>Du fjerner byttet av buffere. Hva ser du?</summary><div class="a"><p>Det du tegner, kommer aldri fram. Vinduet viser forsiden, som aldri blir oppdatert – ofte svart eller tilfeldig innhold.</p></div></details>
+    <details class="q"><summary>Du fjerner behandlingen av hendelser. Hva skjer når du prøver å lukke vinduet?</summary><div class="a"><p>Ingenting. Lukkeklikket blir aldri lest, så loopen får aldri vite at vinduet skal lukkes. Etter noen sekunder sier Windows at programmet ikke svarer.</p></div></details>
+    <details class="q"><summary>Hvor ofte kjører koden inne i loopen hvis skjermen din er på 60 Hz?</summary><div class="a"><p>Vanligvis rundt 60 ganger i sekundet, fordi byttet av buffere venter på skjermen når vertikal synkronisering er på. Uten den kan det gå mye fortere. Husk dette til Timestep-issuet (#20): spillet ditt må oppføre seg likt uansett hvor fort loopen går.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>You call a <code>gl</code> function before GLAD has loaded the functions. What happens?</summary><div class="a"><p>The program crashes, often with «access violation» or «read access violation». The function pointer is empty, and the program jumps to address zero.</p></div></details>
+    <details class="q"><summary>You remove the buffer swap. What do you see?</summary><div class="a"><p>What you draw never appears. The window shows the front buffer, which is never updated – often black or random content.</p></div></details>
+    <details class="q"><summary>You remove the event processing. What happens when you try to close the window?</summary><div class="a"><p>Nothing. The close click is never read, so the loop never learns the window should close. After a few seconds Windows says the program is not responding.</p></div></details>
+    <details class="q"><summary>How often does the code inside the loop run if your screen is 60 Hz?</summary><div class="a"><p>Usually about 60 times a second, because the buffer swap waits for the screen when vertical sync is on. Without it, it can run much faster. Remember this for the Timestep issue (#20): your game must behave the same no matter how fast the loop runs.</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hvorfor kan ikke GLAD lastes før vinduet er laget?</summary><div class="a"><p>GLAD henter funksjonsadressene fra driveren gjennom den gjeldende konteksten. Konteksten lages sammen med vinduet og må gjøres gjeldende først.</p></div></details>
+    <details class="q"><summary>Hvilke tre biblioteker lenker labben mot, og hva gir hvert av dem?</summary><div class="a"><p><code>glfw</code>: vindu, kontekst og input. <code>glad_gl_core</code>: deklarasjonene av OpenGL-funksjonene og maskineriet som slår dem opp. <code>OpenGL::GL</code>: plattformens egentlige OpenGL-bibliotek.</p></div></details>
+    <details class="q"><summary>Forklar dobbel buffering til en som aldri har programmert.</summary><div class="a"><p>Som en tavle med to sider: publikum ser den ene siden mens du tegner på baksiden. Når tegningen er ferdig, snur du tavla. Publikum ser aldri en halvferdig tegning.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>Why can GLAD not be loaded before the window exists?</summary><div class="a"><p>GLAD fetches the function addresses from the driver through the current context. The context is created with the window and has to be made current first.</p></div></details>
+    <details class="q"><summary>Which three libraries does the lab link against, and what does each give you?</summary><div class="a"><p><code>glfw</code>: window, context and input. <code>glad_gl_core</code>: the declarations of the OpenGL functions and the machinery that looks them up. <code>OpenGL::GL</code>: the platform's actual OpenGL library.</p></div></details>
+    <details class="q"><summary>Explain double buffering to someone who has never programmed.</summary><div class="a"><p>Like a board with two sides: the audience sees one side while you draw on the back. When the drawing is finished, you flip the board. The audience never sees a half-finished drawing.</p></div></details>
+  </div>
+</section>
+
+<!-- =============================== M3 =============================== -->
+<section class="mod" id="m3">
+  <div class="modhead">
+    <h1 data-l="no">3 · Pipelinen og første trekant</h1>
+    <h1 data-l="en">3 · The pipeline and a first triangle</h1>
+    <div class="issues"><span class="tag">#3 First triangle &amp; square</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> <code>labs/lab02</code> tegner en trekant og så et kvadrat med indeksbuffer – med rå OpenGL-kall, skrevet av deg. Dette er det tyngste issuet i starten. Bruk god tid på forelesningen og lekeplassen før du begynner.</p>
+    <p data-l="en"><b>When you are done:</b> <code>labs/lab02</code> draws a triangle and then a square with an index buffer – with raw OpenGL calls, written by you. This is the heaviest issue at the start. Spend real time on the lecture and the playground before you begin.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Pipelinen</h3>
+    <p>Alt du tegner i dette faget går gjennom den samme rekken av steg. De to blå er programmer du skriver selv (shadere); resten gjør skjermkortet for deg.</p>
+  </div>
+  <div data-l="en">
+    <h3>The pipeline</h3>
+    <p>Everything you draw in this course goes through the same sequence of steps. The two blue ones are programs you write yourself (shaders); the rest the graphics card does for you.</p>
+  </div>
+  <div class="pipe" data-l="no">
+    <span><b>Hjørnedata</b>Tall i minnet, lastet opp til skjermkortet</span>
+    <span class="prog"><b>Vertex shader</b>Kjøres én gang per hjørne: hvor havner det?</span>
+    <span><b>Trekanter</b>Tre og tre hjørner settes sammen</span>
+    <span><b>Rasterisering</b>Hvilke piksler dekker trekanten?</span>
+    <span class="prog"><b>Fragment shader</b>Kjøres én gang per piksel: hvilken farge?</span>
+    <span><b>Framebuffer</b>Bildet som byttes fram på skjermen</span>
+  </div>
+  <div class="pipe" data-l="en">
+    <span><b>Vertex data</b>Numbers in memory, uploaded to the graphics card</span>
+    <span class="prog"><b>Vertex shader</b>Runs once per corner: where does it end up?</span>
+    <span><b>Triangles</b>Corners are grouped three by three</span>
+    <span><b>Rasterisation</b>Which pixels does the triangle cover?</span>
+    <span class="prog"><b>Fragment shader</b>Runs once per pixel: which colour?</span>
+    <span><b>Framebuffer</b>The image that is swapped onto the screen</span>
+  </div>
+  <div data-l="no">
+    <h3>Koordinatene: NDC</h3>
+    <p>Det vertex shaderen leverer, er i <em>normaliserte enhetskoordinater</em> (NDC): x og y går fra −1 til 1, med (0, 0) midt i vinduet og y oppover. Det som havner utenfor, klippes bort. NDC bryr seg ikke om hvor stort vinduet er – derfor ser et kvadrat i NDC ut som et rektangel i et bredt vindu. Det fikser du senere med en projeksjonsmatrise.</p>
+    <h3>VBO – bytes på skjermkortet</h3>
+    <p>En <em>vertex buffer object</em> er en bit minne på skjermkortet. Du kopierer hjørnedataene dine dit én gang. Bufferen selv vet ingenting om hva bytene betyr – det er bare bytes.</p>
+    <h3>VAO – oppskriften</h3>
+    <p>En <em>vertex array object</em> beskriver hvordan bytene skal leses: «attributt 0 er to tall av typen float, starter ved byte 0, og neste hjørne kommer så mange bytes senere». Den husker også hvilken buffer dataene ligger i. Når du tegner, binder du VAO-en, og skjermkortet vet alt det trenger.</p>
+    <h3>Stride og offset</h3>
+    <p>Har hvert hjørne både posisjon og farge, ligger de ofte etter hverandre: posisjon, farge, posisjon, farge … (<em>interleaved</em>). <em>Stride</em> er hvor mange bytes ett helt hjørne tar. <em>Offset</em> er hvor i hjørnet et attributt begynner. Feil her er den vanligste årsaken til rare, forskjøvne trekanter.</p>
+    <h3>Shadere</h3>
+    <p>Shadere er små programmer i språket GLSL som kjører på skjermkortet. De kompileres mens programmet ditt kjører, og en feil i en shader gir <em>ingen</em> melding av seg selv – du må hente ut kompileringsloggen og skrive den ut. Vertex shaderen og fragment shaderen lenkes sammen til ett <em>shaderprogram</em>.</p>
+    <h3>Interpolasjon</h3>
+    <p>Gir du hvert hjørne en farge, blir fargen glidende blandet over trekanten: piksler nær det røde hjørnet blir mest røde. Det er rasteriseringen som gjør blandingen, før fragment shaderen får verdien. Se det i lekeplassen under.</p>
+    <h3>Indeksbuffer</h3>
+    <p>Et kvadrat er to trekanter, altså seks hjørner – men to av dem er de samme. Med en <em>indeksbuffer</em> lagrer du de fire unike hjørnene én gang og sier med tall hvilke tre som utgjør hver trekant. Det sparer minne, og i et sjakkbrett med 64 ruter merkes det.</p>
+    <h3>OpenGL er en tilstandsmaskin</h3>
+    <p>Å <em>binde</em> noe betyr «gjør dette til det gjeldende». De neste kallene virker på det som er bundet akkurat nå. Mange feil kommer av at noe annet enn du tror er bundet.</p>
+  </div>
+  <div data-l="en">
+    <h3>The coordinates: NDC</h3>
+    <p>What the vertex shader delivers is in <em>normalised device coordinates</em> (NDC): x and y run from −1 to 1, with (0, 0) in the middle of the window and y pointing up. Anything outside is clipped away. NDC does not care how big the window is – which is why a square in NDC looks like a rectangle in a wide window. You fix that later with a projection matrix.</p>
+    <h3>VBO – bytes on the graphics card</h3>
+    <p>A <em>vertex buffer object</em> is a piece of memory on the graphics card. You copy your vertex data there once. The buffer itself knows nothing about what the bytes mean – they are just bytes.</p>
+    <h3>VAO – the recipe</h3>
+    <p>A <em>vertex array object</em> describes how the bytes are to be read: «attribute 0 is two floats, starts at byte 0, and the next corner comes this many bytes later». It also remembers which buffer the data lives in. When you draw, you bind the VAO, and the graphics card knows everything it needs.</p>
+    <h3>Stride and offset</h3>
+    <p>If each corner has both a position and a colour, they are often stored one after the other: position, colour, position, colour … (<em>interleaved</em>). <em>Stride</em> is how many bytes one whole corner takes. <em>Offset</em> is where in the corner an attribute starts. Mistakes here are the most common cause of strange, shifted triangles.</p>
+    <h3>Shaders</h3>
+    <p>Shaders are small programs in the GLSL language that run on the graphics card. They are compiled while your program runs, and an error in a shader gives <em>no</em> message by itself – you have to fetch the compile log and print it. The vertex shader and fragment shader are linked together into one <em>shader program</em>.</p>
+    <h3>Interpolation</h3>
+    <p>If you give each corner a colour, the colour is smoothly blended across the triangle: pixels near the red corner come out mostly red. Rasterisation does the blending before the fragment shader receives the value. See it in the playground below.</p>
+    <h3>Index buffer</h3>
+    <p>A square is two triangles, so six corners – but two of them are the same. With an <em>index buffer</em> you store the four unique corners once and say with numbers which three make up each triangle. It saves memory, and on a chessboard with 64 squares you notice.</p>
+    <h3>OpenGL is a state machine</h3>
+    <p>To <em>bind</em> something means «make this the current one». The next calls act on whatever is bound right now. Many bugs come from something else being bound than you think.</p>
+  </div>
+
+  <div class="play" id="playground">
+    <h3 style="margin-top:0" data-l="no">Lekeplassen: du er rasterisereren</h3>
+    <h3 style="margin-top:0" data-l="en">The playground: you are the rasteriser</h3>
+    <p class="small muted" data-l="no">Dra i hjørnene. Skru ned oppløsningen for å se at en trekant egentlig bare er et utvalg piksler. Bytt til kvadrat for å se indeksbufferen.</p>
+    <p class="small muted" data-l="en">Drag the corners. Turn the resolution down to see that a triangle is really just a selection of pixels. Switch to square to see the index buffer.</p>
+    <div class="stage">
+      <canvas id="raster" aria-label="Interactive rasteriser"></canvas>
+      <div class="datatable">
+        <b data-l="no">Hjørner (NDC)</b><b data-l="en">Vertices (NDC)</b>
+        <table><thead><tr><th>#</th><th>x</th><th>y</th><th></th></tr></thead><tbody id="vtable"></tbody></table>
+        <p style="margin:.7rem 0 .2rem"><b data-l="no">Indekser</b><b data-l="en">Indices</b></p>
+        <div id="itable"></div>
+        <p class="readout" id="readout"></p>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Shape">
+        <button type="button" data-shape="tri" aria-pressed="true"><span data-l="no">Trekant</span><span data-l="en">Triangle</span></button>
+        <button type="button" data-shape="quad" aria-pressed="false"><span data-l="no">Kvadrat</span><span data-l="en">Square</span></button>
+      </div>
+      <label><span data-l="no">Oppløsning</span><span data-l="en">Resolution</span> <input type="range" id="res" min="8" max="160" step="1" value="24"> <span class="mono" id="resval">24</span></label>
+      <label><input type="checkbox" id="showedges" checked> <span data-l="no">Vis trekantkanter</span><span data-l="en">Show triangle edges</span></label>
+      <button type="button" class="btn" id="rasterreset"><span data-l="no">Nullstill</span><span data-l="en">Reset</span></button>
+    </div>
+  </div>
+
+  <h2 data-l="no">Øvelser – i en annen verden enn oppgaven</h2>
+  <h2 data-l="en">Exercises – in a different world from the assignment</h2>
+  <p data-l="no">Gjør dem på papir. Svaret står under hvert spørsmål, men prøv først.</p>
+  <p data-l="en">Do them on paper. The answer is under each question, but try first.</p>
+  <div data-l="no">
+    <details class="q"><summary>Sekskanten: Du vil tegne en regulær sekskant delt i seks trekanter fra et punkt i midten. Hvor mange hjørner trenger du uten og med indeksbuffer, og hva blir indekslisten?</summary><div class="a"><p>Uten indeksbuffer: 6 trekanter × 3 = 18 hjørner. Med: 7 unike hjørner (midten pluss seks på kanten) og 18 indekser. Gir du midten nummer 0 og kanthjørnene 1–6 rundt, blir trekantene (0,1,2), (0,2,3), (0,3,4), (0,4,5), (0,5,6) og (0,6,1). Legg merke til den siste: den går rundt til start.</p></div></details>
+    <details class="q"><summary>Stride: Hvert hjørne har posisjon (3 float) og farge (4 float). En float er 4 bytes. Hva er stride, og hva er offset til fargen?</summary><div class="a"><p>Stride = (3 + 4) × 4 = 28 bytes. Offset til posisjonen er 0, til fargen 3 × 4 = 12 bytes.</p></div></details>
+    <details class="q"><summary>NDC til piksler: Vinduet er 1600 × 900. Hvor havner punktet (0.5, −0.5), målt i piksler fra øverste venstre hjørne?</summary><div class="a"><p>x: (0.5 + 1) / 2 × 1600 = 1200. y: NDC går oppover, piksler nedover, så (1 − (−0.5)) / 2 × 900 = 675. Svaret er (1200, 675).</p></div></details>
+    <details class="q"><summary>Hvorfor ser et «kvadrat» fra −0.5 til 0.5 ut som et rektangel i et vindu på 1600 × 900?</summary><div class="a"><p>NDC strekkes til vinduet. 1 enhet i x er 800 piksler, 1 enhet i y bare 450. Projeksjonsmatrisen du lager senere (#14, #18) tar hensyn til forholdet mellom bredde og høyde.</p></div></details>
+    <details class="q"><summary>Forutsi: Du setter stride 4 bytes for kort. Hva ser du?</summary><div class="a"><p>Skjermkortet leser hjørne nummer to fra feil sted, og alt etter det blir mer og mer forskjøvet. Du får rare, vridde trekanter, og farger kan havne som posisjoner. Det krasjer ikke – det bare ser feil ut.</p></div></details>
+    <details class="q"><summary>Feilsøking: Vinduet er tomt, og det kommer ingen feilmelding. Nevn fire ting du sjekker.</summary><div class="a"><p>1) Kompilerte og lenket shaderne? Skriv ut loggene. 2) Er VAO-en og shaderprogrammet bundet når du tegner? 3) Ligger koordinatene innenfor −1 til 1? 4) Stemmer antallet hjørner eller indekser i tegnekallet? En femte klassiker: tømmer du skjermen <em>etter</em> at du har tegnet?</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>The hexagon: You want to draw a regular hexagon split into six triangles from a point in the middle. How many corners do you need without and with an index buffer, and what is the index list?</summary><div class="a"><p>Without an index buffer: 6 triangles × 3 = 18 corners. With: 7 unique corners (the centre plus six on the edge) and 18 indices. If the centre is number 0 and the edge corners 1–6 around, the triangles are (0,1,2), (0,2,3), (0,3,4), (0,4,5), (0,5,6) and (0,6,1). Note the last one: it wraps around to the start.</p></div></details>
+    <details class="q"><summary>Stride: Each corner has a position (3 floats) and a colour (4 floats). A float is 4 bytes. What is the stride, and what is the offset of the colour?</summary><div class="a"><p>Stride = (3 + 4) × 4 = 28 bytes. The position's offset is 0, the colour's 3 × 4 = 12 bytes.</p></div></details>
+    <details class="q"><summary>NDC to pixels: The window is 1600 × 900. Where does the point (0.5, −0.5) land, in pixels from the top-left corner?</summary><div class="a"><p>x: (0.5 + 1) / 2 × 1600 = 1200. y: NDC points up, pixels point down, so (1 − (−0.5)) / 2 × 900 = 675. The answer is (1200, 675).</p></div></details>
+    <details class="q"><summary>Why does a «square» from −0.5 to 0.5 look like a rectangle in a 1600 × 900 window?</summary><div class="a"><p>NDC is stretched to the window. 1 unit in x is 800 pixels, 1 unit in y only 450. The projection matrix you build later (#14, #18) accounts for the ratio between width and height.</p></div></details>
+    <details class="q"><summary>Predict: You set the stride 4 bytes too short. What do you see?</summary><div class="a"><p>The graphics card reads corner number two from the wrong place, and everything after it is shifted more and more. You get strange, twisted triangles, and colours may be read as positions. It does not crash – it just looks wrong.</p></div></details>
+    <details class="q"><summary>Debugging: The window is empty and there is no error message. Name four things you check.</summary><div class="a"><p>1) Did the shaders compile and link? Print the logs. 2) Are the VAO and the shader program bound when you draw? 3) Are the coordinates within −1 to 1? 4) Does the number of corners or indices in the draw call match? A fifth classic: do you clear the screen <em>after</em> drawing?</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hva er forskjellen på en VBO og en VAO, i én setning hver?</summary><div class="a"><p>VBO: bytene på skjermkortet. VAO: beskrivelsen av hvordan bytene skal leses, og hvilken buffer de ligger i.</p></div></details>
+    <details class="q"><summary>Hvor mange ganger kjører vertex shaderen og fragment shaderen for én trekant som dekker 5000 piksler?</summary><div class="a"><p>Vertex shaderen: 3 ganger, én per hjørne. Fragment shaderen: omtrent 5000 ganger, én per piksel. Derfor skal tunge beregninger helst ligge i vertex shaderen.</p></div></details>
+    <details class="q"><summary>Hvordan får du vite at en shader ikke kompilerte?</summary><div class="a"><p>Bare ved å spørre: hent kompileringsstatusen og loggen etter kompilering (og lenkestatusen etter lenking) og skriv dem ut. OpenGL sier ingenting av seg selv.</p></div></details>
+    <details class="q"><summary>Når lønner indeksbuffer seg, og når gjør den ikke det?</summary><div class="a"><p>Den lønner seg når hjørner deles mellom trekanter – rutenett, kvadrater, kuber. For én enkelt trekant gir den ingenting.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>What is the difference between a VBO and a VAO, in one sentence each?</summary><div class="a"><p>VBO: the bytes on the graphics card. VAO: the description of how to read the bytes, and which buffer they are in.</p></div></details>
+    <details class="q"><summary>How many times do the vertex shader and fragment shader run for one triangle covering 5000 pixels?</summary><div class="a"><p>Vertex shader: 3 times, once per corner. Fragment shader: about 5000 times, once per pixel. That is why heavy calculations belong in the vertex shader where possible.</p></div></details>
+    <details class="q"><summary>How do you find out that a shader did not compile?</summary><div class="a"><p>Only by asking: fetch the compile status and log after compiling (and the link status after linking) and print them. OpenGL says nothing by itself.</p></div></details>
+    <details class="q"><summary>When does an index buffer pay off, and when does it not?</summary><div class="a"><p>It pays off when corners are shared between triangles – grids, squares, cubes. For a single triangle it gains nothing.</p></div></details>
+  </div>
+  <p data-l="no">Klar? Les issue #3 fra start til slutt, sammenlign <code>examples/02_first_triangle</code> og <code>examples/03_indexed_square</code> (README-en i <code>examples/</code> viser hvordan du ser forskjellen med <code>diff</code>), og skriv labben selv.</p>
+  <p data-l="en">Ready? Read issue #3 from start to finish, compare <code>examples/02_first_triangle</code> and <code>examples/03_indexed_square</code> (the README in <code>examples/</code> shows how to see the difference with <code>diff</code>), and write the lab yourself.</p>
+</section>
+
+<!-- =============================== LATER =============================== -->
+<section class="mod" id="later">
+  <div class="modhead">
+    <h1 data-l="no">Resten av løypa</h1>
+    <h1 data-l="en">The rest of the route</h1>
+    <p class="muted" data-l="no">Modulene under kommer inn på siden før du trenger dem. Her er hva som venter, så du ser hvor du skal.</p>
+    <p class="muted" data-l="en">The modules below arrive on this page before you need them. Here is what is ahead, so you can see where you are going.</p>
+  </div>
+  <ul class="later-list" data-l="no">
+    <li><b>4 · Fra rå kall til motor (#4–#8)</b>Du pakker det du skrev i lab02 inn i klasser: VertexBuffer, IndexBuffer, BufferLayout og VertexArray, Shader og RenderCommands. Nøkkelbegrepene er RAII (ressursen frigjøres i destruktøren) og hvorfor motoren er et statisk bibliotek.</li>
+    <li><b>5 · Input og applikasjonsklassen (#9–#12)</b>Lese tastatur og mus, samle det i en Input-klasse, og løfte vinduet og loopen inn i en basisklasse. Så setter du opp skjelettet til spillet.</li>
+    <li><b>6 · Matriser og MVP (#14, #15)</b>Model-, view- og projeksjonsmatrisen, uniforms, og dybdetesten. Det er her en flat trekant blir en roterende kube.</li>
+    <li><b>7 · Geometri, kamera og tid (#17, #18, #20, #21, #26)</b>Generere rutenett i kode, kamerahierarkiet, delta-tid så spillet går likt på alle maskiner, og en kamerakontroller.</li>
+    <li><b>8 · Spillet (#24, #25, #27–#30)</b>Brettet, markøren, WASD-kameraet, brikkene og flyttingen. Her er det ingen guidet gjennomgang i issuene – her setter du sammen det du har lært.</li>
+    <li><b>9 · Levering (#33)</b>Grønn pipeline, ryddig repo og DECLARATION.md.</li>
+  </ul>
+  <ul class="later-list" data-l="en">
+    <li><b>4 · From raw calls to an engine (#4–#8)</b>You package what you wrote in lab02 into classes: VertexBuffer, IndexBuffer, BufferLayout and VertexArray, Shader and RenderCommands. The key ideas are RAII (the resource is released in the destructor) and why the engine is a static library.</li>
+    <li><b>5 · Input and the application class (#9–#12)</b>Reading keyboard and mouse, gathering it in an Input class, and lifting the window and loop into a base class. Then you set up the skeleton of the game.</li>
+    <li><b>6 · Matrices and MVP (#14, #15)</b>The model, view and projection matrices, uniforms, and the depth test. This is where a flat triangle becomes a rotating cube.</li>
+    <li><b>7 · Geometry, camera and time (#17, #18, #20, #21, #26)</b>Generating grids in code, the camera hierarchy, delta time so the game runs the same on every machine, and a camera controller.</li>
+    <li><b>8 · The game (#24, #25, #27–#30)</b>The board, the selector, the WASD camera, the pieces and moving them. The issues have no guided walkthrough here – this is where you put together what you have learned.</li>
+    <li><b>9 · Delivery (#33)</b>Green pipeline, a clean repository and DECLARATION.md.</li>
+  </ul>
+</section>
+
+<footer>
+  <p data-l="no">Denne siden inneholder forklaringer og øvelser, ikke kode til innleveringen. Avkryssinger og språkvalg lagres bare i denne nettleseren.</p>
+  <p data-l="en">This page contains explanations and exercises, not code for the assignment. Ticks and language choice are saved only in this browser.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+"use strict";
+var store = {
+  get: function(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set: function(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+function bi(no, en){ return '<span data-l="no">' + no + '</span><span data-l="en">' + en + '</span>'; }
+
+/* ---------------- language ---------------- */
+function setLang(l){
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.setlang === l)); });
+  document.title = l === 'en' ? 'PROG2002 – the route' : 'PROG2002 – løypa';
+  store.set('p2002.lang', l);
+}
+document.querySelectorAll('[data-setlang]').forEach(function(b){ b.addEventListener('click', function(){ setLang(b.dataset.setlang); }); });
+setLang(store.get('p2002.lang', 'nb') === 'en' ? 'en' : 'nb');
+
+/* ---------------- copy buttons ---------------- */
+document.querySelectorAll('.copy').forEach(function(b){
+  b.innerHTML = bi('Kopier', 'Copy');
+  b.addEventListener('click', function(){
+    var el = document.getElementById(b.dataset.copy); if(!el) return;
+    var text = el.textContent;
+    function ok(){ b.classList.add('done'); b.innerHTML = bi('Kopiert', 'Copied'); setTimeout(function(){ b.classList.remove('done'); b.innerHTML = bi('Kopier','Copy'); }, 1600); }
+    function fallback(){
+      var r = document.createRange(); r.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      try { document.execCommand('copy'); ok(); } catch(e){}
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok, fallback);
+    } else { fallback(); }
+  });
+});
+
+/* ---------------- plan ---------------- */
+var PLAN = [
+  {d:[14,10], wd:['ons','Wed'], is:[1], t:['Verktøy, bygg eksemplene, første merge request. Send e-posten.','Tools, build the examples, first merge request. Send the email.'], m:'m1', ml:'1'},
+  {d:[15,10], wd:['tor','Thu'], is:[2], t:['Vindu og render-loop','Window and render loop'], m:'m2', ml:'2'},
+  {d:[16,10], wd:['fre','Fri'], is:[3], t:['Første trekant og kvadrat','First triangle and square'], m:'m3', ml:'3'},
+  {d:[17,10], wd:['lør','Sat'], is:[4,5], t:['VertexBuffer og IndexBuffer','VertexBuffer and IndexBuffer'], m:'later', ml:'4'},
+  {d:[18,10], wd:['søn','Sun'], is:[6], t:['BufferLayout og VertexArray','BufferLayout and VertexArray'], m:'later', ml:'4'},
+  {d:[19,10], wd:['man','Mon'], is:[7,8], t:['Shader og RenderCommands','Shader and RenderCommands'], m:'later', ml:'4'},
+  {d:[20,10], wd:['tir','Tue'], is:[9,10], t:['Input – rått, så samlet i en klasse','Input – raw, then gathered in a class'], m:'later', ml:'5'},
+  {d:[21,10], wd:['ons','Wed'], is:[11,12], t:['GLFWApplication og spillskjelettet','GLFWApplication and the game skeleton'], m:'later', ml:'5'},
+  {d:[22,10], wd:['tor','Thu'], is:[14,15], t:['Transformasjoner, MVP og uniforms','Transforms, MVP and uniforms'], m:'later', ml:'6'},
+  {d:[23,10], wd:['fre','Fri'], is:[17], t:['GeometricTools – geometri i kode','GeometricTools – geometry in code'], m:'later', ml:'7'},
+  {d:[24,10], wd:['lør','Sat'], is:[18,20], t:['Kameraer og Timestep','Cameras and Timestep'], m:'later', ml:'7'},
+  {d:[25,10], wd:['søn','Sun'], is:[21,26], t:['CameraController med egne taster','CameraController with rebindable keys'], m:'later', ml:'7'},
+  {d:[26,10], wd:['man','Mon'], is:[24,27], t:['Brettet og WASD-kameraet','The board and the WASD camera'], m:'later', ml:'8'},
+  {d:[27,10], wd:['tir','Tue'], is:[25,28], t:['Markøren og dybdetesten','The selector and the depth test'], m:'later', ml:'8'},
+  {d:[28,10], wd:['ons','Wed'], is:[29], t:['Brikkene på brettet','The pieces on the board'], m:'later', ml:'8'},
+  {d:[29,10], wd:['tor','Thu'], is:[30,33], t:['Flytt brikkene, og leveringskontrollen','Move the pieces, and the delivery gate'], m:'later', ml:'8–9'},
+  {d:[30,10], wd:['fre','Fri'], is:[], t:['Buffer. Alt merget i main før kvelden. Frist kl. 23:59.','Buffer. Everything merged into main before the evening. Deadline 23:59.'], m:'later', ml:'9'}
+];
+var done = store.get('p2002.done', []);
+if (!Array.isArray(done)) done = [];
+var tbody = document.querySelector('#plantable tbody');
+var now = new Date(); var todayKey = now.getFullYear() === 2026 ? (now.getMonth()+1)*100 + now.getDate() : -1;
+PLAN.forEach(function(r, i){
+  var tr = document.createElement('tr');
+  if (r.d[1]*100 + r.d[0] === todayKey) tr.className = 'today';
+  var chks = r.is.map(function(n){
+    return '<label class="chk"><input type="checkbox" data-issue="' + n + '"' + (done.indexOf(n) >= 0 ? ' checked' : '') + '><span>#' + n + '</span></label>';
+  }).join('') || '<span class="muted">–</span>';
+  tr.innerHTML =
+    '<td class="day">' + bi('Dag ' + (i+1), 'Day ' + (i+1)) + '<br><span class="muted">' + bi(r.wd[0] + ' ' + r.d[0] + '.' + r.d[1] + '.', r.wd[1] + ' ' + r.d[0] + ' Oct') + '</span></td>' +
+    '<td>' + chks + '</td>' +
+    '<td>' + bi(r.t[0], r.t[1]) + '</td>' +
+    '<td><button type="button" class="btn" data-go="' + r.m + '">' + r.ml + '</button></td>';
+  tbody.appendChild(tr);
+});
+function updateProgress(){
+  var n = done.length;
+  document.getElementById('donecount').textContent = n;
+  document.getElementById('barfill').style.width = Math.min(100, n / 26 * 100) + '%';
+}
+tbody.addEventListener('change', function(e){
+  var c = e.target; if (!c.dataset || !c.dataset.issue) return;
+  var n = Number(c.dataset.issue);
+  done = done.filter(function(x){ return x !== n; });
+  if (c.checked) done.push(n);
+  store.set('p2002.done', done); updateProgress();
+});
+updateProgress();
+
+/* ---------------- navigation ---------------- */
+var sections = Array.prototype.slice.call(document.querySelectorAll('section.mod'));
+function go(id, scroll){
+  if (!document.getElementById(id)) id = 'start';
+  sections.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+  document.querySelectorAll('nav.route [data-go]').forEach(function(b){ b.setAttribute('aria-current', String(b.dataset.go === id)); });
+  store.set('p2002.mod', id);
+  if (scroll) window.scrollTo(0, 0);
+  if (id === 'm3') requestAnimationFrame(drawRaster);
+  if (id === 'start') requestAnimationFrame(drawHero);
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-go]'); if (!b) return;
+  go(b.dataset.go, true);
+});
+go(store.get('p2002.mod', 'start'), false);
+
+/* ---------------- rasteriser ---------------- */
+var RED=[214,56,64], GREEN=[30,168,140], BLUE=[64,112,224], YEL=[236,190,60], BG=[20,27,42];
+function defaults(mode){
+  return mode === 'quad'
+    ? [{x:-0.6,y:-0.6,c:RED},{x:0.6,y:-0.6,c:GREEN},{x:0.6,y:0.6,c:BLUE},{x:-0.6,y:0.6,c:YEL}]
+    : [{x:-0.72,y:-0.62,c:RED},{x:0.78,y:-0.42,c:GREEN},{x:0.02,y:0.76,c:BLUE}];
+}
+function indicesFor(mode){ return mode === 'quad' ? [0,1,2,2,3,0] : [0,1,2]; }
+var off = document.createElement('canvas');
+function edge(a,b,px,py){ return (b.x-a.x)*(py-a.y) - (b.y-a.y)*(px-a.x); }
+
+function drawScene(canvas, st, opts){
+  var dpr = window.devicePixelRatio || 1;
+  var W = Math.max(60, Math.round(canvas.clientWidth * dpr));
+  if (canvas.width !== W) { canvas.width = W; canvas.height = W; }
+  var ctx = canvas.getContext('2d');
+  var N = st.N, idx = indicesFor(st.mode), v = st.v;
+  off.width = N; off.height = N;
+  var octx = off.getContext('2d'); var img = octx.createImageData(N, N); var d = img.data;
+  var tris = []; for (var t = 0; t < idx.length; t += 3) tris.push([v[idx[t]], v[idx[t+1]], v[idx[t+2]]]);
+  var covered = 0;
+  for (var py = 0; py < N; py++){
+    var y = 1 - 2*(py+0.5)/N;
+    for (var px = 0; px < N; px++){
+      var x = -1 + 2*(px+0.5)/N, col = BG;
+      for (var k = 0; k < tris.length; k++){
+        var A = tris[k][0], B = tris[k][1], C = tris[k][2];
+        var area = edge(A,B,C.x,C.y); if (Math.abs(area) < 1e-9) continue;
+        var w0 = edge(B,C,x,y)/area, w1 = edge(C,A,x,y)/area, w2 = edge(A,B,x,y)/area;
+        if (w0 >= 0 && w1 >= 0 && w2 >= 0){
+          col = [w0*A.c[0]+w1*B.c[0]+w2*C.c[0], w0*A.c[1]+w1*B.c[1]+w2*C.c[1], w0*A.c[2]+w1*B.c[2]+w2*C.c[2]];
+          covered++; break;
+        }
+      }
+      var o = (py*N + px)*4; d[o]=col[0]; d[o+1]=col[1]; d[o+2]=col[2]; d[o+3]=255;
+    }
+  }
+  octx.putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(off, 0, 0, W, W);
+  function cx(p){ return (p.x+1)/2*W; } function cy(p){ return (1-p.y)/2*W; }
+  if (N <= 48){
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var g = 1; g < N; g++){ var s = Math.round(g*W/N)+0.5; ctx.moveTo(s,0); ctx.lineTo(s,W); ctx.moveTo(0,s); ctx.lineTo(W,s); }
+    ctx.stroke();
+  }
+  if (opts.axes){
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = dpr; ctx.setLineDash([4*dpr, 4*dpr]);
+    ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,W); ctx.moveTo(0,W/2); ctx.lineTo(W,W/2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = (11*dpr) + 'px system-ui, sans-serif';
+    ctx.textBaseline = 'top'; ctx.fillText('(−1, 1)', 5*dpr, 5*dpr);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('(1, −1)', W-5*dpr, W-5*dpr);
+    ctx.textAlign = 'left';
+  }
+  if (st.edges){
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = 1.5*dpr;
+    tris.forEach(function(T){ ctx.beginPath(); ctx.moveTo(cx(T[0]),cy(T[0])); ctx.lineTo(cx(T[1]),cy(T[1])); ctx.lineTo(cx(T[2]),cy(T[2])); ctx.closePath(); ctx.stroke(); });
+  }
+  if (opts.handles){
+    v.forEach(function(p, i){
+      ctx.beginPath(); ctx.arc(cx(p), cy(p), 8*dpr, 0, Math.PI*2);
+      ctx.fillStyle = 'rgb(' + p.c.join(',') + ')'; ctx.fill();
+      ctx.lineWidth = 2.5*dpr; ctx.strokeStyle = '#fff'; ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold ' + (13*dpr) + 'px system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      var lx = cx(p) + (p.x > 0.7 ? -22*dpr : 13*dpr);
+      ctx.fillText(String(i), lx, cy(p) - 12*dpr);
+    });
+  }
+  return covered;
+}
+
+var hero = document.getElementById('herocanvas');
+var heroState = {mode:'tri', N:22, edges:false, v:defaults('tri')};
+function drawHero(){ if (hero && hero.offsetParent) drawScene(hero, heroState, {handles:false, axes:false}); }
+
+var rc = document.getElementById('raster');
+var st = {mode:'tri', N:24, edges:true, v:defaults('tri')};
+function rgb(c){ return 'rgb(' + c.map(Math.round).join(',') + ')'; }
+function drawRaster(){
+  if (!rc || !rc.offsetParent) return;
+  var covered = drawScene(rc, st, {handles:true, axes:true});
+  document.getElementById('vtable').innerHTML = st.v.map(function(p,i){
+    return '<tr><td>' + i + '</td><td>' + p.x.toFixed(2) + '</td><td>' + p.y.toFixed(2) + '</td><td><span class="sw" style="background:' + rgb(p.c) + '"></span></td></tr>';
+  }).join('');
+  var it = document.getElementById('itable');
+  if (st.mode === 'quad'){
+    it.innerHTML = '<div class="mono">0, 1, 2</div><div class="mono">2, 3, 0</div>' +
+      '<p class="small muted" style="margin:.4rem 0 0">' + bi('6 indekser peker på 4 hjørner. Uten indeksbuffer måtte du lagret 6 hjørner, og to av dem dobbelt.', '6 indices point at 4 vertices. Without an index buffer you would store 6 vertices, two of them twice.') + '</p>';
+  } else {
+    it.innerHTML = '<div class="mono">0, 1, 2</div><p class="small muted" style="margin:.4rem 0 0">' + bi('Én trekant trenger ingen indeksbuffer.', 'A single triangle needs no index buffer.') + '</p>';
+  }
+  var nv = st.v.length, total = st.N*st.N;
+  document.getElementById('readout').innerHTML = bi(
+    'Piksler dekket: <b>' + covered + '</b> av ' + total + '.<br>Vertex shaderen kjører <b>' + (st.mode==='quad'?4:3) + '</b> ganger, fragment shaderen <b>' + covered + '</b> ganger.',
+    'Pixels covered: <b>' + covered + '</b> of ' + total + '.<br>The vertex shader runs <b>' + (st.mode==='quad'?4:3) + '</b> times, the fragment shader <b>' + covered + '</b> times.');
+  document.getElementById('resval').textContent = st.N;
+}
+if (rc){
+  var dragging = -1;
+  function toNdc(e){
+    var r = rc.getBoundingClientRect();
+    return {x: Math.max(-1, Math.min(1, ((e.clientX - r.left)/r.width)*2 - 1)), y: Math.max(-1, Math.min(1, 1 - ((e.clientY - r.top)/r.height)*2)), w: r.width};
+  }
+  rc.addEventListener('pointerdown', function(e){
+    var p = toNdc(e), best = -1, bd = 1e9;
+    st.v.forEach(function(v,i){ var dx=(v.x-p.x)/2*p.w, dy=(v.y-p.y)/2*p.w, dd=Math.sqrt(dx*dx+dy*dy); if (dd < bd){ bd = dd; best = i; } });
+    if (bd < 24){ dragging = best; rc.setPointerCapture(e.pointerId); rc.classList.add('dragging'); e.preventDefault(); }
+  });
+  rc.addEventListener('pointermove', function(e){
+    if (dragging < 0) return;
+    var p = toNdc(e); st.v[dragging].x = p.x; st.v[dragging].y = p.y; drawRaster();
+  });
+  function end(){ dragging = -1; rc.classList.remove('dragging'); }
+  rc.addEventListener('pointerup', end); rc.addEventListener('pointercancel', end);
+  document.getElementById('res').addEventListener('input', function(e){ st.N = Number(e.target.value); drawRaster(); });
+  document.getElementById('showedges').addEventListener('change', function(e){ st.edges = e.target.checked; drawRaster(); });
+  document.querySelectorAll('[data-shape]').forEach(function(b){
+    b.addEventListener('click', function(){
+      st.mode = b.dataset.shape; st.v = defaults(st.mode);
+      document.querySelectorAll('[data-shape]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      drawRaster();
+    });
+  });
+  document.getElementById('rasterreset').addEventListener('click', function(){ st.v = defaults(st.mode); drawRaster(); });
+}
+var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(function(){ drawRaster(); drawHero(); }, 120); });
+drawRaster(); drawHero();
+
+/* ---------------- render loop stepper ---------------- */
+var STEPS = [
+  {id:'init', ph:'setup', l:['Start GLFW','Start GLFW'], m:['GLFW startes. Det finnes ikke noe vindu ennå, og ingen OpenGL.','GLFW starts. There is no window yet, and no OpenGL.']},
+  {id:'create', ph:'setup', l:['Lag vindu og kontekst (versjonen er bestilt med window hints)','Create window and context (version requested with window hints)'], m:['Vinduet og konteksten lages. Begge bufferne har udefinert innhold.','The window and the context are created. Both buffers have undefined content.']},
+  {id:'current', ph:'setup', l:['Gjør konteksten gjeldende','Make the context current'], m:['Konteksten er gjeldende. Men gl-funksjonene er fortsatt tomme pekere – et kall nå ville krasjet.','The context is current. But the gl functions are still empty pointers – a call now would crash.']},
+  {id:'load', ph:'setup', l:['Last OpenGL-funksjonene (GLAD)','Load the OpenGL functions (GLAD)'], m:['GLAD slår opp funksjonene i driveren. Fra nå av er gl-kall trygge.','GLAD looks the functions up in the driver. From now on gl calls are safe.']},
+  {id:'check', ph:'loopstep', l:['Skal vinduet lukkes?','Should the window close?'], m:null},
+  {id:'clear', ph:'loopstep', l:['Tøm baksiden','Clear the back buffer'], m:['Baksiden fylles med én farge. Skjermen viser fortsatt forsiden.','The back buffer is filled with one colour. The screen still shows the front buffer.']},
+  {id:'draw', ph:'loopstep', l:['Tegn (fra issue #3)','Draw (from issue #3)'], m:['Her tegner du – fra issue #3 og utover. Fortsatt bare på baksiden.','This is where you draw – from issue #3 onwards. Still only on the back buffer.']},
+  {id:'swap', ph:'loopstep', l:['Bytt forside og bakside','Swap front and back buffers'], m:['Forside og bakside bytter plass. Nå ser brukeren det du tegnet.','Front and back swap places. Now the user sees what you drew.']},
+  {id:'poll', ph:'loopstep', l:['Behandle hendelser','Process events'], m:['Tastetrykk, mus og lukkeknappen blir lest nå.','Key presses, mouse and the close button are read now.']},
+  {id:'term', ph:'teardown', l:['Rydd opp og avslutt','Clean up and exit'], m:['Vinduet og konteksten fjernes, og GLFW avsluttes. Programmet er ferdig.','The window and the context are destroyed, and GLFW exits. The program is done.']}
+];
+var L = {}; // loop state
+var olSteps = document.getElementById('loopsteps');
+if (olSteps){
+  olSteps.innerHTML = STEPS.map(function(s, i){
+    var cls = s.ph === 'setup' ? 'setup' : (s.ph === 'teardown' ? 'teardown' : 'loopstep');
+    return '<li class="' + cls + '" data-i="' + i + '">' + bi(s.l[0], s.l[1]) + '</li>';
+  }).join('');
+  var timer = null;
+  function resetLoop(){
+    L = {i:-1, frontA:true, A:'empty', B:'empty', frames:0, pendingClose:false, shouldClose:false, finished:false};
+    stopPlay(); renderLoop(bi('Trykk «Neste steg» for å starte programmet.', 'Press «Next step» to start the program.'));
+  }
+  function renderLoop(msg){
+    olSteps.querySelectorAll('li').forEach(function(li){ li.classList.toggle('cur', Number(li.dataset.i) === L.i); });
+    var a = document.getElementById('buf-a'), b = document.getElementById('buf-b');
+    a.className = 'px ' + L.A; b.className = 'px ' + L.B;
+    var front = bi('Forside – vises på skjermen', 'Front buffer – shown on screen');
+    var back = bi('Bakside – du tegner her', 'Back buffer – you draw here');
+    document.getElementById('lbl-a').innerHTML = L.frontA ? front : back;
+    document.getElementById('lbl-b').innerHTML = L.frontA ? back : front;
+    document.getElementById('framecount').textContent = L.frames;
+    if (msg !== undefined) document.getElementById('loopmsg').innerHTML = msg;
+    document.getElementById('loopnext').disabled = L.finished;
+    document.getElementById('loopplay').disabled = L.finished;
+    document.getElementById('loopclose').disabled = L.finished || L.i < 1;
+  }
+  function backKey(){ return L.frontA ? 'B' : 'A'; }
+  function step(){
+    if (L.finished) return;
+    var cur = L.i < 0 ? null : STEPS[L.i].id, next;
+    if (cur === null) next = 0;
+    else if (cur === 'check') next = L.shouldClose ? 9 : 5;
+    else if (cur === 'poll') next = 4;
+    else if (cur === 'term') { return; }
+    else next = L.i + 1;
+    L.i = next; var s = STEPS[next], msg;
+    if (s.id === 'check') {
+      msg = L.shouldClose ? bi('Skal vinduet lukkes? Ja – loopen avsluttes.', 'Should the window close? Yes – the loop ends.')
+                          : bi('Skal vinduet lukkes? Nei – en ny frame begynner.', 'Should the window close? No – a new frame begins.');
+    } else {
+      msg = bi(s.m[0], s.m[1]);
+      if (s.id === 'clear') L[backKey()] = 'clear';
+      if (s.id === 'draw') L[backKey()] = 'tri';
+      if (s.id === 'swap') { L.frontA = !L.frontA; L.frames++; }
+      if (s.id === 'poll' && L.pendingClose) { L.shouldClose = true; L.pendingClose = false; msg += ' ' + bi('<b>Lukkeklikket ditt blir oppdaget først nå.</b>', '<b>Your close click is only detected now.</b>'); }
+      if (s.id === 'term') { L.finished = true; L.A = 'empty'; L.B = 'empty'; stopPlay(); }
+    }
+    renderLoop(msg);
+  }
+  function stopPlay(){ if (timer){ clearInterval(timer); timer = null; } document.getElementById('loopplay').innerHTML = bi('Spill av', 'Play'); }
+  document.getElementById('loopnext').addEventListener('click', function(){ stopPlay(); step(); });
+  document.getElementById('loopplay').addEventListener('click', function(){
+    if (timer) { stopPlay(); return; }
+    step(); timer = setInterval(step, 850);
+    document.getElementById('loopplay').innerHTML = bi('Pause', 'Pause');
+  });
+  document.getElementById('loopclose').addEventListener('click', function(){
+    if (L.finished || L.shouldClose) return;
+    L.pendingClose = true;
+    renderLoop(bi('Du klikket lukkeknappen. Ingenting skjer før hendelsene behandles.', 'You clicked the close button. Nothing happens until events are processed.'));
+  });
+  document.getElementById('loopreset').addEventListener('click', resetLoop);
+  resetLoop();
+}
+})();
+</script>
+</body>
+</html>
