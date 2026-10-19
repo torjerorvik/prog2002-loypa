@@ -240,6 +240,25 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
 .verdict{font-weight:700}
 .verdict.good{color:var(--green)} .verdict.badv{color:var(--red)}
 
+/* modules 6-9 */
+.lanes{display:grid; gap:.6rem; margin:.4rem 0}
+.lane{display:grid; grid-template-columns:4.2rem minmax(0,1fr); gap:.6rem; align-items:center}
+.lanelbl{font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:.85rem; color:var(--muted)}
+.lane canvas{width:100%; height:36px; display:block; background:var(--code-bg); border-radius:6px}
+.edgegrid{display:grid; grid-template-columns:auto minmax(0,1fr); gap:1.2rem; align-items:center; margin:.6rem 0}
+.bigkey{font:inherit; font-size:2rem; font-weight:800; width:5.5rem; height:5.5rem; border-radius:12px; border:2px solid var(--ink); background:var(--surface); color:var(--ink); cursor:pointer; box-shadow:0 5px 0 var(--ink); touch-action:none; user-select:none; -webkit-user-select:none}
+.bigkey.down{transform:translateY(4px); box-shadow:0 1px 0 var(--ink); background:var(--hl)}
+.edgecounts{display:grid; gap:.6rem}
+.edgecounts div{background:var(--code-bg); border-radius:6px; padding:.5rem .75rem; display:flex; justify-content:space-between; align-items:center; gap:1rem}
+.edgecounts b{font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:1.4rem}
+.framestrip canvas{width:100%; height:28px; display:block; border-radius:4px; background:var(--code-bg)}
+.checklist{list-style:none; padding:0; margin:1rem 0}
+.checklist li{border:1px solid var(--rule); background:var(--surface); border-radius:6px; margin:.4rem 0; padding:.55rem .8rem; max-width:none}
+.checklist label{display:flex; gap:.7rem; align-items:flex-start; cursor:pointer}
+.checklist input{width:1.1rem; height:1.1rem; accent-color:var(--green); margin-top:.25rem; flex:none}
+.checklist input:checked ~ span{color:var(--green)}
+@media (max-width: 860px){ .edgegrid{grid-template-columns:minmax(0,1fr)} }
+
 @media (max-width: 860px){
   .topbar{gap:.5rem 1rem; padding:.6rem 1rem}
   .langswitch{order:2}
@@ -269,7 +288,7 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
   </div>
   <div class="progress" title="">
     <div class="bar" aria-hidden="true"><span id="barfill"></span></div>
-    <span><b id="donecount">0</b> / 26 <span data-l="no">issues ferdig</span><span data-l="en">issues done</span></span>
+    <span><b id="donecount">0</b> / 27 <span data-l="no">issues ferdig</span><span data-l="en">issues done</span></span>
   </div>
   <div class="langswitch" role="group" aria-label="Språk / Language">
     <button type="button" data-setlang="nb" aria-pressed="true">Norsk</button>
@@ -281,12 +300,16 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
 <nav class="route" aria-label="Moduler / Modules">
   <ol>
     <li><button type="button" data-go="start"><span class="dot">0</span><span class="navtext"><span data-l="no">Start her</span><span data-l="en">Start here</span></span></button></li>
-    <li><button type="button" data-go="plan"><span class="dot">≡</span><span class="navtext"><span data-l="no">Dagsplanen</span><span data-l="en">Day plan</span></span></button></li>
+    <li><button type="button" data-go="plan"><span class="dot">≡</span><span class="navtext"><span data-l="no">Rekkefølgen</span><span data-l="en">Order of work</span></span></button></li>
     <li><button type="button" data-go="m1"><span class="dot">1</span><span class="navtext"><span data-l="no">Verktøy og arbeidsflyt</span><span data-l="en">Tools and workflow</span></span></button></li>
     <li><button type="button" data-go="m2"><span class="dot">2</span><span class="navtext"><span data-l="no">Vindu og render-loop</span><span data-l="en">Window and render loop</span></span></button></li>
     <li><button type="button" data-go="m3"><span class="dot">3</span><span class="navtext"><span data-l="no">Pipelinen og første trekant</span><span data-l="en">The pipeline and a first triangle</span></span></button></li>
     <li><button type="button" data-go="m4"><span class="dot">4</span><span class="navtext"><span data-l="no">Fra rå kall til motor</span><span data-l="en">From raw calls to an engine</span></span></button></li>
-    <li><button type="button" data-go="later" class="later"><span class="dot">5</span><span class="navtext"><span data-l="no">Resten av løypa</span><span data-l="en">The rest of the route</span></span></button></li>
+    <li><button type="button" data-go="m5"><span class="dot">5</span><span class="navtext"><span data-l="no">Input og applikasjonsklassen</span><span data-l="en">Input and the application class</span></span></button></li>
+    <li><button type="button" data-go="m6"><span class="dot">6</span><span class="navtext"><span data-l="no">Matriser og MVP</span><span data-l="en">Matrices and MVP</span></span></button></li>
+    <li><button type="button" data-go="m7"><span class="dot">7</span><span class="navtext"><span data-l="no">Geometri, kamera og tid</span><span data-l="en">Geometry, camera and time</span></span></button></li>
+    <li><button type="button" data-go="m8"><span class="dot">8</span><span class="navtext"><span data-l="no">Spillet</span><span data-l="en">The game</span></span></button></li>
+    <li><button type="button" data-go="m9"><span class="dot">9</span><span class="navtext"><span data-l="no">Levering</span><span data-l="en">Delivery</span></span></button></li>
   </ol>
 </nav>
 
@@ -297,8 +320,8 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
     <div>
       <h1 data-l="no">Tre punkter inn, piksler ut.</h1>
       <h1 data-l="en">Three points in, pixels out.</h1>
-      <p data-l="no">Det er grafikkprogrammering i én setning. Om 17 dager har du bygd et lite sjakkbrettspill på akkurat dette – med din egen kode. Denne siden er forelesningene du gikk glipp av, i den rekkefølgen du trenger dem.</p>
-      <p data-l="en">That is graphics programming in one sentence. In 17 days you will have built a small chessboard game on exactly this – with your own code. This page is the lectures you missed, in the order you need them.</p>
+      <p data-l="no">Det er grafikkprogrammering i én setning. Når du er ferdig, har du bygd et lite sjakkbrettspill på akkurat dette – med din egen kode. Denne siden er forelesningene du gikk glipp av, i den rekkefølgen du trenger dem.</p>
+      <p data-l="en">That is graphics programming in one sentence. By the end you will have built a small chessboard game on exactly this – with your own code. This page is the lectures you missed, in the order you need them.</p>
     </div>
     <canvas id="herocanvas" aria-label="Pixelated triangle with red, green and blue corners" role="img"></canvas>
   </div>
@@ -313,30 +336,30 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
   <h2 data-l="no">Det er mindre enn det ser ut som</h2>
   <h2 data-l="en">It is smaller than it looks</h2>
   <div data-l="no">
-    <p>Repoet ditt har 44 issues, og det er derfor det virker uoverkommelig. Men teksturer, lys, ImGui og instancing er <em>ikke</em> en del av oppgaven. Du trenger 26 issues: de 18 som teller, pluss 8 labber som lærer deg det de tellende bygger på. De fleste av dem er godt beskrevet, mange med guidet gjennomgang. Det som mangler for deg, er forklaringen på <em>hvorfor</em> – og den får du her.</p>
+    <p>Repoet ditt har 44 issues, og det er derfor det virker uoverkommelig. Men teksturer, lys, ImGui og instancing er <em>ikke</em> en del av oppgaven. Du trenger 27 issues: de 18 som teller, pluss 9 labber som lærer deg det de tellende bygger på. De fleste av dem er godt beskrevet, mange med guidet gjennomgang. Det som mangler for deg, er forklaringen på <em>hvorfor</em> – og den får du her.</p>
     <h4>Gjør disse (grønne teller)</h4>
   </div>
   <div data-l="en">
-    <p>Your repository has 44 issues, which is why it feels impossible. But textures, lighting, ImGui and instancing are <em>not</em> part of the assignment. You need 26 issues: the 18 that are graded, plus 8 labs that teach what the graded ones build on. Most of them are well described, many with a guided walkthrough. What you are missing is the <em>why</em> – and that is what this page gives you.</p>
+    <p>Your repository has 44 issues, which is why it feels impossible. But textures, lighting, ImGui and instancing are <em>not</em> part of the assignment. You need 27 issues: the 18 that are graded, plus 9 labs that teach what the graded ones build on. Most of them are well described, many with a guided walkthrough. What you are missing is the <em>why</em> – and that is what this page gives you.</p>
     <h4>Do these (green ones are graded)</h4>
   </div>
   <p class="issues" style="display:flex;flex-wrap:wrap;gap:.35rem">
-    <span class="tag">#1</span><span class="tag">#2</span><span class="tag">#3</span><span class="tag graded">#4</span><span class="tag graded">#5</span><span class="tag graded">#6</span><span class="tag graded">#7</span><span class="tag graded">#8</span><span class="tag">#9</span><span class="tag graded">#10</span><span class="tag graded">#11</span><span class="tag graded">#12</span><span class="tag">#14</span><span class="tag">#15</span><span class="tag graded">#17</span><span class="tag graded">#18</span><span class="tag graded">#20</span><span class="tag graded">#21</span><span class="tag graded">#24</span><span class="tag graded">#25</span><span class="tag">#26</span><span class="tag graded">#27</span><span class="tag">#28</span><span class="tag graded">#29</span><span class="tag graded">#30</span><span class="tag graded">#33</span>
+    <span class="tag">#1</span><span class="tag">#2</span><span class="tag">#3</span><span class="tag graded">#4</span><span class="tag graded">#5</span><span class="tag graded">#6</span><span class="tag graded">#7</span><span class="tag graded">#8</span><span class="tag">#9</span><span class="tag graded">#10</span><span class="tag graded">#11</span><span class="tag graded">#12</span><span class="tag">#14</span><span class="tag">#15</span><span class="tag">#16</span><span class="tag graded">#17</span><span class="tag graded">#18</span><span class="tag graded">#20</span><span class="tag graded">#21</span><span class="tag graded">#24</span><span class="tag graded">#25</span><span class="tag">#26</span><span class="tag graded">#27</span><span class="tag">#28</span><span class="tag graded">#29</span><span class="tag graded">#30</span><span class="tag graded">#33</span>
   </p>
   <h4 data-l="no">La disse ligge</h4>
   <h4 data-l="en">Leave these alone</h4>
   <p style="display:flex;flex-wrap:wrap;gap:.35rem">
-    <span class="tag skip">#13</span><span class="tag skip">#16</span><span class="tag skip">#19</span><span class="tag skip">#22</span><span class="tag skip">#23</span><span class="tag skip">#31</span><span class="tag skip">#32</span><span class="tag skip">#34–#44</span>
+    <span class="tag skip">#13</span><span class="tag skip">#19</span><span class="tag skip">#22</span><span class="tag skip">#23</span><span class="tag skip">#31</span><span class="tag skip">#32</span><span class="tag skip">#34–#44</span>
   </p>
 
-  <h2 data-l="no">I dag</h2>
-  <h2 data-l="en">Today</h2>
+  <h2 data-l="no">Første steg</h2>
+  <h2 data-l="en">First steps</h2>
   <ol class="steps" data-l="no">
-    <li><strong>Installer verktøyene og bygg prosjektet.</strong> Det er modul 1, og det er hele dagens jobb. Klarer du det, har du gjort den vanskeligste starten.</li>
+    <li><strong>Installer verktøyene og bygg prosjektet.</strong> Det er modul 1. Klarer du det, har du gjort den vanskeligste starten.</li>
     <li><strong>Les reglene om AI under.</strong> Vil du bruke en AI-chat til å få forklart ting, så bruk veileder-instruksen.</li>
   </ol>
   <ol class="steps" data-l="en">
-    <li><strong>Install the tools and build the project.</strong> That is module 1, and it is the whole of today's job. Manage that, and you have done the hardest start.</li>
+    <li><strong>Install the tools and build the project.</strong> That is module 1. Manage that, and you have done the hardest start.</li>
     <li><strong>Read the AI rules below.</strong> If you want to use an AI chat to have things explained, use the tutor instruction.</li>
   </ol>
 
@@ -423,15 +446,15 @@ Answer in English.</pre>
 <!-- =============================== PLAN =============================== -->
 <section class="mod" id="plan">
   <div class="modhead">
-    <h1 data-l="no">Dagsplanen</h1>
-    <h1 data-l="en">The day plan</h1>
-    <p data-l="no" class="muted">Ett til to issues om dagen, med siste dag som buffer. Kryss av når issuet er <em>merget inn i main</em> – ikke før. Avkryssingen lagres i denne nettleseren.</p>
-    <p data-l="en" class="muted">One or two issues a day, with the last day as a buffer. Tick an issue when it is <em>merged into main</em> – not before. Your ticks are saved in this browser.</p>
+    <h1 data-l="no">Rekkefølgen</h1>
+    <h1 data-l="en">Order of work</h1>
+    <p data-l="no" class="muted">Alle issuene du trenger, i den rekkefølgen de bygger på hverandre. Ta dem i ditt eget tempo, men i denne rekkefølgen. Kryss av når issuet er <em>merget inn i main</em> – ikke før. Avkryssingen lagres i denne nettleseren.</p>
+    <p data-l="en" class="muted">Every issue you need, in the order they build on each other. Take them at your own pace, but in this order. Tick an issue when it is <em>merged into main</em> – not before. Your ticks are saved in this browser.</p>
   </div>
   <div class="tablewrap">
   <table id="plantable">
     <thead><tr>
-      <th><span data-l="no">Dag</span><span data-l="en">Day</span></th>
+      <th><span data-l="no">Steg</span><span data-l="en">Step</span></th>
       <th>Issues</th>
       <th><span data-l="no">Hva</span><span data-l="en">What</span></th>
       <th><span data-l="no">Modul</span><span data-l="en">Module</span></th>
@@ -440,12 +463,13 @@ Answer in English.</pre>
   </table>
   </div>
   <div class="note" data-l="no">
-    <p><b>Henger du etter?</b> Ikke hopp over noe – rekkefølgen er der fordi hvert issue bygger på det forrige. Skyv heller planen og bruk helgene. Og merge det som virker før du går videre: et issue som er halvferdig på en branch, teller ingenting.</p>
+    <p><b>Frist: fredag 30. oktober kl. 23:59.</b> Ikke hopp over noe – hvert issue bygger på det forrige. Og merge det som virker før du går videre: et issue som er halvferdig på en branch, teller ingenting.</p>
   </div>
   <div class="note" data-l="en">
-    <p><b>Falling behind?</b> Do not skip anything – the order exists because each issue builds on the one before. Push the plan instead and use the weekends. And merge what works before moving on: an issue half-finished on a branch counts for nothing.</p>
+    <p><b>Deadline: Friday 30 October, 23:59.</b> Do not skip anything – each issue builds on the one before. And merge what works before moving on: an issue half-finished on a branch counts for nothing.</p>
   </div>
 </section>
+
 
 <!-- =============================== M1 =============================== -->
 <section class="mod" id="m1">
@@ -560,7 +584,7 @@ cmake --build build
     <li><strong>Sjekk hva som er endret</strong> med <code>git status</code>. Bare dine egne filer skal være med – aldri <code>build/</code>.</li>
     <li><strong>Commit og push.</strong></li>
     <li><strong>Følg pipelinen i merge requesten.</strong> Grønn og ferdig? Trykk <b>Merge</b>. Issuet lukkes av seg selv.</li>
-    <li><strong>Tilbake til main</strong> og hent det du nettopp merget. Kryss av i dagsplanen her og i issue #45.</li>
+    <li><strong>Tilbake til main</strong> og hent det du nettopp merget. Kryss av i rekkefølgen her og i issue #45.</li>
   </ol>
   <ol class="steps" data-l="en">
     <li><strong>Open the issue in GitLab and press «Create merge request».</strong> It creates a branch whose name starts with the issue number, for example <code>1-toolchain-cmake-hello-world</code>. The branch name is shown in the merge request.</li>
@@ -569,7 +593,7 @@ cmake --build build
     <li><strong>Check what changed</strong> with <code>git status</code>. Only your own files belong – never <code>build/</code>.</li>
     <li><strong>Commit and push.</strong></li>
     <li><strong>Watch the pipeline in the merge request.</strong> Green and done? Press <b>Merge</b>. The issue closes by itself.</li>
-    <li><strong>Back to main</strong> and pull what you just merged. Tick it in the day plan here and in issue #45.</li>
+    <li><strong>Back to main</strong> and pull what you just merged. Tick it in the order list here and in issue #45.</li>
   </ol>
   <div class="cmd"><button type="button" class="copy" data-copy="c-flow">Kopier</button>
 <pre id="c-flow">git fetch origin
@@ -1050,33 +1074,574 @@ git pull</pre></div>
   </div>
 </section>
 
-<!-- =============================== LATER =============================== -->
-<section class="mod" id="later">
+<!-- =============================== M5 =============================== -->
+<section class="mod" id="m5">
   <div class="modhead">
-    <h1 data-l="no">Resten av løypa</h1>
-    <h1 data-l="en">The rest of the route</h1>
-    <p class="muted" data-l="no">Modulene under kommer inn på siden før du trenger dem. Her er hva som venter, så du ser hvor du skal.</p>
-    <p class="muted" data-l="en">The modules below arrive on this page before you need them. Here is what is ahead, so you can see where you are going.</p>
+    <h1 data-l="no">5 · Input og applikasjonsklassen</h1>
+    <h1 data-l="en">5 · Input and the application class</h1>
+    <div class="issues"><span class="tag">#9 Raw input</span><span class="tag graded">#10 Input + KeyCodes</span><span class="tag graded">#11 GLFWApplication</span><span class="tag graded">#12 Assignment: base app</span></div>
   </div>
-  <ul class="later-list" data-l="no">
-    <li><b>5 · Input og applikasjonsklassen (#9–#12)</b>Lese tastatur og mus, samle det i en Input-klasse, og løfte vinduet og loopen inn i en basisklasse. Så setter du opp skjelettet til spillet.</li>
-    <li><b>6 · Matriser og MVP (#14, #15)</b>Model-, view- og projeksjonsmatrisen, uniforms, og dybdetesten. Det er her en flat trekant blir en roterende kube.</li>
-    <li><b>7 · Geometri, kamera og tid (#17, #18, #20, #21, #26)</b>Generere rutenett i kode, kamerahierarkiet, delta-tid så spillet går likt på alle maskiner, og en kamerakontroller.</li>
-    <li><b>8 · Spillet (#24, #25, #27–#30)</b>Brettet, markøren, WASD-kameraet, brikkene og flyttingen. Her er det ingen guidet gjennomgang i issuene – her setter du sammen det du har lært.</li>
-    <li><b>9 · Levering (#33)</b>Grønn pipeline, ryddig repo og DECLARATION.md.</li>
-  </ul>
-  <ul class="later-list" data-l="en">
-    <li><b>5 · Input and the application class (#9–#12)</b>Reading keyboard and mouse, gathering it in an Input class, and lifting the window and loop into a base class. Then you set up the skeleton of the game.</li>
-    <li><b>6 · Matrices and MVP (#14, #15)</b>The model, view and projection matrices, uniforms, and the depth test. This is where a flat triangle becomes a rotating cube.</li>
-    <li><b>7 · Geometry, camera and time (#17, #18, #20, #21, #26)</b>Generating grids in code, the camera hierarchy, delta time so the game runs the same on every machine, and a camera controller.</li>
-    <li><b>8 · The game (#24, #25, #27–#30)</b>The board, the selector, the WASD camera, the pieces and moving them. The issues have no guided walkthrough here – this is where you put together what you have learned.</li>
-    <li><b>9 · Delivery (#33)</b>Green pipeline, a clean repository and DECLARATION.md.</li>
-  </ul>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> tastatur og mus leses gjennom én <code>Input</code>-klasse, vinduet og loopen bor i en basisklasse, og spillet ditt har fått sitt eget skjelett i <code>assignment/</code> – et vindu på 800 × 600 som tømmes hver frame.</p>
+    <p data-l="en"><b>When you are done:</b> keyboard and mouse are read through one <code>Input</code> class, the window and loop live in a base class, and your game has its own skeleton in <code>assignment/</code> – an 800 × 600 window cleared every frame.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Polling: spør hver frame</h3>
+    <p>Det finnes to måter å lese input på. Med <em>hendelser</em> sier GLFW fra når noe skjer. Med <em>polling</em> spør du selv, hver frame: «er pil opp nede akkurat nå?» Motoren bruker polling. Svaret er tilstanden <em>nå</em> – ikke om tasten nettopp ble trykket. Den forskjellen blir viktig i spillet (#25).</p>
+    <h3>Problemet du skal kjenne på i #9</h3>
+    <p>Alle GLFW-spørsmål om input trenger vinduspekeren. I #9 sender du den rundt overalt med vilje, så du kjenner hvor plagsomt det er. Det er motivasjonen for #10.</p>
+    <h3>En fasade (#10)</h3>
+    <p><code>Input</code> er en <em>statisk</em> klasse: den har ingen objekter, bare funksjoner og data som tilhører klassen selv. Vinduet registreres én gang, og etter det kan hvem som helst spørre «er denne tasten nede?» uten å vite noe om vinduer. En klasse som skjuler noe komplisert bak et enkelt grensesnitt, kalles en <em>fasade</em>.</p>
+    <p><code>KeyCodes.h</code> gir tastene kursets egne navn. Da trenger spillet aldri å inkludere GLFW – det kjenner bare motoren. Det heter <em>avkobling</em>: bytter du GLFW ut en dag, må bare motoren endres.</p>
+    <h3>Arv og virtuelle funksjoner (#11)</h3>
+    <p><code>GLFWApplication</code> er en basisklasse som eier vinduet og loopen. Den har en <code>Run()</code> som bestemmer rekkefølgen, og noen tomme «kroker» – <code>OnInit</code>, <code>OnUpdate</code>, <code>OnRender</code> – som en underklasse fyller ut. Tenk på et skjema der rekkefølgen er trykket ferdig, og du bare fyller inn feltene.</p>
+    <p>At en funksjon er <code>virtual</code>, betyr at basisklassen kaller <em>underklassens</em> versjon. Skriver du <code>override</code> bak din versjon, sjekker kompilatoren at den faktisk erstatter en virtuell funksjon. Uten den kan en skrivefeil i navnet gi en helt ny funksjon som aldri blir kalt – uten feilmelding.</p>
+    <h3>Levetiden løser seg selv</h3>
+    <p>Husker du det indre scopet fra modul 4? Nå trengs det ikke lenger. <code>glfwInit</code> ligger i basisklassens konstruktør og <code>glfwTerminate</code> i destruktøren. C++ river alltid ned underklassen og dens medlemmer <em>før</em> basisklassens destruktør kjører. Legger du OpenGL-objektene som medlemmer i underklassen, dør de derfor mens konteksten fortsatt lever.</p>
+    <h3>Oppdater og tegn hver for seg</h3>
+    <p><code>OnUpdate</code> endrer tilstand (les taster, flytt ting). <code>OnRender</code> tegner tilstanden slik den er. Hold dem adskilt fra starten – hele spillet bygger på det.</p>
+    <h3>Versjonen fra CMake</h3>
+    <p>I #11 skriver ikke koden din OpenGL-versjonen selv. CMake genererer en liten header, <code>prog2002/config.h</code>, ut fra innstillingen <code>PROG2002_GLAD_API</code>. Da kan versjonen aldri være forskjellig i loaderen og i vinduet.</p>
+    <h3>Spillet begynner (#12)</h3>
+    <p>#12 er det første issuet i selve oppgaven, og det har ingen guidet gjennomgang. Det er ikke farlig: det er nøyaktig samme mønster som labben din i #11, bare i en ny toppmappe, <code>assignment/</code>, med eget CMake-mål. Regelen som gjelder hele spillet: ingen rå <code>gl</code>-kall i <code>assignment/</code> – alt går gjennom motoren.</p>
+  </div>
+  <div data-l="en">
+    <h3>Polling: ask every frame</h3>
+    <p>There are two ways to read input. With <em>events</em>, GLFW tells you when something happens. With <em>polling</em>, you ask yourself, every frame: «is the up arrow down right now?» The engine uses polling. The answer is the state <em>now</em> – not whether the key was just pressed. That difference becomes important in the game (#25).</p>
+    <h3>The problem you are meant to feel in #9</h3>
+    <p>Every GLFW input query needs the window pointer. In #9 you pass it around everywhere on purpose, so you feel how annoying it is. That is the motivation for #10.</p>
+    <h3>A façade (#10)</h3>
+    <p><code>Input</code> is a <em>static</em> class: it has no objects, only functions and data that belong to the class itself. The window is registered once, and after that anyone can ask «is this key down?» without knowing anything about windows. A class that hides something complicated behind a simple interface is called a <em>façade</em>.</p>
+    <p><code>KeyCodes.h</code> gives the keys the course's own names. Then the game never needs to include GLFW – it only knows the engine. That is called <em>decoupling</em>: if you ever swap GLFW out, only the engine has to change.</p>
+    <h3>Inheritance and virtual functions (#11)</h3>
+    <p><code>GLFWApplication</code> is a base class that owns the window and the loop. It has a <code>Run()</code> that decides the order, and some empty «hooks» – <code>OnInit</code>, <code>OnUpdate</code>, <code>OnRender</code> – that a subclass fills in. Think of a form where the order is pre-printed and you only fill in the fields.</p>
+    <p>A <code>virtual</code> function means the base class calls the <em>subclass's</em> version. Write <code>override</code> after your version and the compiler checks that it really replaces a virtual function. Without it, a typo in the name can create a brand-new function that is never called – with no error.</p>
+    <h3>Lifetime sorts itself out</h3>
+    <p>Remember the inner scope from module 4? It is no longer needed. <code>glfwInit</code> sits in the base class constructor and <code>glfwTerminate</code> in its destructor. C++ always tears down the subclass and its members <em>before</em> the base class destructor runs. So if you keep the OpenGL objects as members of the subclass, they die while the context is still alive.</p>
+    <h3>Update and render separately</h3>
+    <p><code>OnUpdate</code> changes state (read keys, move things). <code>OnRender</code> draws the state as it is. Keep them apart from the start – the whole game builds on it.</p>
+    <h3>The version from CMake</h3>
+    <p>In #11 your code does not write the OpenGL version itself. CMake generates a small header, <code>prog2002/config.h</code>, from the <code>PROG2002_GLAD_API</code> setting. That way the version can never differ between the loader and the window.</p>
+    <h3>The game begins (#12)</h3>
+    <p>#12 is the first issue of the assignment itself, and it has no guided walkthrough. That is fine: it is exactly the same pattern as your lab in #11, just in a new top-level folder, <code>assignment/</code>, with its own CMake target. The rule for the whole game: no raw <code>gl</code> calls in <code>assignment/</code> – everything goes through the engine.</p>
+  </div>
+
+  <div class="pipe" data-l="no">
+    <span><b>Konstruktør</b>glfwInit, vindu, kontekst, GLAD, Input registreres</span>
+    <span class="prog"><b>OnInit</b>Én gang: lag buffere, shadere, kamera</span>
+    <span class="prog"><b>OnUpdate</b>Hver frame: les input, endre tilstand</span>
+    <span class="prog"><b>OnRender</b>Hver frame: tegn tilstanden</span>
+    <span><b>Destruktør</b>Underklassens medlemmer først, så glfwTerminate</span>
+  </div>
+  <div class="pipe" data-l="en">
+    <span><b>Constructor</b>glfwInit, window, context, GLAD, Input registered</span>
+    <span class="prog"><b>OnInit</b>Once: create buffers, shaders, camera</span>
+    <span class="prog"><b>OnUpdate</b>Every frame: read input, change state</span>
+    <span class="prog"><b>OnRender</b>Every frame: draw the state</span>
+    <span><b>Destructor</b>Subclass members first, then glfwTerminate</span>
+  </div>
+  <p class="small muted" data-l="no">Blå bokser er det du skriver i underklassen. Resten gjør basisklassen.</p>
+  <p class="small muted" data-l="en">Blue boxes are what you write in the subclass. The base class does the rest.</p>
+
+  <h2 data-l="no">Gjør det</h2>
+  <h2 data-l="en">Do it</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>#9 er en liten lab</strong> (<code>labs/lab03</code>): piltastene endrer bakgrunnsfargen, ESC lukker, venstreklikk skriver ut musposisjonen. Den teller ikke, men #10 bygger rett på den.</li>
+    <li><strong>#10 og #11 følger samme oppskrift som modul 4:</strong> les gjennomgangen, skriv koden inn selv, og sjekk at labben oppfører seg <em>helt likt</em> etterpå.</li>
+    <li><strong>I #11 får labben sin egen klasse i egne filer</strong>, og <code>main.cpp</code> blir to linjer. Det mønsteret bruker du i alt videre.</li>
+    <li><strong>#12 lager du selv</strong>, med #11 som mal. Sjekk TODO-lista i issuet nøye: navnet på målet, 800 × 600, egen klasse i egne filer, og ingen rå <code>gl</code> i <code>assignment/</code>.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>#9 is a small lab</strong> (<code>labs/lab03</code>): the arrow keys change the background colour, ESC closes, a left click prints the mouse position. It is not graded, but #10 builds straight on it.</li>
+    <li><strong>#10 and #11 follow the same recipe as module 4:</strong> read the walkthrough, type the code yourself, and check that the lab behaves <em>exactly</em> the same afterwards.</li>
+    <li><strong>In #11 the lab gets its own class in its own files</strong>, and <code>main.cpp</code> becomes two lines. You use that pattern for everything from here on.</li>
+    <li><strong>You build #12 yourself</strong>, with #11 as the template. Check the issue's TODO list carefully: the target name, 800 × 600, its own class in its own files, and no raw <code>gl</code> in <code>assignment/</code>.</li>
+  </ol>
+
+  <h2 data-l="no">Øvelser – i en annen verden enn oppgaven</h2>
+  <h2 data-l="en">Exercises – in a different world from the assignment</h2>
+  <div data-l="no">
+    <details class="q"><summary>Et spill går i 60 frames per sekund. Du trykker en tast i en tiendedels sekund. Hvor mange frames ser polling at tasten er nede?</summary><div class="a"><p>Omtrent 6. Hvis koden din gjør noe «så lenge tasten er nede», skjer det altså seks ganger for ett kort trykk. Husk dette til #25.</p></div></details>
+    <details class="q"><summary>Et program kjører i tre frames og lukkes. List kallene til krokene i rekkefølge.</summary><div class="a"><p>OnInit, så OnUpdate, OnRender, OnUpdate, OnRender, OnUpdate, OnRender. OnInit kjøres bare én gang.</p></div></details>
+    <details class="q"><summary>En underklasse har en <code>VertexArray</code> som medlem. Hva dør først: medlemmet eller konteksten?</summary><div class="a"><p>Medlemmet. Underklassen og medlemmene dens rives ned før basisklassens destruktør kjører <code>glfwTerminate</code>.</p></div></details>
+    <details class="q"><summary>Du skriver <code>void OnUpdte()</code> i underklassen, uten <code>override</code>. Hva skjer?</summary><div class="a"><p>Det kompilerer, men det er en ny funksjon som ingen kaller. Ingenting i programmet reagerer på taster, og det kommer ingen feilmelding. Med <code>override</code> ville kompilatoren sagt fra med en gang.</p></div></details>
+    <details class="q"><summary>Hvorfor kan spillet ditt ikke inkludere <code>&lt;GLFW/glfw3.h&gt;</code> for å lese taster?</summary><div class="a"><p>Fordi spillet bare skal kjenne motorens offentlige grensesnitt. Tastene leses gjennom <code>Input</code> og <code>KeyCodes</code>, så spillet ikke er bundet til GLFW.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>A game runs at 60 frames per second. You press a key for a tenth of a second. How many frames does polling see the key down?</summary><div class="a"><p>About 6. So if your code does something «while the key is down», it happens six times for one short press. Remember this for #25.</p></div></details>
+    <details class="q"><summary>A program runs for three frames and closes. List the hook calls in order.</summary><div class="a"><p>OnInit, then OnUpdate, OnRender, OnUpdate, OnRender, OnUpdate, OnRender. OnInit runs only once.</p></div></details>
+    <details class="q"><summary>A subclass has a <code>VertexArray</code> as a member. Which dies first: the member or the context?</summary><div class="a"><p>The member. The subclass and its members are torn down before the base class destructor runs <code>glfwTerminate</code>.</p></div></details>
+    <details class="q"><summary>You write <code>void OnUpdte()</code> in the subclass, without <code>override</code>. What happens?</summary><div class="a"><p>It compiles, but it is a new function that nobody calls. Nothing in the program reacts to keys, and there is no error. With <code>override</code> the compiler would have told you at once.</p></div></details>
+    <details class="q"><summary>Why can your game not include <code>&lt;GLFW/glfw3.h&gt;</code> to read keys?</summary><div class="a"><p>Because the game should only know the engine's public interface. Keys are read through <code>Input</code> and <code>KeyCodes</code>, so the game is not tied to GLFW.</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hva er forskjellen på polling og hendelser?</summary><div class="a"><p>Polling: du spør om tilstanden hver frame. Hendelser: biblioteket sier fra når noe skjer.</p></div></details>
+    <details class="q"><summary>Hva betyr det at <code>Input</code> er statisk?</summary><div class="a"><p>Det lages ingen objekter av den. Funksjonene og vinduspekeren tilhører klassen selv, så alle kan kalle den direkte.</p></div></details>
+    <details class="q"><summary>Hvorfor ligger <code>glfwTerminate</code> i destruktøren til <code>GLFWApplication</code>?</summary><div class="a"><p>Fordi underklassens medlemmer da alltid er borte først, og OpenGL-objektene i dem kan rydde med en levende kontekst.</p></div></details>
+    <details class="q"><summary>Hva hører hjemme i <code>OnUpdate</code>, og hva i <code>OnRender</code>?</summary><div class="a"><p>OnUpdate: lese input og endre tilstand. OnRender: tegne tilstanden, uten å endre den.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>What is the difference between polling and events?</summary><div class="a"><p>Polling: you ask about the state every frame. Events: the library tells you when something happens.</p></div></details>
+    <details class="q"><summary>What does it mean that <code>Input</code> is static?</summary><div class="a"><p>No objects are made from it. The functions and the window pointer belong to the class itself, so anyone can call it directly.</p></div></details>
+    <details class="q"><summary>Why is <code>glfwTerminate</code> in the destructor of <code>GLFWApplication</code>?</summary><div class="a"><p>Because the subclass's members are then always gone first, and the OpenGL objects in them can clean up with a live context.</p></div></details>
+    <details class="q"><summary>What belongs in <code>OnUpdate</code>, and what in <code>OnRender</code>?</summary><div class="a"><p>OnUpdate: reading input and changing state. OnRender: drawing the state, without changing it.</p></div></details>
+  </div>
 </section>
 
+<!-- =============================== M6 =============================== -->
+<section class="mod" id="m6">
+  <div class="modhead">
+    <h1 data-l="no">6 · Matriser og MVP</h1>
+    <h1 data-l="en">6 · Matrices and MVP</h1>
+    <div class="issues"><span class="tag">#14 Rotating cube</span><span class="tag">#15 UploadUniform</span><span class="tag">#16 Rotation order</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> du har en kube som roterer i 3D med dybde, en <code>Shader</code> som kan laste opp uniforms, og en lab der du styrer rotasjonen med tastene. Ingen av disse tre teller, men alt etterpå bygger på dem – og #20 bruker labben fra #16 direkte.</p>
+    <p data-l="en"><b>When you are done:</b> you have a cube rotating in 3D with depth, a <code>Shader</code> that can upload uniforms, and a lab where you steer the rotation with the keys. None of the three is graded, but everything afterwards builds on them – and #20 uses the lab from #16 directly.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Fra eget rom til skjerm</h3>
+    <p>En modell beskrives i sitt <em>eget</em> koordinatsystem – kuben går fra −0.5 til 0.5 rundt sitt eget sentrum. For å havne på skjermen går hvert hjørne gjennom tre matriser:</p>
+  </div>
+  <div data-l="en">
+    <h3>From its own space to the screen</h3>
+    <p>A model is described in its <em>own</em> coordinate system – the cube runs from −0.5 to 0.5 around its own centre. To reach the screen, every corner passes through three matrices:</p>
+  </div>
+  <div class="pipe" data-l="no">
+    <span><b>Lokalt rom</b>Kubens egne koordinater</span>
+    <span class="prog"><b>Model (M)</b>Hvor står den, hvordan er den vridd og skalert?</span>
+    <span><b>Verden</b>Felles rom for alt i scenen</span>
+    <span class="prog"><b>View (V)</b>Flytt verden så kameraet står i origo</span>
+    <span class="prog"><b>Projection (P)</b>Perspektiv: det fjerne blir mindre</span>
+    <span><b>NDC</b>−1 til 1, som i modul 3</span>
+  </div>
+  <div class="pipe" data-l="en">
+    <span><b>Local space</b>The cube's own coordinates</span>
+    <span class="prog"><b>Model (M)</b>Where is it, how is it turned and scaled?</span>
+    <span><b>World</b>Shared space for everything in the scene</span>
+    <span class="prog"><b>View (V)</b>Move the world so the camera sits at the origin</span>
+    <span class="prog"><b>Projection (P)</b>Perspective: far things get smaller</span>
+    <span><b>NDC</b>−1 to 1, as in module 3</span>
+  </div>
+  <div data-l="no">
+    <h3>Rekkefølgen er alt</h3>
+    <p>Matriser virker fra <em>høyre mot venstre</em>. I <code>P · V · M · v</code> skjer M først, så V, så P. Det samme gjelder inni modellmatrisen: «flytt · roter» betyr at figuren først roteres rundt sitt eget sentrum og deretter flyttes. «Roter · flytt» betyr at den først flyttes og så roteres rundt <em>origo</em> – den går i bue. Prøv begge i lekeplassen under.</p>
+    <h3>glm</h3>
+    <p><code>glm</code> er biblioteket som gjør matematikken. Typene heter det samme som i GLSL (<code>vec3</code>, <code>mat4</code>), så det du lager i C++, kan sendes rett til shaderen. Vinkler er i <em>radianer</em>: 90° er π/2. Den vanligste feilen er å gi grader der det skal være radianer.</p>
+    <h3>Projeksjon</h3>
+    <p>En perspektivprojeksjon har fire tall: synsvinkel (field of view), forholdet bredde/høyde (aspect), og nær- og fjerngrensen. Det er aspect-tallet som fikser det strukne kvadratet du så i modul 3. En ortografisk projeksjon har ikke perspektiv – ting blir like store uansett avstand.</p>
+    <h3>Uniforms</h3>
+    <p>En <em>uniform</em> er en verdi i shaderen som er lik for alle hjørner i ett tegnekall – for eksempel MVP-matrisen. Du finner den etter navn og laster opp verdien fra C++. Shaderen må være bundet når du gjør det. Og igjen: staver du navnet feil, skjer ingenting, uten feilmelding. #15 pakker dette inn i <code>Shader</code>, slik modul 4 pakket inn bufferne.</p>
+    <h3>Dybdebufferen</h3>
+    <p>I 3D overlapper flater hverandre. Dybdebufferen lagrer for hver piksel hvor nær det nærmeste som er tegnet der, er. Med dybdetesten på vinner det nærmeste, uansett rekkefølge. Bufferen må tømmes hver frame, ellers står gamle verdier igjen og bildet smøres ut. Uten dybdetest bestemmer tegnerekkefølgen, og kuben ser vrengt ut.</p>
+    <h3>Å samle opp rotasjon (#16)</h3>
+    <p>I #16 holder du en matrise som «husker» hvordan kuben er vridd, og ganger på en liten rotasjon hver frame mens en tast holdes inne. <em>Hvilken side</em> du ganger på, bestemmer aksen: på venstre side roterer kuben om verdens akser, på høyre side om sine egne. Det er samme regel som over – rekkefølgen er alt. Gjør modus 1 og 2; modus 3 (gimbal lock) er en øvelse du kan hoppe over hvis tiden er knapp.</p>
+  </div>
+  <div data-l="en">
+    <h3>Order is everything</h3>
+    <p>Matrices act from <em>right to left</em>. In <code>P · V · M · v</code>, M happens first, then V, then P. The same goes inside the model matrix: «translate · rotate» means the shape is first rotated about its own centre and then moved. «Rotate · translate» means it is first moved and then rotated about the <em>origin</em> – it swings in an arc. Try both in the playground below.</p>
+    <h3>glm</h3>
+    <p><code>glm</code> is the library that does the maths. Its types have the same names as in GLSL (<code>vec3</code>, <code>mat4</code>), so what you build in C++ can be sent straight to the shader. Angles are in <em>radians</em>: 90° is π/2. The most common mistake is passing degrees where radians are expected.</p>
+    <h3>Projection</h3>
+    <p>A perspective projection has four numbers: the field of view, the width/height ratio (aspect), and the near and far limits. The aspect number is what fixes the stretched square you saw in module 3. An orthographic projection has no perspective – things are the same size at any distance.</p>
+    <h3>Uniforms</h3>
+    <p>A <em>uniform</em> is a value in the shader that is the same for every corner in one draw call – for example the MVP matrix. You find it by name and upload the value from C++. The shader must be bound when you do. And again: misspell the name and nothing happens, with no error. #15 wraps this in <code>Shader</code>, the way module 4 wrapped the buffers.</p>
+    <h3>The depth buffer</h3>
+    <p>In 3D, surfaces overlap. The depth buffer stores, for each pixel, how near the nearest thing drawn there is. With the depth test on, the nearest wins regardless of order. The buffer must be cleared every frame, or old values remain and the picture smears. Without the depth test, draw order decides, and the cube looks inside out.</p>
+    <h3>Accumulating rotation (#16)</h3>
+    <p>In #16 you keep a matrix that «remembers» how the cube is turned, and multiply on a small rotation every frame while a key is held. <em>Which side</em> you multiply on decides the axis: on the left, the cube turns about the world's axes; on the right, about its own. Same rule as above – order is everything. Do modes 1 and 2; mode 3 (gimbal lock) is an exercise you can skip if time is short.</p>
+  </div>
+
+  <div class="play" id="xform">
+    <h3 style="margin-top:0" data-l="no">Lekeplassen: rekkefølgen på transformasjoner</h3>
+    <h3 style="margin-top:0" data-l="en">The playground: the order of transformations</h3>
+    <p class="small muted" data-l="no">Det stiplede er figuren i sitt eget rom. Den fylte er resultatet. Bytt rekkefølge og se hva som skjer med samme vinkel og samme flytting.</p>
+    <p class="small muted" data-l="en">The dashed shape is the figure in its own space. The filled one is the result. Switch the order and watch what happens with the same angle and the same move.</p>
+    <div class="stage">
+      <canvas id="xcanvas" aria-label="Transformation order playground"></canvas>
+      <div class="datatable">
+        <p style="margin:0 0 .4rem"><b data-l="no">Det som skjer først</b><b data-l="en">What happens first</b></p>
+        <p id="xfirst" style="margin:0 0 .8rem"></p>
+        <p style="margin:0 0 .4rem"><b data-l="no">Hjørnet merket ●</b><b data-l="en">The corner marked ●</b></p>
+        <p id="xpoint" style="margin:0"></p>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Order">
+        <button type="button" data-xorder="TR" aria-pressed="true"><span data-l="no">Flytt · Roter</span><span data-l="en">Translate · Rotate</span></button>
+        <button type="button" data-xorder="RT" aria-pressed="false"><span data-l="no">Roter · Flytt</span><span data-l="en">Rotate · Translate</span></button>
+      </div>
+      <label><span data-l="no">Vinkel</span><span data-l="en">Angle</span> <input type="range" id="xang" min="-180" max="180" value="45"> <span class="mono" id="xangv">45°</span></label>
+      <label><span data-l="no">Flytt x</span><span data-l="en">Move x</span> <input type="range" id="xtx" min="0" max="25" value="15"> <span class="mono" id="xtxv">1.5</span></label>
+    </div>
+  </div>
+
+  <h2 data-l="no">Gjør det</h2>
+  <h2 data-l="en">Do it</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>#14 (<code>labs/lab05</code>):</strong> den roterende kuben. Gjør de tre forsøkene issuet ber om: slå av dybdetesten, bytt rekkefølgen på P·V·M, og prøv ortografisk. Det er der forståelsen kommer.</li>
+    <li><strong>#15:</strong> pakk opplastingen inn i <code>Shader</code>. Den siste funksjonen, for matriser, skriver du selv etter mønsteret til de to første.</li>
+    <li><strong>#16 (<code>labs/lab06</code>):</strong> rotasjon med tastene. Ikke hopp over denne, selv om den er merket vanskelig: øvelsen i #20 bygger på <code>lab06</code>. Modus 1 og 2 er nok; modus 3 er valgfri.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>#14 (<code>labs/lab05</code>):</strong> the rotating cube. Do the three experiments the issue asks for: turn off the depth test, change the order of P·V·M, and try orthographic. That is where the understanding comes from.</li>
+    <li><strong>#15:</strong> wrap the upload in <code>Shader</code>. The last function, for matrices, you write yourself following the pattern of the first two.</li>
+    <li><strong>#16 (<code>labs/lab06</code>):</strong> rotation from the keys. Do not skip this one even though it is marked hard: the exercise in #20 builds on <code>lab06</code>. Modes 1 and 2 are enough; mode 3 is optional.</li>
+  </ol>
+
+  <h2 data-l="no">Øvelser – på papir</h2>
+  <h2 data-l="en">Exercises – on paper</h2>
+  <div data-l="no">
+    <details class="q"><summary>Punktet (1, 0) roteres 90° mot klokka og flyttes så +2 i x. Hvor havner det? Og hvis du flytter først og roterer etterpå?</summary><div class="a"><p>Roter først: (0, 1), så flytt: (2, 1). Flytt først: (3, 0), så roter rundt origo: (0, 3). Samme to operasjoner, to helt ulike svar.</p></div></details>
+    <details class="q"><summary>Hva er 45° og 180° i radianer?</summary><div class="a"><p>45° = π/4 ≈ 0.785. 180° = π ≈ 3.14. Gir du 45 rett inn som synsvinkel, tolkes det som 45 radianer – over sju hele omdreininger – og bildet blir meningsløst.</p></div></details>
+    <details class="q"><summary>Vinduet er 1600 × 900. Hva er aspect, og hva skjer om du bruker 1?</summary><div class="a"><p>1600 / 900 ≈ 1.78. Med 1 blir alt strukket i bredden, akkurat som kvadratet i modul 3.</p></div></details>
+    <details class="q"><summary>Du har dybdetesten på, men glemmer å tømme dybdebufferen hver frame. Hva ser du?</summary><div class="a"><p>Første frame ser riktig ut. Deretter står de gamle dybdeverdiene igjen, så nye piksler ofte taper testen. Kuben «smøres» eller fryser fast i gamle posisjoner.</p></div></details>
+    <details class="q"><summary>Uniformen heter <code>u_MVP</code> i shaderen, men du laster opp til <code>u_Mvp</code>. Hva skjer?</summary><div class="a"><p>Oppslaget finner ingen uniform, og opplastingen ignoreres stille. Matrisen i shaderen forblir null eller udefinert, og kuben forsvinner eller blir en prikk.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>The point (1, 0) is rotated 90° anticlockwise and then moved +2 in x. Where does it end up? And if you move first and rotate afterwards?</summary><div class="a"><p>Rotate first: (0, 1), then move: (2, 1). Move first: (3, 0), then rotate about the origin: (0, 3). The same two operations, two completely different answers.</p></div></details>
+    <details class="q"><summary>What are 45° and 180° in radians?</summary><div class="a"><p>45° = π/4 ≈ 0.785. 180° = π ≈ 3.14. Pass 45 straight in as the field of view and it is read as 45 radians – more than seven full turns – and the picture is meaningless.</p></div></details>
+    <details class="q"><summary>The window is 1600 × 900. What is the aspect, and what happens if you use 1?</summary><div class="a"><p>1600 / 900 ≈ 1.78. With 1, everything is stretched sideways, exactly like the square in module 3.</p></div></details>
+    <details class="q"><summary>The depth test is on, but you forget to clear the depth buffer each frame. What do you see?</summary><div class="a"><p>The first frame looks right. After that the old depth values remain, so new pixels often fail the test. The cube «smears» or freezes in old positions.</p></div></details>
+    <details class="q"><summary>The uniform is called <code>u_MVP</code> in the shader, but you upload to <code>u_Mvp</code>. What happens?</summary><div class="a"><p>The lookup finds no uniform, and the upload is silently ignored. The matrix in the shader stays zero or undefined, and the cube vanishes or becomes a dot.</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hva gjør hver av M, V og P, i én setning hver?</summary><div class="a"><p>M plasserer modellen i verden. V flytter verden så kameraet står i origo og ser langs en fast akse. P gir perspektiv og presser alt inn i NDC.</p></div></details>
+    <details class="q"><summary>Hvorfor er det <code>P · V · M</code> og ikke <code>M · V · P</code>?</summary><div class="a"><p>Matrisene virker fra høyre mot venstre på punktet. M må skje først, P sist.</p></div></details>
+    <details class="q"><summary>Hva er en uniform, og hvorfor må shaderen være bundet når du laster den opp?</summary><div class="a"><p>En verdi som er lik for alle hjørner i ett tegnekall. Opplastingen går til shaderprogrammet som er bundet akkurat nå.</p></div></details>
+    <details class="q"><summary>Hva er forskjellen på R · M og M · R når du samler opp rotasjon?</summary><div class="a"><p>R · M roterer om verdens faste akser. M · R roterer om kubens egne akser, som følger med kuben.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>What do M, V and P each do, in one sentence each?</summary><div class="a"><p>M places the model in the world. V moves the world so the camera sits at the origin looking along a fixed axis. P adds perspective and squeezes everything into NDC.</p></div></details>
+    <details class="q"><summary>Why is it <code>P · V · M</code> and not <code>M · V · P</code>?</summary><div class="a"><p>The matrices act on the point from right to left. M must happen first, P last.</p></div></details>
+    <details class="q"><summary>What is a uniform, and why must the shader be bound when you upload it?</summary><div class="a"><p>A value that is the same for every corner in one draw call. The upload goes to whichever shader program is bound right now.</p></div></details>
+    <details class="q"><summary>What is the difference between R · M and M · R when accumulating rotation?</summary><div class="a"><p>R · M rotates about the world's fixed axes. M · R rotates about the cube's own axes, which travel with the cube.</p></div></details>
+  </div>
+</section>
+
+<!-- =============================== M7 =============================== -->
+<section class="mod" id="m7">
+  <div class="modhead">
+    <h1 data-l="no">7 · Geometri, kamera og tid</h1>
+    <h1 data-l="en">7 · Geometry, camera and time</h1>
+    <div class="issues"><span class="tag graded">#17 GeometricTools</span><span class="tag graded">#18 Camera</span><span class="tag graded">#20 Timestep</span><span class="tag graded">#21 CameraController</span><span class="tag">#26 Rebindable keys</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> motoren kan lage kuber og rutenett i kode, har et ekte kamera, måler tiden mellom frames, og har en kamerakontroller som går i bane rundt origo med tastene du velger. Dette er alle brikkene spillet trenger.</p>
+    <p data-l="en"><b>When you are done:</b> the engine can generate cubes and grids in code, has a real camera, measures the time between frames, and has a camera controller that orbits the origin on keys you choose. These are all the pieces the game needs.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Geometri i kode (#17)</h3>
+    <p>I stedet for å skrive tallene for hver figur for hånd, lager <code>GeometricTools</code> dem. To C++-verktøy er nye her. En <em>template</em> kan ta tall som parametere, slik at størrelsen på rutenettet er kjent når programmet kompileres. <code>constexpr</code> betyr at verdien kan regnes ut allerede ved kompilering. Resultatet ligger i et <code>std::array</code>, som har fast størrelse.</p>
+    <p>Et rutenett er hjørner pluss en indeksliste: hver rute er to trekanter over sine fire hjørner. Issuet gir deg formlene. Tre ting å passe på:</p>
+    <ul>
+      <li><b>Heltallsdivisjon.</b> I C++ er <code>3 / 4</code> lik 0 når begge er heltall. Én av dem må være flyttall, ellers havner alle hjørnene på samme linje.</li>
+      <li><b>Samme omløpsretning.</b> Alle trekantene skal gå samme vei rundt (mot klokka). Ellers forsvinner halvparten senere, når baksider skjules.</li>
+      <li><b>Se på resultatet som trådmodell.</b> Issuet viser hvordan du tegner bare kantene. Da ser du straks om en trekant mangler.</li>
+    </ul>
+    <h3>Kameraet (#18)</h3>
+    <p>I #14–#17 regnet du view- og projeksjonsmatrisen selv i hver lab. Nå får de et hjem: en abstrakt <code>Camera</code> som eier matrisene, og to underklasser for perspektiv og ortografisk. <em>Abstrakt</em> betyr at det ikke går an å lage et «bare kamera» – bare en av underklassene. Kameraet regner ut <code>P · V</code> på forhånd, så labben bare trenger én matrise. Kameraet i motoren ser alltid mot origo.</p>
+    <h3>Tid (#20)</h3>
+    <p>Dette er ifølge issuet den vanligste feilen i hele faget. Flytter du noe et fast stykke <em>per frame</em>, går det dobbelt så fort på en maskin med dobbelt så mange frames. Løsningen er å måle hvor lang tid som har gått siden forrige frame – <em>delta-tid</em>, <code>dt</code> – og gange alle hastigheter med den. Hastigheten blir da «per sekund», og det er likt overalt. Se forskjellen i kappløpet under.</p>
+    <h3>Kamerakontrolleren (#21, #26)</h3>
+    <p>Kontrolleren leser tastene og flytter kameraet. Siden kameraet ser mot origo, går det i <em>bane</em>: øyet ligger på en sirkel med en viss radius, og tastene endrer vinkelen (rundt) og radiusen (zoom). Begge endres med fart ganger <code>dt</code>. Radiusen holdes innenfor et område, så du ikke zoomer gjennom brettet eller forsvinner.</p>
+    <p>I #26 blir tastene parametere med <em>standardverdier</em>. Gamle labber som ikke oppgir taster, virker som før – men spillet kan velge WASD, slik at piltastene blir ledige til markøren.</p>
+  </div>
+  <div data-l="en">
+    <h3>Geometry in code (#17)</h3>
+    <p>Instead of typing the numbers for each shape by hand, <code>GeometricTools</code> generates them. Two C++ tools are new here. A <em>template</em> can take numbers as parameters, so the size of the grid is known when the program is compiled. <code>constexpr</code> means the value can be computed already at compile time. The result sits in a <code>std::array</code>, which has a fixed size.</p>
+    <p>A grid is corners plus an index list: each cell is two triangles over its four corners. The issue gives you the formulas. Three things to watch:</p>
+    <ul>
+      <li><b>Integer division.</b> In C++, <code>3 / 4</code> is 0 when both are integers. One of them must be floating point, or all the corners land on the same line.</li>
+      <li><b>Same winding.</b> All triangles must go the same way round (anticlockwise). Otherwise half of them vanish later, when back faces are hidden.</li>
+      <li><b>Look at the result as a wireframe.</b> The issue shows how to draw only the edges. Then you see at once if a triangle is missing.</li>
+    </ul>
+    <h3>The camera (#18)</h3>
+    <p>In #14–#17 you computed the view and projection matrices yourself in every lab. Now they get a home: an abstract <code>Camera</code> that owns the matrices, and two subclasses for perspective and orthographic. <em>Abstract</em> means you cannot create a «plain camera» – only one of the subclasses. The camera computes <code>P · V</code> in advance, so the lab needs just one matrix. The engine's camera always looks at the origin.</p>
+    <h3>Time (#20)</h3>
+    <p>According to the issue, this is the most common mistake in the whole course. Move something a fixed amount <em>per frame</em> and it goes twice as fast on a machine with twice as many frames. The fix is to measure how long has passed since the previous frame – <em>delta time</em>, <code>dt</code> – and multiply every speed by it. The speed then becomes «per second», which is the same everywhere. See the difference in the race below.</p>
+    <h3>The camera controller (#21, #26)</h3>
+    <p>The controller reads the keys and moves the camera. Since the camera looks at the origin, it <em>orbits</em>: the eye sits on a circle with some radius, and the keys change the angle (around) and the radius (zoom). Both change by speed times <code>dt</code>. The radius is kept within a range, so you cannot zoom through the board or vanish.</p>
+    <p>In #26 the keys become parameters with <em>default values</em>. Old labs that do not specify keys work as before – but the game can choose WASD, leaving the arrow keys free for the selector.</p>
+  </div>
+
+  <div class="play" id="dtrace">
+    <h3 style="margin-top:0" data-l="no">Kappløpet: per frame eller per sekund?</h3>
+    <h3 style="margin-top:0" data-l="en">The race: per frame or per second?</h3>
+    <p class="small muted" data-l="no">To maskiner kjører samme spill. Den ene klarer 30 frames i sekundet, den andre 120. Hver prikk er én frame.</p>
+    <p class="small muted" data-l="en">Two machines run the same game. One manages 30 frames a second, the other 120. Each dot is one frame.</p>
+    <div class="lanes">
+      <div class="lane"><span class="lanelbl">30 fps</span><div class="track" id="lane30"><span class="runner"></span></div></div>
+      <div class="lane"><span class="lanelbl">120 fps</span><div class="track" id="lane120"><span class="runner"></span></div></div>
+    </div>
+    <p class="loopmsg" id="racemsg"></p>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Mode">
+        <button type="button" data-dtmode="frame" aria-pressed="true"><span data-l="no">Fast steg per frame</span><span data-l="en">Fixed step per frame</span></button>
+        <button type="button" data-dtmode="dt" aria-pressed="false"><span data-l="no">Fart × dt</span><span data-l="en">Speed × dt</span></button>
+      </div>
+      <button type="button" class="btn primary" id="racego"><span data-l="no">Start</span><span data-l="en">Start</span></button>
+    </div>
+  </div>
+
+  <h2 data-l="no">Gjør det</h2>
+  <h2 data-l="en">Do it</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>#17:</strong> primitivene er gitt; rutenettet skriver du selv. Tegn det som trådmodell under kuben og sjekk at det er et pent rutenett.</li>
+    <li><strong>#18:</strong> det ortografiske kameraet er gitt; det perspektiviske skriver du selv. Kuben skal se <em>helt lik</em> ut som i #17.</li>
+    <li><strong>#20:</strong> <code>Timestep</code> og målingen i loopen er gitt. Øvelsen er å gjøre rotasjonen i <code>lab06</code> fra #16 uavhengig av frame-rate.</li>
+    <li><strong>#21:</strong> kontrolleren går i bane med piltastene; zoom med radius innenfor et område er din øvelse.</li>
+    <li><strong>#26:</strong> gjør tastene til parametere med piltastene som standard. Teller ikke, men spillet trenger det i #27.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>#17:</strong> the primitives are given; you write the grid yourself. Draw it as a wireframe under the cube and check that it is a clean grid.</li>
+    <li><strong>#18:</strong> the orthographic camera is given; you write the perspective one yourself. The cube must look <em>exactly</em> as in #17.</li>
+    <li><strong>#20:</strong> <code>Timestep</code> and the measurement in the loop are given. The exercise is to make the rotation in <code>lab06</code> from #16 independent of frame rate.</li>
+    <li><strong>#21:</strong> the controller orbits on the arrow keys; zoom with a clamped radius is your exercise.</li>
+    <li><strong>#26:</strong> make the keys parameters with the arrow keys as default. Not graded, but the game needs it in #27.</li>
+  </ol>
+
+  <h2 data-l="no">Øvelser – i en annen verden enn oppgaven</h2>
+  <h2 data-l="en">Exercises – in a different world from the assignment</h2>
+  <div data-l="no">
+    <details class="q"><summary>Kinosalen: 4 rader med 10 seter. Setene nummereres rad for rad fra 0. Hvilket nummer har rad 2, sete 3? Og hvilken rad og hvilket sete er nummer 37?</summary><div class="a"><p>2 · 10 + 3 = 23. Nummer 37: rad 37 / 10 = 3 (heltallsdivisjon), sete 37 % 10 = 7. Det er samme tankegang som indeksen til et hjørne i et rutenett.</p></div></details>
+    <details class="q"><summary>Et rutenett har 3 rader og 4 kolonner med ruter. Hvor mange hjørner har det, og hvor mange indekser trengs?</summary><div class="a"><p>Hjørner: (3 + 1) · (4 + 1) = 20. Indekser: 3 · 4 ruter · 6 = 72.</p></div></details>
+    <details class="q"><summary>Hva blir <code>1 / 4</code> og <code>1 / 4.0f</code> i C++?</summary><div class="a"><p>0 og 0.25. Det første er heltallsdivisjon fordi begge tallene er heltall.</p></div></details>
+    <details class="q"><summary>En ballong skal stige 2 meter per sekund. Hvor mye stiger den per frame ved 50 fps og ved 100 fps – og hvor høyt er den etter ett sekund i hvert tilfelle?</summary><div class="a"><p>0.04 m per frame ved 50 fps, 0.02 m ved 100 fps. Etter ett sekund: 2 meter i begge tilfeller. Det er hele poenget med dt.</p></div></details>
+    <details class="q"><summary>Et kamera går i bane rundt et punkt. Hva er det eneste som endres når du går «rundt», og hva endres når du zoomer?</summary><div class="a"><p>Rundt: bare vinkelen – avstanden til punktet er den samme. Zoom: bare avstanden (radiusen).</p></div></details>
+    <details class="q"><summary>Zoomen skal holdes mellom 2 og 15. Radiusen er 14.9, og zoom ut vil legge til 0.5. Hva blir den?</summary><div class="a"><p>15. Uten grensen ville den blitt 15.4.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>The cinema: 4 rows of 10 seats. Seats are numbered row by row from 0. What number is row 2, seat 3? And which row and seat is number 37?</summary><div class="a"><p>2 · 10 + 3 = 23. Number 37: row 37 / 10 = 3 (integer division), seat 37 % 10 = 7. It is the same thinking as the index of a corner in a grid.</p></div></details>
+    <details class="q"><summary>A grid has 3 rows and 4 columns of cells. How many corners does it have, and how many indices are needed?</summary><div class="a"><p>Corners: (3 + 1) · (4 + 1) = 20. Indices: 3 · 4 cells · 6 = 72.</p></div></details>
+    <details class="q"><summary>What are <code>1 / 4</code> and <code>1 / 4.0f</code> in C++?</summary><div class="a"><p>0 and 0.25. The first is integer division because both numbers are integers.</p></div></details>
+    <details class="q"><summary>A balloon should rise 2 metres per second. How much does it rise per frame at 50 fps and at 100 fps – and how high is it after one second in each case?</summary><div class="a"><p>0.04 m per frame at 50 fps, 0.02 m at 100 fps. After one second: 2 metres in both cases. That is the whole point of dt.</p></div></details>
+    <details class="q"><summary>A camera orbits a point. What is the only thing that changes when you go «around», and what changes when you zoom?</summary><div class="a"><p>Around: only the angle – the distance to the point stays the same. Zoom: only the distance (the radius).</p></div></details>
+    <details class="q"><summary>Zoom must stay between 2 and 15. The radius is 14.9, and zooming out would add 0.5. What does it become?</summary><div class="a"><p>15. Without the limit it would have become 15.4.</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hvorfor er <code>GeometricTools</code> «header-only», og hva betyr det for CMake?</summary><div class="a"><p>Alt er definert i headeren (templates og <code>constexpr</code> må være synlige der de brukes). Det er ingen <code>.cpp</code>-fil å legge til i biblioteket.</p></div></details>
+    <details class="q"><summary>Hva betyr det at <code>Camera</code> er abstrakt?</summary><div class="a"><p>Du kan ikke lage et objekt av den direkte – bare av underklassene, som bestemmer projeksjonen.</p></div></details>
+    <details class="q"><summary>Hva er <code>dt</code>, og hvilken regel gjelder for alt som beveger seg?</summary><div class="a"><p>Sekundene siden forrige frame. Alt som beveger seg, ganger farten sin (per sekund) med <code>dt</code>.</p></div></details>
+    <details class="q"><summary>Hvorfor ble tastene i kamerakontrolleren parametere med standardverdier, i stedet for bare nye verdier?</summary><div class="a"><p>Så eksisterende kode som ikke oppgir taster, virker uendret, mens ny kode kan velge andre taster.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>Why is <code>GeometricTools</code> «header-only», and what does that mean for CMake?</summary><div class="a"><p>Everything is defined in the header (templates and <code>constexpr</code> must be visible where they are used). There is no <code>.cpp</code> file to add to the library.</p></div></details>
+    <details class="q"><summary>What does it mean that <code>Camera</code> is abstract?</summary><div class="a"><p>You cannot create an object of it directly – only of the subclasses, which decide the projection.</p></div></details>
+    <details class="q"><summary>What is <code>dt</code>, and what rule applies to everything that moves?</summary><div class="a"><p>The seconds since the previous frame. Everything that moves multiplies its speed (per second) by <code>dt</code>.</p></div></details>
+    <details class="q"><summary>Why did the camera controller's keys become parameters with default values, rather than just new values?</summary><div class="a"><p>So existing code that does not specify keys works unchanged, while new code can choose other keys.</p></div></details>
+  </div>
+</section>
+
+<!-- =============================== M8 =============================== -->
+<section class="mod" id="m8">
+  <div class="modhead">
+    <h1 data-l="no">8 · Spillet</h1>
+    <h1 data-l="en">8 · The game</h1>
+    <div class="issues"><span class="tag graded">#24 Board</span><span class="tag graded">#25 Selector</span><span class="tag graded">#27 WASD camera</span><span class="tag">#28 Depth toggle</span><span class="tag graded">#29 Units</span><span class="tag graded">#30 Select &amp; move</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> et 8 × 8 brett i perspektiv, en markør du flytter med piltastene, et kamera du styrer med WASD, røde og blå kuber på brettet, og en tast som plukker opp og setter ned en brikke etter reglene.</p>
+    <p data-l="en"><b>When you are done:</b> an 8 × 8 board in perspective, a selector you move with the arrow keys, a camera you steer with WASD, red and blue cubes on the board, and a key that picks up and places a piece according to the rules.</p>
+  </div>
+  <div class="warn">
+    <p data-l="no">Her slutter de guidede gjennomgangene. Issuene sier bare <em>hva</em> som skal til, ikke hvordan. Det er meningen: nå setter du sammen det du har lært. Denne modulen gir deg prinsippene og øvelser i andre sammenhenger – aldri løsningen. Står du fast på din egen kode, er dette tiden for labtimer og spørsmål til lærerassistentene i issuet.</p>
+    <p data-l="en">This is where the guided walkthroughs end. The issues say only <em>what</em> is needed, not how. That is deliberate: now you put together what you have learned. This module gives you the principles and exercises in other settings – never the solution. If you are stuck on your own code, this is the time for lab sessions and questions to the teaching assistants in the issue.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Bare motoren</h3>
+    <p>Ingen rå <code>gl</code>-kall i <code>assignment/</code>. Trenger spillet noe motoren ikke kan, legges det til i motoren – akkurat som dybdetesten i #28. Det er derfor #28 kommer før enhetene i #29.</p>
+    <h3>Tilstand og tegning er to forskjellige ting</h3>
+    <p>Alt spillet «vet», er noen få data: hvilken rute markøren står på, hvor brikkene er og hvilket lag de tilhører, og om du holder en brikke. <code>OnUpdate</code> endrer disse dataene. <code>OnRender</code> leser dem og tegner. Utseendet bestemmes av dataene – aldri omvendt. Holder du dette skillet, blir både reglene og feilsøkingen enkle.</p>
+    <h3>Fra rute til posisjon</h3>
+    <p>Ruter har heltallsnummer (rad, kolonne). Skjermen trenger flyttall-posisjoner i verden. Overgangen er ren regning: hvor brettet begynner, hvor stor en rute er, og at midten av en rute ligger en halv rute inn. Øv på den i én dimensjon under, og overfør den selv til brettet.</p>
+    <h3>Ett trykk, én handling</h3>
+    <p><code>Input</code> svarer på om en tast er <em>nede nå</em>. Ved 60 fps er et vanlig trykk nede i mange frames. Skal markøren flytte seg én rute per trykk, må du reagere på <em>overgangen</em> fra oppe til nede – en <em>kant</em>. Det krever at du husker hvordan tasten var forrige frame. Prøv forskjellen i kantdetektoren under.</p>
+    <h3>Stopp eller gå rundt</h3>
+    <p>Ved kanten av brettet kan markøren enten stoppe (<em>clamp</em>) eller dukke opp på motsatt side (<em>wrap</em>). Begge er lov – velg én, bruk den på begge akser, og skriv hvilken du valgte. Wrap er klokke-regning. Pass på: i C++ gir <code>%</code> et negativt svar når tallet til venstre er negativt.</p>
+    <h3>Én modell, mange plasser</h3>
+    <p>Alle brikkene er samme kube. Du lager <em>én</em> kube-VAO og tegner den én gang per brikke, med ny modellmatrise og ny farge-uniform hver gang. Issuet sier rett ut at mange tegnekall er greit her.</p>
+    <h3>Tilstandsmaskin for plukk opp og sett ned</h3>
+    <p>«Holder jeg en brikke eller ikke?» er en liten <em>tilstandsmaskin</em> med to tilstander. Samme tast betyr forskjellige ting i hver tilstand, og hver handling har en regel som kan si nei. Tegn den på papir før du skriver kode: to bokser, piler for hva som skjer ved tastetrykk, og hva som stopper hver pil.</p>
+  </div>
+  <div data-l="en">
+    <h3>The engine only</h3>
+    <p>No raw <code>gl</code> calls in <code>assignment/</code>. If the game needs something the engine cannot do, it goes into the engine – exactly like the depth test in #28. That is why #28 comes before the units in #29.</p>
+    <h3>State and drawing are two different things</h3>
+    <p>Everything the game «knows» is a little data: which tile the selector is on, where the pieces are and which team they belong to, and whether you are holding a piece. <code>OnUpdate</code> changes this data. <code>OnRender</code> reads it and draws. The look is decided by the data – never the other way round. Keep this separation and both the rules and the debugging become simple.</p>
+    <h3>From tile to position</h3>
+    <p>Tiles have whole-number indices (row, column). The screen needs floating-point positions in the world. The step between them is plain arithmetic: where the board starts, how big a tile is, and that the middle of a tile is half a tile in. Practise it in one dimension below, then carry it over to the board yourself.</p>
+    <h3>One press, one action</h3>
+    <p><code>Input</code> tells you whether a key is <em>down now</em>. At 60 fps an ordinary press is down for many frames. For the selector to move one tile per press, you must react to the <em>transition</em> from up to down – an <em>edge</em>. That requires remembering what the key was the previous frame. Try the difference in the edge detector below.</p>
+    <h3>Stop or wrap around</h3>
+    <p>At the edge of the board the selector can either stop (<em>clamp</em>) or reappear on the opposite side (<em>wrap</em>). Both are allowed – pick one, use it on both axes, and note which you chose. Wrapping is clock arithmetic. Watch out: in C++, <code>%</code> gives a negative answer when the number on the left is negative.</p>
+    <h3>One model, many places</h3>
+    <p>All the pieces are the same cube. You make <em>one</em> cube VAO and draw it once per piece, with a new model matrix and a new colour uniform each time. The issue says outright that many draw calls are fine here.</p>
+    <h3>A state machine for pick up and place</h3>
+    <p>«Am I holding a piece or not?» is a small <em>state machine</em> with two states. The same key means different things in each state, and each action has a rule that can say no. Draw it on paper before writing code: two boxes, arrows for what happens on a key press, and what blocks each arrow.</p>
+  </div>
+
+  <div class="play" id="edgedemo">
+    <h3 style="margin-top:0" data-l="no">Kantdetektoren: holdt nede eller trykket?</h3>
+    <h3 style="margin-top:0" data-l="en">The edge detector: held down or pressed?</h3>
+    <p class="small muted" data-l="no">Hold knappen inne en stund, og trykk den så raskt noen ganger. Spillet kjører i 60 frames per sekund.</p>
+    <p class="small muted" data-l="en">Hold the button down for a while, then tap it quickly a few times. The game runs at 60 frames per second.</p>
+    <div class="edgegrid">
+      <button type="button" class="bigkey" id="edgekey" aria-label="Key">→</button>
+      <div class="edgecounts">
+        <div><span class="muted small" data-l="no">«Er tasten nede?» – flytt én rute hver frame</span><span class="muted small" data-l="en">«Is the key down?» – move one tile every frame</span><b id="cnt-level">0</b></div>
+        <div><span class="muted small" data-l="no">«Ble den nettopp trykket?» – flytt én rute per kant</span><span class="muted small" data-l="en">«Was it just pressed?» – move one tile per edge</span><b id="cnt-edge">0</b></div>
+      </div>
+    </div>
+    <div class="framestrip" id="framestrip" aria-hidden="true"></div>
+    <p class="small muted" data-l="no">Hver stripe er én frame: mørk når tasten er nede, med markering der en kant oppdages.</p>
+    <p class="small muted" data-l="en">Each stripe is one frame: dark when the key is down, marked where an edge is detected.</p>
+    <div class="controls"><button type="button" class="btn" id="edgereset"><span data-l="no">Nullstill</span><span data-l="en">Reset</span></button></div>
+  </div>
+
+  <h2 data-l="no">Gjør det</h2>
+  <h2 data-l="en">Do it</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>Tegn før du koder.</strong> For hvert issue: les kravene, skriv på papir hvilke data spillet trenger, hva <code>OnUpdate</code> skal gjøre med dem, og hva <code>OnRender</code> skal tegne.</li>
+    <li><strong>#24 Brettet:</strong> 8 × 8 fra <code>GeometricTools</code>, sjakkmønster, perspektivkamera som viser hele brettet.</li>
+    <li><strong>#25 Markøren:</strong> rad og kolonne som tilstand, én rute per trykk, clamp eller wrap.</li>
+    <li><strong>#27 Kameraet:</strong> kamerakontrolleren med WASD, drevet med <code>dt</code>. Piltastene må fortsatt flytte markøren.</li>
+    <li><strong>#28 Dybdetesten</strong> inn i <code>RenderCommands</code> (liten, guidet).</li>
+    <li><strong>#29 Brikkene:</strong> brikker som data, startoppstilling, én delt kube, dybdetest på.</li>
+    <li><strong>#30 Flytting:</strong> plukk opp og sett ned med én tast, reglene håndhevet, holdt brikke synlig annerledes.</li>
+    <li><strong>Etter hvert issue:</strong> gå gjennom TODO-lista i issuet punkt for punkt, og sjekk at alt fra tidligere issues fortsatt virker.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Draw before you code.</strong> For each issue: read the requirements, write on paper what data the game needs, what <code>OnUpdate</code> should do with it, and what <code>OnRender</code> should draw.</li>
+    <li><strong>#24 The board:</strong> 8 × 8 from <code>GeometricTools</code>, chessboard pattern, a perspective camera showing the whole board.</li>
+    <li><strong>#25 The selector:</strong> row and column as state, one tile per press, clamp or wrap.</li>
+    <li><strong>#27 The camera:</strong> the camera controller on WASD, driven by <code>dt</code>. The arrow keys must still move the selector.</li>
+    <li><strong>#28 The depth test</strong> into <code>RenderCommands</code> (small, guided).</li>
+    <li><strong>#29 The pieces:</strong> pieces as data, a starting layout, one shared cube, depth test on.</li>
+    <li><strong>#30 Moving:</strong> pick up and place with one key, rules enforced, held piece visibly different.</li>
+    <li><strong>After each issue:</strong> go through the issue's TODO list point by point, and check that everything from earlier issues still works.</li>
+  </ol>
+
+  <h2 data-l="no">Øvelser – i en annen verden enn oppgaven</h2>
+  <h2 data-l="en">Exercises – in a different world from the assignment</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hylla: En hylle går fra x = −1 til x = 1 og er delt i 4 like rom. Hvor er midten av hvert rom?</summary><div class="a"><p>Hvert rom er 0.5 bredt. Midtene: −0.75, −0.25, 0.25 og 0.75. Generelt: start + (nummer + 0.5) · bredde.</p></div></details>
+    <details class="q"><summary>Se på et sjakkbrett med (rad, kolonne) fra 0. Hva har alle rutene med samme farge til felles?</summary><div class="a"><p>Summen rad + kolonne er enten partall for alle, eller oddetall for alle.</p></div></details>
+    <details class="q"><summary>Klokka: Timene går 0–11. Hva er 10 + 3, og hva er 0 − 1, når klokka går rundt? Og hva gir <code>-1 % 12</code> i C++?</summary><div class="a"><p>(10 + 3) går til 1. 0 − 1 skal bli 11. Men <code>-1 % 12</code> er −1 i C++. Legg til 12 før du tar resten, så slipper du negative tall.</p></div></details>
+    <details class="q"><summary>Tastens tilstand over åtte frames er: oppe, oppe, nede, nede, nede, oppe, nede, oppe. Hvor mange frames er den nede, og hvor mange kanter er det?</summary><div class="a"><p>Nede i 4 frames. Kanter (oppe → nede): 2.</p></div></details>
+    <details class="q"><summary>Parkeringsroboten: En robot har en knapp. Har den tom gripeklo, løfter den bilen på plassen den står over. Holder den en bil, setter den den ned. Hvilke to situasjoner må den nekte, og hva bør den gjøre da?</summary><div class="a"><p>Nekte å løfte fra en tom plass, og nekte å sette ned på en opptatt plass. I begge tilfeller: ikke gjør noe, behold tilstanden som den er, og ikke krasj.</p></div></details>
+    <details class="q"><summary>Hvorfor er det lurt at brikkene er data (rute + lag) og ikke geometri?</summary><div class="a"><p>Da er reglene bare spørsmål om dataene («står det noe på denne ruta?»), og tegningen kan alltid lages på nytt fra dataene. Ingen ting må holdes i synk to steder.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>The shelf: A shelf runs from x = −1 to x = 1 and is split into 4 equal compartments. Where is the middle of each?</summary><div class="a"><p>Each compartment is 0.5 wide. The middles: −0.75, −0.25, 0.25 and 0.75. In general: start + (number + 0.5) · width.</p></div></details>
+    <details class="q"><summary>Look at a chessboard with (row, column) from 0. What do all squares of the same colour have in common?</summary><div class="a"><p>The sum row + column is either even for all of them, or odd for all of them.</p></div></details>
+    <details class="q"><summary>The clock: Hours run 0–11. What is 10 + 3, and what is 0 − 1, when the clock wraps around? And what does <code>-1 % 12</code> give in C++?</summary><div class="a"><p>(10 + 3) wraps to 1. 0 − 1 should become 11. But <code>-1 % 12</code> is −1 in C++. Add 12 before taking the remainder, and you avoid negative numbers.</p></div></details>
+    <details class="q"><summary>A key's state over eight frames is: up, up, down, down, down, up, down, up. How many frames is it down, and how many edges are there?</summary><div class="a"><p>Down for 4 frames. Edges (up → down): 2.</p></div></details>
+    <details class="q"><summary>The parking robot: A robot has one button. With an empty claw it lifts the car in the space below it. Holding a car, it puts it down. Which two situations must it refuse, and what should it do then?</summary><div class="a"><p>Refuse to lift from an empty space, and refuse to put down on an occupied space. In both cases: do nothing, keep the state as it is, and do not crash.</p></div></details>
+    <details class="q"><summary>Why is it wise for the pieces to be data (tile + team) and not geometry?</summary><div class="a"><p>Then the rules are just questions about the data («is something on this tile?»), and the drawing can always be rebuilt from the data. Nothing has to be kept in sync in two places.</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hva er forskjellen på «tasten er nede» og «tasten ble trykket», og hvilken trenger markøren?</summary><div class="a"><p>Nede er en tilstand som varer i mange frames. Trykket er overgangen fra oppe til nede, som skjer i én frame. Markøren og plukk-tasten trenger overgangen.</p></div></details>
+    <details class="q"><summary>Hvorfor binder du kameraet til WASD og ikke piltastene?</summary><div class="a"><p>Piltastene brukes av markøren. Leser to ting de samme tastene, slåss de.</p></div></details>
+    <details class="q"><summary>Hvorfor trengs dybdetesten først når brikkene kommer?</summary><div class="a"><p>Brettet er flatt, men kubene overlapper hverandre og står oppå brettet. Uten dybdetest bestemmer tegnerekkefølgen hva som synes.</p></div></details>
+    <details class="q"><summary>Hva betyr «ingen rå gl i assignment/» når du trenger noe nytt?</summary><div class="a"><p>At du legger det nye inn i motoren (<code>framework/</code>) og bruker det derfra.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>What is the difference between «the key is down» and «the key was pressed», and which does the selector need?</summary><div class="a"><p>Down is a state that lasts many frames. Pressed is the transition from up to down, which happens in one frame. The selector and the pick-up key need the transition.</p></div></details>
+    <details class="q"><summary>Why bind the camera to WASD and not the arrow keys?</summary><div class="a"><p>The arrow keys are used by the selector. If two things read the same keys, they fight.</p></div></details>
+    <details class="q"><summary>Why is the depth test needed only once the pieces arrive?</summary><div class="a"><p>The board is flat, but the cubes overlap each other and stand on the board. Without the depth test, draw order decides what is visible.</p></div></details>
+    <details class="q"><summary>What does «no raw gl in assignment/» mean when you need something new?</summary><div class="a"><p>That you add the new thing to the engine (<code>framework/</code>) and use it from there.</p></div></details>
+  </div>
+</section>
+
+<!-- =============================== M9 =============================== -->
+<section class="mod" id="m9">
+  <div class="modhead">
+    <h1 data-l="no">9 · Levering</h1>
+    <h1 data-l="en">9 · Delivery</h1>
+    <div class="issues"><span class="tag graded">#33 Delivery gate</span><span class="tag">#45 Tracker</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Frist: fredag 30. oktober kl. 23:59.</b> Levert betyr at <code>main</code> i ditt eget repo bygger grønt og at spillet kjører uten å krasje. Lukkede issues og kode på en branch teller ikke.</p>
+    <p data-l="en"><b>Deadline: Friday 30 October, 23:59.</b> Delivered means that <code>main</code> in your own repository builds green and that the game runs without crashing. Closed issues and code on a branch do not count.</p>
+  </div>
+
+  <h2 data-l="no">Leveringssjekklisten</h2>
+  <h2 data-l="en">The delivery checklist</h2>
+  <p class="small muted" data-l="no">Avkryssingen lagres i denne nettleseren.</p>
+  <p class="small muted" data-l="en">Your ticks are saved in this browser.</p>
+  <ul class="checklist" id="checklist">
+    <li><label><input type="checkbox" data-check="merged"> <span data-l="no">Alle 18 issues som teller, er merget inn i <code>main</code>.</span><span data-l="en">All 18 graded issues are merged into <code>main</code>.</span></label></li>
+    <li><label><input type="checkbox" data-check="green"> <span data-l="no">Pipelinen på <code>main</code> er grønn.</span><span data-l="en">The pipeline on <code>main</code> is green.</span></label></li>
+    <li><label><input type="checkbox" data-check="clean"> <span data-l="no">En helt fersk kloning bygger og kjører på PC-en din (kommandoene under).</span><span data-l="en">A completely fresh clone builds and runs on your PC (commands below).</span></label></li>
+    <li><label><input type="checkbox" data-check="runs"> <span data-l="no">Spillet kjører uten å krasje: brett, markør, WASD-kamera, brikker og flytting virker samtidig.</span><span data-l="en">The game runs without crashing: board, selector, WASD camera, pieces and moving all work at once.</span></label></li>
+    <li><label><input type="checkbox" data-check="nogl"> <span data-l="no">Ingen rå <code>gl</code>-kall i <code>assignment/</code>.</span><span data-l="en">No raw <code>gl</code> calls in <code>assignment/</code>.</span></label></li>
+    <li><label><input type="checkbox" data-check="readme"> <span data-l="no">Har du brukt kilder utenom dem issuene viser til, står de i <code>README.md</code>.</span><span data-l="en">If you used sources beyond those the issues reference, they are listed in <code>README.md</code>.</span></label></li>
+    <li><label><input type="checkbox" data-check="decl"> <span data-l="no"><code>DECLARATION.md</code> er fylt ut og signert i en egen commit, via en merge request.</span><span data-l="en"><code>DECLARATION.md</code> is filled in and signed in its own commit, via a merge request.</span></label></li>
+    <li><label><input type="checkbox" data-check="tracker"> <span data-l="no">Issue #45 er oppdatert.</span><span data-l="en">Issue #45 is updated.</span></label></li>
+  </ul>
+
+  <h3 data-l="no">Test en fersk kloning</h3>
+  <h3 data-l="en">Test a fresh clone</h3>
+  <p data-l="no">Pipelinen bygger på en ren maskin. Gjør det samme selv: klon <code>main</code> til en midlertidig mappe og bygg derfra. Da oppdager du filer som bare finnes på din PC. Bytt ut <code>&lt;URL&gt;</code> med adressen til repoet ditt, og bruk navnet på spillets CMake-mål hvis det ikke heter <code>board_game</code>.</p>
+  <p data-l="en">The pipeline builds on a clean machine. Do the same yourself: clone <code>main</code> into a temporary folder and build from there. That reveals files that exist only on your PC. Replace <code>&lt;URL&gt;</code> with your repository's address, and use your game's CMake target name if it is not <code>board_game</code>.</p>
+  <div class="cmd"><button type="button" class="copy" data-copy="c-fresh">Kopier</button>
+<pre id="c-fresh">cd $env:TEMP
+git clone --recursive &lt;URL&gt; delivery-test
+cd delivery-test
+cmake -S . -B build
+cmake --build build
+.\build\bin\Debug\board_game.exe</pre></div>
+
+  <h3 data-l="no">DECLARATION.md når du jobber alene</h3>
+  <h3 data-l="en">DECLARATION.md when working alone</h3>
+  <ul data-l="no">
+    <li>Fyll inn repoet, kryss av for «individually» og slett den andre, og bruk én rad med navn og brukernavn.</li>
+    <li>I tabellen over hvem som ledet hva: alle 18 issues er dine. Under fordelingen skriver du «individual — split not applicable», slik malen sier.</li>
+    <li>Signaturlinjen legger du til selv, i en egen commit, gjennom en merge request som alle andre endringer.</li>
+    <li>Erklæringen sier at du ikke har brukt generativ AI til å lage noe av det du leverer. Har du fulgt reglene på denne siden – forklaringer ja, kode nei – kan du signere den med god samvittighet.</li>
+  </ul>
+  <ul data-l="en">
+    <li>Fill in the repository, mark «individually» and delete the other, and use one row with name and username.</li>
+    <li>In the table of who led what: all 18 issues are yours. Under the split, write «individual — split not applicable», as the template says.</li>
+    <li>Add the signature line yourself, in its own commit, through a merge request like every other change.</li>
+    <li>The declaration states that you have not used generative AI to produce anything you deliver. If you have followed the rules on this page – explanations yes, code no – you can sign it with a clear conscience.</li>
+  </ul>
+
+  <div class="note">
+    <p data-l="no"><b>Ikke vent til siste kveld.</b> Pipelinen kan stå i kø, og en rød bygg kl. 23:30 er vanskelig å rette. Sikt mot å ha alt grønt på <code>main</code> dagen før.</p>
+    <p data-l="en"><b>Do not wait until the last evening.</b> The pipeline can sit in a queue, and a red build at 23:30 is hard to fix. Aim to have everything green on <code>main</code> the day before.</p>
+  </div>
+</section>
+
+
 <footer>
-  <p data-l="no">Denne siden inneholder forklaringer og øvelser, ikke kode til innleveringen. Avkryssinger og språkvalg lagres bare i denne nettleseren. Versjon 5, 19.10.2026.</p>
-  <p data-l="en">This page contains explanations and exercises, not code for the assignment. Ticks and language choice are saved only in this browser. Version 5, 19 Oct 2026.</p>
+  <p data-l="no">Denne siden inneholder forklaringer og øvelser, ikke kode til innleveringen. Avkryssinger og språkvalg lagres bare i denne nettleseren. Versjon 6, 19.10.2026.</p>
+  <p data-l="en">This page contains explanations and exercises, not code for the assignment. Ticks and language choice are saved only in this browser. Version 6, 19 Oct 2026.</p>
 </footer>
 </main>
 </div>
@@ -1120,45 +1685,44 @@ document.querySelectorAll('.copy').forEach(function(b){
 
 /* ---------------- plan ---------------- */
 var PLAN = [
-  {d:[14,10], wd:['ons','Wed'], is:[1], t:['Verktøy, bygg eksemplene, første merge request.','Tools, build the examples, first merge request.'], m:'m1', ml:'1'},
-  {d:[15,10], wd:['tor','Thu'], is:[2], t:['Vindu og render-loop','Window and render loop'], m:'m2', ml:'2'},
-  {d:[16,10], wd:['fre','Fri'], is:[3], t:['Første trekant og kvadrat','First triangle and square'], m:'m3', ml:'3'},
-  {d:[17,10], wd:['lør','Sat'], is:[4,5], t:['VertexBuffer og IndexBuffer','VertexBuffer and IndexBuffer'], m:'m4', ml:'4'},
-  {d:[18,10], wd:['søn','Sun'], is:[6], t:['BufferLayout og VertexArray','BufferLayout and VertexArray'], m:'m4', ml:'4'},
-  {d:[19,10], wd:['man','Mon'], is:[7,8], t:['Shader og RenderCommands','Shader and RenderCommands'], m:'m4', ml:'4'},
-  {d:[20,10], wd:['tir','Tue'], is:[9,10], t:['Input – rått, så samlet i en klasse','Input – raw, then gathered in a class'], m:'later', ml:'5'},
-  {d:[21,10], wd:['ons','Wed'], is:[11,12], t:['GLFWApplication og spillskjelettet','GLFWApplication and the game skeleton'], m:'later', ml:'5'},
-  {d:[22,10], wd:['tor','Thu'], is:[14,15], t:['Transformasjoner, MVP og uniforms','Transforms, MVP and uniforms'], m:'later', ml:'6'},
-  {d:[23,10], wd:['fre','Fri'], is:[17], t:['GeometricTools – geometri i kode','GeometricTools – geometry in code'], m:'later', ml:'7'},
-  {d:[24,10], wd:['lør','Sat'], is:[18,20], t:['Kameraer og Timestep','Cameras and Timestep'], m:'later', ml:'7'},
-  {d:[25,10], wd:['søn','Sun'], is:[21,26], t:['CameraController med egne taster','CameraController with rebindable keys'], m:'later', ml:'7'},
-  {d:[26,10], wd:['man','Mon'], is:[24,27], t:['Brettet og WASD-kameraet','The board and the WASD camera'], m:'later', ml:'8'},
-  {d:[27,10], wd:['tir','Tue'], is:[25,28], t:['Markøren og dybdetesten','The selector and the depth test'], m:'later', ml:'8'},
-  {d:[28,10], wd:['ons','Wed'], is:[29], t:['Brikkene på brettet','The pieces on the board'], m:'later', ml:'8'},
-  {d:[29,10], wd:['tor','Thu'], is:[30,33], t:['Flytt brikkene, og leveringskontrollen','Move the pieces, and the delivery gate'], m:'later', ml:'8–9'},
-  {d:[30,10], wd:['fre','Fri'], is:[], t:['Buffer. Alt merget i main før kvelden. Frist kl. 23:59.','Buffer. Everything merged into main before the evening. Deadline 23:59.'], m:'later', ml:'9'}
+  {is:[1], t:['Verktøy, bygg eksemplene, første merge request','Tools, build the examples, first merge request'], m:'m1'},
+  {is:[2], t:['Vindu og render-loop','Window and render loop'], m:'m2'},
+  {is:[3], t:['Første trekant og kvadrat','First triangle and square'], m:'m3'},
+  {is:[4,5], t:['VertexBuffer og IndexBuffer','VertexBuffer and IndexBuffer'], m:'m4'},
+  {is:[6], t:['BufferLayout og VertexArray','BufferLayout and VertexArray'], m:'m4'},
+  {is:[7,8], t:['Shader og RenderCommands','Shader and RenderCommands'], m:'m4'},
+  {is:[9,10], t:['Input – rått, så samlet i en klasse','Input – raw, then gathered in a class'], m:'m5'},
+  {is:[11,12], t:['GLFWApplication og spillskjelettet','GLFWApplication and the game skeleton'], m:'m5'},
+  {is:[14,15], t:['Roterende kube, MVP og uniforms','Rotating cube, MVP and uniforms'], m:'m6'},
+  {is:[16], t:['Rotasjon med tastene (trengs i #20)','Rotation from the keys (needed in #20)'], m:'m6'},
+  {is:[17], t:['GeometricTools – geometri i kode','GeometricTools – geometry in code'], m:'m7'},
+  {is:[18,20], t:['Kameraer og Timestep','Cameras and Timestep'], m:'m7'},
+  {is:[21,26], t:['CameraController med egne taster','CameraController with rebindable keys'], m:'m7'},
+  {is:[24,25], t:['Brettet og markøren','The board and the selector'], m:'m8'},
+  {is:[27,28], t:['WASD-kameraet og dybdetesten','The WASD camera and the depth test'], m:'m8'},
+  {is:[29], t:['Brikkene på brettet','The pieces on the board'], m:'m8'},
+  {is:[30], t:['Plukk opp og flytt en brikke','Pick up and move a piece'], m:'m8'},
+  {is:[33], t:['Leveringskontrollen','The delivery gate'], m:'m9'}
 ];
 var done = store.get('p2002.done', []);
 if (!Array.isArray(done)) done = [];
 var tbody = document.querySelector('#plantable tbody');
-var now = new Date(); var todayKey = now.getFullYear() === 2026 ? (now.getMonth()+1)*100 + now.getDate() : -1;
 PLAN.forEach(function(r, i){
   var tr = document.createElement('tr');
-  if (r.d[1]*100 + r.d[0] === todayKey) tr.className = 'today';
   var chks = r.is.map(function(n){
     return '<label class="chk"><input type="checkbox" data-issue="' + n + '"' + (done.indexOf(n) >= 0 ? ' checked' : '') + '><span>#' + n + '</span></label>';
-  }).join('') || '<span class="muted">–</span>';
+  }).join('');
   tr.innerHTML =
-    '<td class="day">' + bi('Dag ' + (i+1), 'Day ' + (i+1)) + '<br><span class="muted">' + bi(r.wd[0] + ' ' + r.d[0] + '.' + r.d[1] + '.', r.wd[1] + ' ' + r.d[0] + ' Oct') + '</span></td>' +
+    '<td class="day">' + (i+1) + '</td>' +
     '<td>' + chks + '</td>' +
     '<td>' + bi(r.t[0], r.t[1]) + '</td>' +
-    '<td><button type="button" class="btn" data-go="' + r.m + '">' + r.ml + '</button></td>';
+    '<td><button type="button" class="btn" data-go="' + r.m + '">' + r.m.slice(1) + '</button></td>';
   tbody.appendChild(tr);
 });
 function updateProgress(){
   var n = done.length;
   document.getElementById('donecount').textContent = n;
-  document.getElementById('barfill').style.width = Math.min(100, n / 26 * 100) + '%';
+  document.getElementById('barfill').style.width = Math.min(100, n / 27 * 100) + '%';
 }
 tbody.addEventListener('change', function(e){
   var c = e.target; if (!c.dataset || !c.dataset.issue) return;
@@ -1510,6 +2074,172 @@ if (olSteps){
   document.getElementById('vaonext').addEventListener('click', step);
   document.getElementById('vaoreset').addEventListener('click', reset);
   reset();
+})();
+/* ---------------- module 6: transform order ---------------- */
+(function(){
+  var cv = document.getElementById('xcanvas'); if (!cv) return;
+  function bi(no, en){ return '<span data-l="no">' + no + '</span><span data-l="en">' + en + '</span>'; }
+  var SHAPE = [[-0.4,-0.6],[-0.1,-0.6],[-0.1,-0.1],[0.3,-0.1],[0.3,0.15],[-0.1,0.15],[-0.1,0.35],[0.45,0.35],[0.45,0.6],[-0.4,0.6]];
+  var MARK = 8, order = 'TR';
+  var ang = document.getElementById('xang'), tx = document.getElementById('xtx');
+  function rot(p, a){ var c = Math.cos(a), s = Math.sin(a); return [c*p[0] - s*p[1], s*p[0] + c*p[1]]; }
+  function draw(){
+    if (!cv.offsetParent) return;
+    var dpr = window.devicePixelRatio || 1, W = Math.max(60, Math.round(cv.clientWidth * dpr));
+    if (cv.width !== W){ cv.width = W; cv.height = W; }
+    var ctx = cv.getContext('2d'), R = 3, a = Number(ang.value) * Math.PI / 180, t = Number(tx.value) / 10;
+    document.getElementById('xangv').textContent = ang.value + '°';
+    document.getElementById('xtxv').textContent = t.toFixed(1);
+    function X(x){ return (x + R) / (2*R) * W; } function Y(y){ return (R - y) / (2*R) * W; }
+    ctx.fillStyle = '#141B2A'; ctx.fillRect(0, 0, W, W);
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1; ctx.beginPath();
+    for (var g = -R; g <= R; g++){ ctx.moveTo(X(g), 0); ctx.lineTo(X(g), W); ctx.moveTo(0, Y(g)); ctx.lineTo(W, Y(g)); }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.beginPath(); ctx.moveTo(X(0),0); ctx.lineTo(X(0),W); ctx.moveTo(0,Y(0)); ctx.lineTo(W,Y(0)); ctx.stroke();
+    function poly(pts, fill, stroke, dash){
+      ctx.beginPath(); pts.forEach(function(p, i){ if (i) ctx.lineTo(X(p[0]), Y(p[1])); else ctx.moveTo(X(p[0]), Y(p[1])); }); ctx.closePath();
+      if (fill){ ctx.fillStyle = fill; ctx.fill(); }
+      ctx.setLineDash(dash ? [5*dpr, 4*dpr] : []); ctx.strokeStyle = stroke; ctx.lineWidth = 1.6*dpr; ctx.stroke(); ctx.setLineDash([]);
+    }
+    var mid, fin;
+    if (order === 'TR'){ mid = SHAPE.map(function(p){ return rot(p, a); }); fin = mid.map(function(p){ return [p[0] + t, p[1]]; }); }
+    else { mid = SHAPE.map(function(p){ return [p[0] + t, p[1]]; }); fin = mid.map(function(p){ return rot(p, a); }); }
+    poly(SHAPE, null, 'rgba(255,255,255,0.55)', true);
+    poly(mid, null, 'rgba(242,208,107,0.6)', true);
+    if (order === 'RT' && Math.abs(a) > 0.01){
+      var m0 = mid[MARK], r0 = Math.hypot(m0[0], m0[1]), a0 = Math.atan2(m0[1], m0[0]);
+      ctx.beginPath(); ctx.setLineDash([2*dpr, 4*dpr]); ctx.strokeStyle = 'rgba(242,208,107,0.8)'; ctx.lineWidth = 1.2*dpr;
+      ctx.arc(X(0), Y(0), r0 / (2*R) * W, -a0, -(a0 + a), a > 0); ctx.stroke(); ctx.setLineDash([]);
+    }
+    poly(fin, 'rgba(100,140,240,0.55)', '#9DB8FF', false);
+    var pm = fin[MARK];
+    ctx.beginPath(); ctx.arc(X(pm[0]), Y(pm[1]), 5*dpr, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.beginPath(); ctx.arc(X(0), Y(0), 3.5*dpr, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = (11*dpr) + 'px system-ui, sans-serif'; ctx.fillText(document.documentElement.lang === 'en' ? 'origin' : 'origo', X(0) + 6*dpr, Y(0) + 14*dpr);
+    document.getElementById('xfirst').innerHTML = order === 'TR'
+      ? bi('Rotasjonen, rundt figurens eget sentrum (gul stiplet). Deretter flyttes den.','The rotation, about the shape\'s own centre (yellow dashed). Then it is moved.')
+      : bi('Flyttingen (gul stiplet). Deretter roteres alt rundt origo, så figuren går i bue.','The move (yellow dashed). Then everything is rotated about the origin, so the shape swings in an arc.');
+    document.getElementById('xpoint').innerHTML = '<span class="mono">(' + pm[0].toFixed(2) + ', ' + pm[1].toFixed(2) + ')</span>';
+  }
+  ang.addEventListener('input', draw); tx.addEventListener('input', draw);
+  document.querySelectorAll('[data-xorder]').forEach(function(b){
+    b.addEventListener('click', function(){ order = b.dataset.xorder; document.querySelectorAll('[data-xorder]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); }); draw(); });
+  });
+  document.addEventListener('click', function(e){ var b = e.target.closest('[data-go="m6"],[data-setlang]'); if (b) requestAnimationFrame(draw); });
+  window.addEventListener('resize', function(){ requestAnimationFrame(draw); });
+  requestAnimationFrame(draw);
+})();
+
+/* ---------------- module 7: dt race ---------------- */
+(function(){
+  var box = document.getElementById('dtrace'); if (!box) return;
+  function bi(no, en){ return '<span data-l="no">' + no + '</span><span data-l="en">' + en + '</span>'; }
+  var lanes = [{fps:30, el:document.getElementById('lane30')}, {fps:120, el:document.getElementById('lane120')}];
+  lanes.forEach(function(L){ L.el.innerHTML = ''; L.cv = document.createElement('canvas'); L.el.appendChild(L.cv); });
+  var mode = 'frame', raf = null;
+  function reset(){ lanes.forEach(function(L){ L.pos = 0; L.acc = 0; L.dots = []; L.done = false; L.t = 0; }); }
+  function paint(){
+    var dpr = window.devicePixelRatio || 1;
+    lanes.forEach(function(L){
+      var W = Math.max(60, Math.round(L.cv.clientWidth * dpr)), H = Math.round(36 * dpr);
+      if (L.cv.width !== W){ L.cv.width = W; L.cv.height = H; }
+      var c = L.cv.getContext('2d'); c.clearRect(0, 0, W, H);
+      var x0 = 10*dpr, x1 = W - 14*dpr;
+      c.fillStyle = 'rgba(128,128,128,0.35)'; c.fillRect(x1, 4*dpr, 2*dpr, H - 8*dpr);
+      c.fillStyle = 'rgba(46,111,134,0.55)';
+      L.dots.forEach(function(p){ c.fillRect(x0 + p*(x1 - x0) - dpr/2, H/2 - 4*dpr, Math.max(1, dpr), 8*dpr); });
+      c.beginPath(); c.arc(x0 + L.pos*(x1 - x0), H/2, 7*dpr, 0, Math.PI*2); c.fillStyle = '#C2303D'; c.fill();
+    });
+  }
+  function run(){
+    if (raf) cancelAnimationFrame(raf);
+    reset(); paint(); document.getElementById('racemsg').innerHTML = '';
+    var last = performance.now(), elapsed = 0;
+    function tick(now){
+      var real = Math.min(0.05, (now - last) / 1000); last = now; elapsed += real;
+      lanes.forEach(function(L){
+        if (L.done) return;
+        L.acc += real; var step = 1 / L.fps;
+        while (L.acc >= step && !L.done){
+          L.acc -= step; L.t += step;
+          L.pos += mode === 'frame' ? 0.012 : 0.3 * step;
+          if (L.pos >= 1){ L.pos = 1; L.done = true; L.finish = L.t; }
+          L.dots.push(L.pos);
+        }
+      });
+      paint();
+      if (lanes.every(function(L){ return L.done; }) || elapsed > 6){
+        raf = null;
+        var a = lanes[0].finish, b = lanes[1].finish;
+        document.getElementById('racemsg').innerHTML = mode === 'frame'
+          ? '<span class="verdict badv">' + bi('Fast steg per frame: 120 fps-maskinen kom i mål etter ' + b.toFixed(1) + ' s, 30 fps-maskinen etter ' + a.toFixed(1) + ' s. Samme spill, fire ganger så fort.','Fixed step per frame: the 120 fps machine finished after ' + b.toFixed(1) + ' s, the 30 fps machine after ' + a.toFixed(1) + ' s. Same game, four times as fast.') + '</span>'
+          : '<span class="verdict good">' + bi('Fart × dt: begge kom i mål etter ' + b.toFixed(1) + ' s. 120 fps-maskinen tar bare flere og kortere steg.','Speed × dt: both finished after ' + b.toFixed(1) + ' s. The 120 fps machine just takes more, shorter steps.') + '</span>';
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+  document.getElementById('racego').addEventListener('click', run);
+  document.querySelectorAll('[data-dtmode]').forEach(function(b){
+    b.addEventListener('click', function(){ mode = b.dataset.dtmode; document.querySelectorAll('[data-dtmode]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); }); run(); });
+  });
+  document.addEventListener('click', function(e){ if (e.target.closest('[data-go="m7"]')) requestAnimationFrame(function(){ reset(); paint(); }); });
+  reset(); requestAnimationFrame(paint);
+})();
+
+/* ---------------- module 8: edge detector ---------------- */
+(function(){
+  var key = document.getElementById('edgekey'); if (!key) return;
+  var strip = document.getElementById('framestrip'); var cv = document.createElement('canvas'); strip.appendChild(cv);
+  var down = false, prev = false, level = 0, edges = 0, frames = [], acc = 0, last = performance.now(), MAXF = 180;
+  function setDown(v){ down = v; key.classList.toggle('down', v); }
+  key.addEventListener('pointerdown', function(e){ e.preventDefault(); key.setPointerCapture(e.pointerId); setDown(true); });
+  ['pointerup','pointercancel','lostpointercapture'].forEach(function(t){ key.addEventListener(t, function(){ setDown(false); }); });
+  key.addEventListener('keydown', function(e){ if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight'){ e.preventDefault(); if (!e.repeat) setDown(true); } });
+  key.addEventListener('keyup', function(){ setDown(false); });
+  key.addEventListener('blur', function(){ setDown(false); });
+  document.getElementById('edgereset').addEventListener('click', function(){ level = 0; edges = 0; frames = []; show(); });
+  function show(){
+    document.getElementById('cnt-level').textContent = level;
+    document.getElementById('cnt-edge').textContent = edges;
+    var dpr = window.devicePixelRatio || 1, W = Math.max(60, Math.round(cv.clientWidth * dpr)), H = Math.round(28 * dpr);
+    if (cv.width !== W){ cv.width = W; cv.height = H; }
+    var c = cv.getContext('2d'); c.clearRect(0, 0, W, H);
+    var w = W / MAXF;
+    frames.forEach(function(f, i){
+      if (f.d){ c.fillStyle = 'rgba(24,33,58,0.75)'; c.fillRect(i*w, 6*dpr, Math.max(1, w - 0.5), H - 12*dpr); }
+      if (f.e){ c.fillStyle = '#C2303D'; c.fillRect(i*w, 0, Math.max(2*dpr, w), H); }
+    });
+  }
+  function loop(now){
+    var dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (key.offsetParent){
+      acc += dt;
+      while (acc >= 1/60){
+        acc -= 1/60;
+        var edge = down && !prev;
+        if (down) level++;
+        if (edge) edges++;
+        prev = down;
+        frames.push({d:down, e:edge}); if (frames.length > MAXF) frames.shift();
+      }
+      show();
+    } else { acc = 0; }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ---------------- module 9: checklist ---------------- */
+(function(){
+  var list = document.getElementById('checklist'); if (!list) return;
+  var KEY = 'p2002.checks', st = {};
+  try { st = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ st = {}; }
+  list.querySelectorAll('input[data-check]').forEach(function(c){
+    c.checked = !!st[c.dataset.check];
+    c.addEventListener('change', function(){ st[c.dataset.check] = c.checked; try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){} });
+  });
 })();
 </script>
 </body>
