@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
 <title>PROG2002 – løypa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -211,6 +212,34 @@ tr.today td{background:var(--hl)}
 
 footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); margin-top:3rem; padding-top:1rem}
 
+/* module 4: lifetime + VAO state machine */
+.life{list-style:none; padding:0; margin:0; font-size:.92rem}
+.life li{display:grid; grid-template-columns:.45rem 1.4rem minmax(0,1fr); gap:.6rem; align-items:center; padding:.28rem 0; max-width:none}
+.life .ctx{align-self:stretch; border-radius:2px; background:var(--green)}
+.life li.off .ctx{background:var(--rule)}
+.life .ic{font-weight:800; text-align:center}
+.life li.bad{color:var(--red)}
+.life li.ok .ic{color:var(--green)}
+.life li.event{font-weight:700}
+.life li.scope{color:var(--muted); font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:.85rem}
+.lifelegend{font-size:.82rem; color:var(--muted); margin:.6rem 0 0; display:flex; gap:1rem; flex-wrap:wrap}
+.lifelegend i{display:inline-block; width:.45rem; height:1rem; border-radius:2px; vertical-align:-3px; margin-right:.35rem}
+.vaosteps{list-style:none; margin:0; padding:0; font-size:.9rem}
+.vaosteps li{padding:.3rem .6rem; border-left:4px solid var(--rule); margin:.15rem 0; border-radius:0 4px 4px 0; color:var(--muted)}
+.vaosteps li small{display:block; font-family:var(--mono); font-variation-settings:"MONO" 1; font-size:.75rem; opacity:.8}
+.vaosteps li.done{color:var(--ink); border-left-color:var(--blue)}
+.vaosteps li.cur{background:var(--hl); color:var(--ink); font-weight:700; border-left-color:var(--yellow)}
+.gstate{display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-bottom:.7rem}
+.gstate div{background:var(--code-bg); border-radius:6px; padding:.45rem .65rem; display:flex; flex-direction:column; gap:.1rem}
+.vaobox{border:2px solid var(--blue); border-radius:8px; padding:.5rem .75rem}
+.vaotitle{font-weight:800; color:var(--blue); margin-bottom:.2rem}
+.slot{display:flex; justify-content:space-between; gap:.5rem; font-size:.88rem; padding:.3rem 0; border-top:1px dashed var(--rule)}
+.vaostate b{font-family:var(--mono); font-variation-settings:"MONO" 1; transition:background-color .3s; border-radius:3px; padding:0 .25rem}
+.vaostate b.set{color:var(--green)}
+.vaostate b.chg{background:var(--hl)}
+.verdict{font-weight:700}
+.verdict.good{color:var(--green)} .verdict.badv{color:var(--red)}
+
 @media (max-width: 860px){
   .topbar{gap:.5rem 1rem; padding:.6rem 1rem}
   .langswitch{order:2}
@@ -256,7 +285,8 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
     <li><button type="button" data-go="m1"><span class="dot">1</span><span class="navtext"><span data-l="no">Verktøy og arbeidsflyt</span><span data-l="en">Tools and workflow</span></span></button></li>
     <li><button type="button" data-go="m2"><span class="dot">2</span><span class="navtext"><span data-l="no">Vindu og render-loop</span><span data-l="en">Window and render loop</span></span></button></li>
     <li><button type="button" data-go="m3"><span class="dot">3</span><span class="navtext"><span data-l="no">Pipelinen og første trekant</span><span data-l="en">The pipeline and a first triangle</span></span></button></li>
-    <li><button type="button" data-go="later" class="later"><span class="dot">4</span><span class="navtext"><span data-l="no">Resten av løypa</span><span data-l="en">The rest of the route</span></span></button></li>
+    <li><button type="button" data-go="m4"><span class="dot">4</span><span class="navtext"><span data-l="no">Fra rå kall til motor</span><span data-l="en">From raw calls to an engine</span></span></button></li>
+    <li><button type="button" data-go="later" class="later"><span class="dot">5</span><span class="navtext"><span data-l="no">Resten av løypa</span><span data-l="en">The rest of the route</span></span></button></li>
   </ol>
 </nav>
 
@@ -302,12 +332,10 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
   <h2 data-l="no">I dag</h2>
   <h2 data-l="en">Today</h2>
   <ol class="steps" data-l="no">
-    <li><strong>Send e-post til emneansvarlig om sykdommen.</strong> Malen står lenger ned. Spør også studieveilederen om NTNU har et eget skjema for sykdom og obligatoriske arbeidskrav i ditt program.</li>
     <li><strong>Installer verktøyene og bygg prosjektet.</strong> Det er modul 1, og det er hele dagens jobb. Klarer du det, har du gjort den vanskeligste starten.</li>
     <li><strong>Les reglene om AI under.</strong> Vil du bruke en AI-chat til å få forklart ting, så bruk veileder-instruksen.</li>
   </ol>
   <ol class="steps" data-l="en">
-    <li><strong>Email the course coordinator about your illness.</strong> The template is further down. Also ask your student advisor whether NTNU has a specific form for illness and mandatory coursework in your programme.</li>
     <li><strong>Install the tools and build the project.</strong> That is module 1, and it is the whole of today's job. Manage that, and you have done the hardest start.</li>
     <li><strong>Read the AI rules below.</strong> If you want to use an AI chat to have things explained, use the tutor instruction.</li>
   </ol>
@@ -344,25 +372,6 @@ footer{color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); m
   </div>
   <p data-l="no">Denne siden inneholder ingen kode til issuene dine. Øvelsene foregår med vilje i andre sammenhenger enn oppgaven – sekskanter i stedet for sjakkbrett, for eksempel – slik at det du lærer er prinsippet, og alt du leverer er ditt eget.</p>
   <p data-l="en">This page contains no code for your issues. The exercises deliberately use other settings than the assignment – hexagons instead of chessboards, for example – so what you learn is the principle, and everything you deliver is your own.</p>
-
-  <h3 data-l="no">E-post til emneansvarlig</h3>
-  <h3 data-l="en">Email to the course coordinator</h3>
-  <p data-l="no">Emneansvarlig er Rafael Palomar, og emnefeltet må starte med <code>[PROG2002 -- Question]</code>. Skriv den gjerne om med egne ord. E-posten er ikke en del av innleveringen, så malen er trygg å bruke.</p>
-  <p data-l="en">The course coordinator is Rafael Palomar, and the subject line must start with <code>[PROG2002 -- Question]</code>. Rewrite it in your own words if you like. The email is not part of the delivery, so using the template is fine.</p>
-  <div class="cmd template">
-    <button type="button" class="copy" data-copy="mail"><span data-l="no">Kopier</span><span data-l="en">Copy</span></button>
-<pre id="mail">To: rafael.palomar@ntnu.no
-Subject: [PROG2002 -- Question] Illness and the assignment deadline
-
-Hi Rafael,
-
-I have been ill since the start of the semester and have missed the PROG2002 lectures and labs. I can provide documentation from my doctor.
-
-I have now started on the assignment and am working through the issues in order. Given the illness, would it be possible to get an extension of the assignment deadline, or some other adjustment? I would also be grateful for advice on how best to get help from the teaching assistants while I catch up.
-
-Best regards,
-Tilde Rørvik</pre>
-  </div>
 
   <h3 data-l="no">Veileder-instruks for en AI-chat</h3>
   <h3 data-l="en">Tutor instruction for an AI chat</h3>
@@ -861,6 +870,186 @@ git pull</pre></div>
   <p data-l="en">Ready? Read issue #3 from start to finish, compare <code>examples/02_first_triangle</code> and <code>examples/03_indexed_square</code> (the README in <code>examples/</code> shows how to see the difference with <code>diff</code>), and write the lab yourself.</p>
 </section>
 
+<!-- =============================== M4 =============================== -->
+<section class="mod" id="m4">
+  <div class="modhead">
+    <h1 data-l="no">4 · Fra rå kall til motor</h1>
+    <h1 data-l="en">4 · From raw calls to an engine</h1>
+    <div class="issues"><span class="tag graded">#4 VertexBuffer</span><span class="tag graded">#5 IndexBuffer</span><span class="tag graded">#6 BufferLayout + VertexArray</span><span class="tag graded">#7 Shader</span><span class="tag graded">#8 RenderCommands</span></div>
+  </div>
+  <div class="goal">
+    <p data-l="no"><b>Når du er ferdig:</b> <code>framework/</code> er et bibliotek med fem klasser, og lab02 tegner trekanten og kvadratet uten ett eneste rått <code>gl</code>-kall. Bildet er nøyaktig det samme som etter #3 – det er hele poenget. Fem issues som teller, over tre dager.</p>
+    <p data-l="en"><b>When you are done:</b> <code>framework/</code> is a library with five classes, and lab02 draws the triangle and square without a single raw <code>gl</code> call. The picture is exactly the same as after #3 – that is the whole point. Five graded issues, over three days.</p>
+  </div>
+
+  <h2 data-l="no">Forelesningen</h2>
+  <h2 data-l="en">The lecture</h2>
+  <div data-l="no">
+    <h3>Samme bilde, ny eier</h3>
+    <p>I disse fem issuene lærer du ingen ny grafikk. Du pakker kallene du skrev i #3 inn i klasser, slik at labben bare <em>bruker</em> dem. Det heter <em>refaktorering</em>: koden endres, oppførselen gjør det ikke. Testen etter hvert issue er derfor enkel: ser bildet helt likt ut som før?</p>
+    <p>Gevinsten kommer senere. Spillet skal tegne mange ting, og da vil du skrive «lag en buffer med disse dataene», ikke fire OpenGL-kall i riktig rekkefølge hver gang.</p>
+    <h3>Et statisk bibliotek</h3>
+    <p>I #4 blir <code>framework/</code> et <em>statisk bibliotek</em>: en samling ferdig kompilert kode som limes rett inn i hvert program som bruker den. Labbene og spillet lenker mot det. Når CMake-oppskriften sier at bibliotekets mappe og avhengigheter er <code>PUBLIC</code>, arver alle som lenker mot biblioteket dem automatisk – derfor finner labben <code>VertexBuffer.h</code> uten at du sier hvor den ligger.</p>
+    <h3>Header og kildefil</h3>
+    <p>Hver klasse har en <code>.h</code>-fil som <em>deklarerer</em> hva klassen kan (lovnaden) og en <code>.cpp</code>-fil som <em>definerer</em> hvordan (innfrielsen). Andre filer inkluderer bare headeren. <code>#pragma once</code> hindrer at samme header blir lest to ganger i samme fil. En funksjon som er definert <em>i</em> en header, må merkes <code>inline</code>, ellers får linkeren flere kopier av den og klager – det møter du i #6.</p>
+    <h3>RAII: konstruktøren henter, destruktøren rydder</h3>
+    <p>Hver OpenGL-ting du lager (buffer, VAO, shaderprogram) må slettes igjen. RAII betyr at du knytter dette til et objekts levetid: konstruktøren oppretter ressursen, destruktøren sletter den. C++ kaller destruktøren automatisk når objektet går ut av sitt <em>scope</em> (krøllparentesene det ble laget i), så du kan ikke glemme det.</p>
+    <p>Lokale objekter dør i <em>motsatt</em> rekkefølge av den de ble laget i. Det sist laget dør først.</p>
+    <h3>Fella: konteksten må leve når destruktøren kjører</h3>
+    <p>En destruktør som sletter en OpenGL-ting, trenger en levende kontekst. Lager du objektene rett i <code>main</code>, dør de når <code>main</code> slutter – <em>etter</em> at <code>glfwTerminate()</code> har tatt konteksten. Det kan krasje, eller se helt fint ut på din maskin og krasje på en annen. Løsningen i issuene er et indre scope rundt objektene og loopen, som lukkes før <code>glfwTerminate()</code>. Se figuren under.</p>
+    <h3>Fella nummer to: ikke kopier eierne</h3>
+    <p>En <code>VertexBuffer</code> eier en buffer-id. Kopierer du objektet, finnes det to objekter med <em>samme</em> id – og når det første dør, sletter det bufferen som det andre fortsatt bruker. Resultatet er ingenting på skjermen og ingen feilmelding. Send derfor slike objekter som referanse (<code>const VertexBuffer&amp;</code>), aldri som kopi. Vil du være helt sikker, kan C++ forby kopiering av en klasse helt – søk opp «deleted copy constructor».</p>
+    <h3>Hva VAO-en husker – og hva den ikke husker</h3>
+    <p>Dette er stedet der ting feiler <em>stille</em>. VAO-en husker attributtbeskrivelsene og hvilken indeksbuffer (EBO) som er bundet mens den er bundet. Den husker <em>ikke</em> hvilken vertex-buffer som er bundet – den informasjonen kopieres inn i hvert attributt i det øyeblikket du beskriver det. Konsekvensene:</p>
+    <ul>
+      <li>Vertex-bufferen må være bundet når du beskriver attributtene, men kan løsnes etterpå.</li>
+      <li>Indeksbufferen må bindes <em>mens VAO-en er bundet</em>, og må ikke løsnes mens VAO-en fortsatt er bundet.</li>
+    </ul>
+    <p>Prøv alle tre variantene i tilstandsmaskinen under.</p>
+    <h3>Layouten regner for deg (#6)</h3>
+    <p>I modul 3 regnet du stride og offset for hånd. En <code>BufferLayout</code> er en liste over attributtene, og den regner ut det samme: stride er summen av størrelsene, og hvert attributts offset er summen av alle før det. Rekkefølgen i lista blir attributtnumrene 0, 1, 2 … – og de må stemme med <code>layout(location = N)</code> i shaderen. Bytter du rekkefølgen bare ett sted, leses posisjoner som farger, uten feilmelding.</p>
+    <p>C++-verktøyene her er <code>enum class</code> (en navngitt liste av typer, som <code>Float3</code>), <code>std::vector</code> og <code>std::initializer_list</code> (som lar deg skrive lista med krøllparenteser).</p>
+    <h3>Shader-klassen (#7)</h3>
+    <p>Ingen ny OpenGL her heller – bare kompilering og lenking fra #3, samlet ett sted. Det viktigste i klassen er feilsjekken: uten den gir en skrivefeil i GLSL bare en svart skjerm. Issuet ber deg ødelegge en shader med vilje for å se at feilmeldingen kommer. Gjør det – det sparer deg for timer senere.</p>
+    <h3>RenderCommands (#8): én trakt</h3>
+    <p><code>RenderCommands</code> er et <em>namespace</em>, ikke en klasse, fordi det ikke har noe eget objekt å holde på – bare funksjoner. Når alle tegnekall går gjennom én funksjon, kan du telle dem. Antall tegnekall per frame er et av de viktigste målene på hvor tung en scene er; det får du bruk for når brettet har 64 ruter. Telleren ligger i et <em>anonymt namespace</em> i <code>.cpp</code>-fila, som betyr at ingen annen fil kan se den.</p>
+    <p>Fra #8 tegner motoren alt med indekser – også trekanten, som får en indeksbuffer med bare <code>0, 1, 2</code>.</p>
+  </div>
+  <div data-l="en">
+    <h3>Same picture, new owner</h3>
+    <p>In these five issues you learn no new graphics. You package the calls you wrote in #3 into classes, so the lab only <em>uses</em> them. That is called <em>refactoring</em>: the code changes, the behaviour does not. So the test after each issue is simple: does the picture look exactly as before?</p>
+    <p>The payoff comes later. The game draws many things, and then you want to write «make a buffer with this data», not four OpenGL calls in the right order every time.</p>
+    <h3>A static library</h3>
+    <p>In #4, <code>framework/</code> becomes a <em>static library</em>: a collection of compiled code that is glued straight into every program that uses it. The labs and the game link against it. When the CMake recipe marks the library's folder and dependencies <code>PUBLIC</code>, everything linking against the library inherits them automatically – which is why the lab finds <code>VertexBuffer.h</code> without you saying where it is.</p>
+    <h3>Header and source file</h3>
+    <p>Each class has a <code>.h</code> file that <em>declares</em> what the class can do (the promise) and a <code>.cpp</code> file that <em>defines</em> how (keeping it). Other files include only the header. <code>#pragma once</code> stops the same header being read twice in one file. A function defined <em>in</em> a header must be marked <code>inline</code>, or the linker gets several copies and complains – you meet this in #6.</p>
+    <h3>RAII: the constructor acquires, the destructor cleans up</h3>
+    <p>Every OpenGL thing you create (buffer, VAO, shader program) must be deleted again. RAII means tying this to an object's lifetime: the constructor creates the resource, the destructor deletes it. C++ calls the destructor automatically when the object leaves its <em>scope</em> (the braces it was created in), so you cannot forget.</p>
+    <p>Local objects die in the <em>reverse</em> order of creation. The last one made dies first.</p>
+    <h3>The trap: the context must be alive when the destructor runs</h3>
+    <p>A destructor that deletes an OpenGL thing needs a live context. If you create the objects straight in <code>main</code>, they die when <code>main</code> ends – <em>after</em> <code>glfwTerminate()</code> has taken the context. It may crash, or look fine on your machine and crash on another. The issues' fix is an inner scope around the objects and the loop that closes before <code>glfwTerminate()</code>. See the figure below.</p>
+    <h3>Trap number two: do not copy the owners</h3>
+    <p>A <code>VertexBuffer</code> owns a buffer id. Copy the object and there are two objects with the <em>same</em> id – and when the first dies, it deletes the buffer the other still uses. The result is nothing on screen and no error. So pass these objects by reference (<code>const VertexBuffer&amp;</code>), never by copy. To be completely safe, C++ can forbid copying a class altogether – look up «deleted copy constructor».</p>
+    <h3>What the VAO remembers – and what it does not</h3>
+    <p>This is where things fail <em>silently</em>. The VAO remembers the attribute descriptions and which index buffer (EBO) is bound while it is bound. It does <em>not</em> remember which vertex buffer is bound – that information is copied into each attribute at the moment you describe it. The consequences:</p>
+    <ul>
+      <li>The vertex buffer must be bound when you describe the attributes, but may be unbound afterwards.</li>
+      <li>The index buffer must be bound <em>while the VAO is bound</em>, and must not be unbound while the VAO is still bound.</li>
+    </ul>
+    <p>Try all three variants in the state machine below.</p>
+    <h3>The layout does the arithmetic (#6)</h3>
+    <p>In module 3 you computed stride and offset by hand. A <code>BufferLayout</code> is a list of the attributes, and it computes the same thing: the stride is the sum of the sizes, and each attribute's offset is the sum of all before it. The order of the list becomes the attribute numbers 0, 1, 2 … – and they must match <code>layout(location = N)</code> in the shader. Change the order in only one place and positions are read as colours, with no error.</p>
+    <p>The C++ tools here are <code>enum class</code> (a named list of types, like <code>Float3</code>), <code>std::vector</code> and <code>std::initializer_list</code> (which lets you write the list with braces).</p>
+    <h3>The Shader class (#7)</h3>
+    <p>No new OpenGL here either – just the compiling and linking from #3, gathered in one place. The most important part of the class is the error check: without it, a typo in GLSL only gives a black screen. The issue asks you to break a shader on purpose to see the message appear. Do it – it saves you hours later.</p>
+    <h3>RenderCommands (#8): one funnel</h3>
+    <p><code>RenderCommands</code> is a <em>namespace</em>, not a class, because it has no object of its own to hold – only functions. When every draw goes through one function, you can count them. Draw calls per frame is one of the most important measures of how heavy a scene is; you will need it once the board has 64 squares. The counter sits in an <em>anonymous namespace</em> in the <code>.cpp</code> file, which means no other file can see it.</p>
+    <p>From #8 the engine draws everything indexed – including the triangle, which gets an index buffer of just <code>0, 1, 2</code>.</p>
+  </div>
+
+  <div class="play" id="lifetime">
+    <h3 style="margin-top:0" data-l="no">Levetid: hvem dør når?</h3>
+    <h3 style="margin-top:0" data-l="en">Lifetime: who dies when?</h3>
+    <div class="controls" style="margin:0 0 .8rem">
+      <div class="seg" role="group" aria-label="Scope">
+        <button type="button" data-scope="flat" aria-pressed="true"><span data-l="no">Objektene rett i main</span><span data-l="en">Objects straight in main</span></button>
+        <button type="button" data-scope="inner" aria-pressed="false"><span data-l="no">Med indre scope</span><span data-l="en">With an inner scope</span></button>
+      </div>
+    </div>
+    <ol class="life" id="lifelist"></ol>
+    <p class="loopmsg" id="lifemsg"></p>
+  </div>
+
+  <div class="play" id="vaosim">
+    <h3 style="margin-top:0" data-l="no">Tilstandsmaskinen: hva husker VAO-en?</h3>
+    <h3 style="margin-top:0" data-l="en">The state machine: what does the VAO remember?</h3>
+    <p class="small muted" data-l="no">Velg en variant og gå gjennom stegene. Følg med på hva som havner i VAO-boksen.</p>
+    <p class="small muted" data-l="en">Pick a variant and step through. Watch what ends up in the VAO box.</p>
+    <div class="controls" style="margin:0 0 .8rem">
+      <div class="seg" role="group" aria-label="Scenario">
+        <button type="button" data-scen="ok" aria-pressed="true"><span data-l="no">Riktig</span><span data-l="en">Correct</span></button>
+        <button type="button" data-scen="unbind" aria-pressed="false"><span data-l="no">EBO løsnet for tidlig</span><span data-l="en">EBO unbound too early</span></button>
+        <button type="button" data-scen="novao" aria-pressed="false"><span data-l="no">EBO bundet uten VAO</span><span data-l="en">EBO bound without VAO</span></button>
+      </div>
+    </div>
+    <div class="loopgrid">
+      <ol id="vaosteps" class="vaosteps"></ol>
+      <div class="vaostate">
+        <div class="gstate">
+          <div><span class="muted small" data-l="no">Bundet VAO</span><span class="muted small" data-l="en">Bound VAO</span><b id="s-vao">–</b></div>
+          <div><span class="muted small">ARRAY_BUFFER</span><b id="s-ab">–</b></div>
+        </div>
+        <div class="vaobox">
+          <div class="vaotitle">VAO A</div>
+          <div class="slot"><span data-l="no">Attributt 0 (posisjon)</span><span data-l="en">Attribute 0 (position)</span><b id="s-a0">–</b></div>
+          <div class="slot"><span data-l="no">Attributt 1 (farge)</span><span data-l="en">Attribute 1 (colour)</span><b id="s-a1">–</b></div>
+          <div class="slot"><span data-l="no">Indeksbuffer</span><span data-l="en">Index buffer</span><b id="s-ebo">–</b></div>
+        </div>
+      </div>
+    </div>
+    <p class="loopmsg" id="vaomsg" aria-live="polite"></p>
+    <div class="controls">
+      <button type="button" class="btn primary" id="vaonext"><span data-l="no">Neste steg</span><span data-l="en">Next step</span></button>
+      <button type="button" class="btn" id="vaoreset"><span data-l="no">Start på nytt</span><span data-l="en">Restart</span></button>
+    </div>
+  </div>
+
+  <h2 data-l="no">Gjør det</h2>
+  <h2 data-l="en">Do it</h2>
+  <ol class="steps" data-l="no">
+    <li><strong>Behold den rå labben.</strong> Issuene anbefaler å la <code>labs/lab02</code> stå og gjøre motorversjonen i en søstermappe, <code>labs/lab02_framework</code>. Da har du alltid en fungerende rå versjon å sammenligne med når noe blir svart.</li>
+    <li><strong>Ett issue om gangen, ett MR om gangen.</strong> Rekkefølgen er #4 → #5 → #6 → #7 → #8, og hvert bygger på det forrige. Merge før du begynner på neste.</li>
+    <li><strong>Skriv inn koden selv – ikke lim den inn.</strong> #4, #6, #7 og #8 har guidede gjennomganger med mye kode. Den er kursmateriell og lov å bruke, men skriv den inn linje for linje og svar på «Sjekk deg selv» under før du går videre. I eksamen skal du bruke denne motoren, og da må du kunne den.</li>
+    <li><strong>#5 skriver du helt selv.</strong> Issuet gir deg bare en tabell over forskjellene fra <code>VertexBuffer</code>. Det er bevisst: det er første gang du lager en klasse på egen hånd, med din egen #4 som mal.</li>
+    <li><strong>Test likt etter hvert issue:</strong> Bygger det? Ser bildet helt likt ut? Er pipelinen grønn? Sjekk så TODO-lista nederst i issuet punkt for punkt før du merger.</li>
+  </ol>
+  <ol class="steps" data-l="en">
+    <li><strong>Keep the raw lab.</strong> The issues recommend leaving <code>labs/lab02</code> alone and doing the engine version in a sibling folder, <code>labs/lab02_framework</code>. Then you always have a working raw version to compare with when something goes black.</li>
+    <li><strong>One issue at a time, one MR at a time.</strong> The order is #4 → #5 → #6 → #7 → #8, and each builds on the previous one. Merge before starting the next.</li>
+    <li><strong>Type the code yourself – do not paste it.</strong> #4, #6, #7 and #8 have guided walkthroughs with a lot of code. It is course material and fine to use, but type it in line by line and answer «Check yourself» below before moving on. In the exam you will use this engine, and then you need to know it.</li>
+    <li><strong>You write #5 entirely yourself.</strong> The issue only gives you a table of the differences from <code>VertexBuffer</code>. That is deliberate: it is the first time you build a class on your own, with your own #4 as the template.</li>
+    <li><strong>Test the same way after each issue:</strong> Does it build? Does the picture look exactly the same? Is the pipeline green? Then go through the TODO list at the bottom of the issue point by point before merging.</li>
+  </ol>
+
+  <h2 data-l="no">Øvelser – i en annen verden enn oppgaven</h2>
+  <h2 data-l="en">Exercises – in a different world from the assignment</h2>
+  <div data-l="no">
+    <details class="q"><summary>Rekkefølge: I et scope lager du først A, så B, så C. I hvilken rekkefølge kjører destruktørene?</summary><div class="a"><p>C, B, A – motsatt rekkefølge. Det sist laget dør først.</p></div></details>
+    <details class="q"><summary>Et objekt P husker en peker til objekt Q. Begge er lokale i samme scope. Hvem må lages først, og hvorfor?</summary><div class="a"><p>Q må lages først. Da finnes Q når P trenger den, og fordi rekkefølgen snus ved opprydding, dør P før Q – P står aldri igjen med en peker til noe som er borte. Akkurat dette gjelder en <code>VertexArray</code> som husker en <code>IndexBuffer</code>.</p></div></details>
+    <details class="q"><summary>Kopifella: En funksjon tar inn et RAII-objekt som kopi, bruker det og returnerer. Hva har skjedd med ressursen etterpå?</summary><div class="a"><p>Kopien dør når funksjonen returnerer, og destruktøren dens sletter ressursen. Originalen har fortsatt den samme id-en, men den peker nå på noe som er slettet. Neste gang du tegner med den, skjer ingenting. Med referanse i stedet for kopi lages det ikke noe nytt objekt, og ingenting slettes.</p></div></details>
+    <details class="q"><summary>Layout: Et hjørne har posisjon (Float3), farge (Float4) og teksturkoordinat (Float2). Hva blir offset for hvert attributt, og stride?</summary><div class="a"><p>Posisjon 0, farge 12, teksturkoordinat 12 + 16 = 28. Stride 28 + 8 = 36 bytes.</p></div></details>
+    <details class="q"><summary>Shaderen har posisjon på location 0 og farge på location 1, men layout-lista di har farge først. Hva ser du?</summary><div class="a"><p>Fargetallene brukes som posisjoner og omvendt. Trekantene havner på rare steder med rare farger, og det kommer ingen feilmelding – OpenGL vet ikke hva tallene betyr.</p></div></details>
+    <details class="q"><summary>Tegnekall: En by i et spill har 200 hus. Hvert hus har sin egen VAO og tegnes for seg. Hvor mange tegnekall blir det per frame – og hvilken idé kunne fått det ned?</summary><div class="a"><p>200. Får du lagt geometrien til mange hus i samme buffer, kan de tegnes med ett eneste kall. Hvorfor det er så viktig, ser du når du teller i #8.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>Order: In one scope you create A, then B, then C. In which order do the destructors run?</summary><div class="a"><p>C, B, A – the reverse order. The last one made dies first.</p></div></details>
+    <details class="q"><summary>An object P keeps a pointer to object Q. Both are local in the same scope. Which must be created first, and why?</summary><div class="a"><p>Q must be created first. Then Q exists when P needs it, and because the order reverses at clean-up, P dies before Q – P is never left holding a pointer to something that is gone. This is exactly the case of a <code>VertexArray</code> that remembers an <code>IndexBuffer</code>.</p></div></details>
+    <details class="q"><summary>The copy trap: A function takes a RAII object by copy, uses it and returns. What has happened to the resource afterwards?</summary><div class="a"><p>The copy dies when the function returns, and its destructor deletes the resource. The original still has the same id, but it now points at something deleted. The next time you draw with it, nothing happens. With a reference instead of a copy no new object is made, and nothing is deleted.</p></div></details>
+    <details class="q"><summary>Layout: A vertex has a position (Float3), a colour (Float4) and a texture coordinate (Float2). What is each attribute's offset, and the stride?</summary><div class="a"><p>Position 0, colour 12, texture coordinate 12 + 16 = 28. Stride 28 + 8 = 36 bytes.</p></div></details>
+    <details class="q"><summary>The shader has position at location 0 and colour at location 1, but your layout list has colour first. What do you see?</summary><div class="a"><p>The colour numbers are used as positions and vice versa. Triangles land in strange places with strange colours, and there is no error – OpenGL does not know what the numbers mean.</p></div></details>
+    <details class="q"><summary>Draw calls: A city in a game has 200 houses. Each house has its own VAO and is drawn on its own. How many draw calls per frame – and what idea could bring that down?</summary><div class="a"><p>200. If you can put the geometry of many houses in the same buffer, they can be drawn with a single call. Why that matters so much, you see when you count in #8.</p></div></details>
+  </div>
+
+  <h2 data-l="no">Sjekk deg selv</h2>
+  <h2 data-l="en">Check yourself</h2>
+  <div data-l="no">
+    <details class="q"><summary>Hvorfor forsvinner <code>glDeleteBuffers</code> fra labben i #4?</summary><div class="a"><p>Den ligger nå i destruktøren til <code>VertexBuffer</code>, og C++ kaller destruktøren automatisk når objektet går ut av scope.</p></div></details>
+    <details class="q"><summary>Hvorfor trenger labben et indre scope som lukkes før <code>glfwTerminate()</code>?</summary><div class="a"><p>Destruktørene sletter OpenGL-ting og trenger en levende kontekst. Uten det indre scopet kjører de etter at konteksten er borte.</p></div></details>
+    <details class="q"><summary>Hvilken binding er en del av VAO-ens tilstand: vertex-bufferen eller indeksbufferen?</summary><div class="a"><p>Indeksbufferen. Vertex-bufferen kopieres inn i hvert attributt når attributtet beskrives, men selve bindingen huskes ikke av VAO-en.</p></div></details>
+    <details class="q"><summary>Hva er forskjellen på hva en <code>.h</code>- og en <code>.cpp</code>-fil inneholder, og når må en funksjon være <code>inline</code>?</summary><div class="a"><p>Headeren deklarerer, kildefila definerer. En funksjon som er definert i en header, havner i hver fil som inkluderer headeren, og må være <code>inline</code> så linkeren godtar de like kopiene.</p></div></details>
+    <details class="q"><summary>Hvorfor er <code>RenderCommands</code> et namespace og ikke en klasse?</summary><div class="a"><p>Det finnes ingen ting å lage objekter av – bare funksjoner som alltid gjør det samme. Telleren er felles og ligger skjult i <code>.cpp</code>-fila.</p></div></details>
+    <details class="q"><summary>Hva viser telleren i #8 for en frame med trekant og kvadrat, og hvorfor?</summary><div class="a"><p>2 – ett tegnekall per <code>VertexArray</code>. Nullstiller du ikke telleren i starten av hver frame, vokser den i det uendelige.</p></div></details>
+  </div>
+  <div data-l="en">
+    <details class="q"><summary>Why does <code>glDeleteBuffers</code> disappear from the lab in #4?</summary><div class="a"><p>It now lives in the <code>VertexBuffer</code> destructor, and C++ calls the destructor automatically when the object leaves scope.</p></div></details>
+    <details class="q"><summary>Why does the lab need an inner scope that closes before <code>glfwTerminate()</code>?</summary><div class="a"><p>The destructors delete OpenGL things and need a live context. Without the inner scope they run after the context is gone.</p></div></details>
+    <details class="q"><summary>Which binding is part of the VAO's state: the vertex buffer or the index buffer?</summary><div class="a"><p>The index buffer. The vertex buffer is copied into each attribute when the attribute is described, but the binding itself is not remembered by the VAO.</p></div></details>
+    <details class="q"><summary>What is the difference between what a <code>.h</code> and a <code>.cpp</code> file contain, and when must a function be <code>inline</code>?</summary><div class="a"><p>The header declares, the source file defines. A function defined in a header ends up in every file that includes it, and must be <code>inline</code> so the linker accepts the identical copies.</p></div></details>
+    <details class="q"><summary>Why is <code>RenderCommands</code> a namespace and not a class?</summary><div class="a"><p>There is nothing to make objects of – only functions that always do the same thing. The counter is shared and hidden in the <code>.cpp</code> file.</p></div></details>
+    <details class="q"><summary>What does the counter in #8 show for a frame with a triangle and a square, and why?</summary><div class="a"><p>2 – one draw call per <code>VertexArray</code>. If you do not reset the counter at the start of every frame, it grows forever.</p></div></details>
+  </div>
+</section>
+
 <!-- =============================== LATER =============================== -->
 <section class="mod" id="later">
   <div class="modhead">
@@ -870,7 +1059,6 @@ git pull</pre></div>
     <p class="muted" data-l="en">The modules below arrive on this page before you need them. Here is what is ahead, so you can see where you are going.</p>
   </div>
   <ul class="later-list" data-l="no">
-    <li><b>4 · Fra rå kall til motor (#4–#8)</b>Du pakker det du skrev i lab02 inn i klasser: VertexBuffer, IndexBuffer, BufferLayout og VertexArray, Shader og RenderCommands. Nøkkelbegrepene er RAII (ressursen frigjøres i destruktøren) og hvorfor motoren er et statisk bibliotek.</li>
     <li><b>5 · Input og applikasjonsklassen (#9–#12)</b>Lese tastatur og mus, samle det i en Input-klasse, og løfte vinduet og loopen inn i en basisklasse. Så setter du opp skjelettet til spillet.</li>
     <li><b>6 · Matriser og MVP (#14, #15)</b>Model-, view- og projeksjonsmatrisen, uniforms, og dybdetesten. Det er her en flat trekant blir en roterende kube.</li>
     <li><b>7 · Geometri, kamera og tid (#17, #18, #20, #21, #26)</b>Generere rutenett i kode, kamerahierarkiet, delta-tid så spillet går likt på alle maskiner, og en kamerakontroller.</li>
@@ -878,7 +1066,6 @@ git pull</pre></div>
     <li><b>9 · Levering (#33)</b>Grønn pipeline, ryddig repo og DECLARATION.md.</li>
   </ul>
   <ul class="later-list" data-l="en">
-    <li><b>4 · From raw calls to an engine (#4–#8)</b>You package what you wrote in lab02 into classes: VertexBuffer, IndexBuffer, BufferLayout and VertexArray, Shader and RenderCommands. The key ideas are RAII (the resource is released in the destructor) and why the engine is a static library.</li>
     <li><b>5 · Input and the application class (#9–#12)</b>Reading keyboard and mouse, gathering it in an Input class, and lifting the window and loop into a base class. Then you set up the skeleton of the game.</li>
     <li><b>6 · Matrices and MVP (#14, #15)</b>The model, view and projection matrices, uniforms, and the depth test. This is where a flat triangle becomes a rotating cube.</li>
     <li><b>7 · Geometry, camera and time (#17, #18, #20, #21, #26)</b>Generating grids in code, the camera hierarchy, delta time so the game runs the same on every machine, and a camera controller.</li>
@@ -888,8 +1075,8 @@ git pull</pre></div>
 </section>
 
 <footer>
-  <p data-l="no">Denne siden inneholder forklaringer og øvelser, ikke kode til innleveringen. Avkryssinger og språkvalg lagres bare i denne nettleseren. Versjon 4, 13.10.2026.</p>
-  <p data-l="en">This page contains explanations and exercises, not code for the assignment. Ticks and language choice are saved only in this browser. Version 4, 13 Oct 2026.</p>
+  <p data-l="no">Denne siden inneholder forklaringer og øvelser, ikke kode til innleveringen. Avkryssinger og språkvalg lagres bare i denne nettleseren. Versjon 5, 19.10.2026.</p>
+  <p data-l="en">This page contains explanations and exercises, not code for the assignment. Ticks and language choice are saved only in this browser. Version 5, 19 Oct 2026.</p>
 </footer>
 </main>
 </div>
@@ -933,12 +1120,12 @@ document.querySelectorAll('.copy').forEach(function(b){
 
 /* ---------------- plan ---------------- */
 var PLAN = [
-  {d:[14,10], wd:['ons','Wed'], is:[1], t:['Verktøy, bygg eksemplene, første merge request. Send e-posten.','Tools, build the examples, first merge request. Send the email.'], m:'m1', ml:'1'},
+  {d:[14,10], wd:['ons','Wed'], is:[1], t:['Verktøy, bygg eksemplene, første merge request.','Tools, build the examples, first merge request.'], m:'m1', ml:'1'},
   {d:[15,10], wd:['tor','Thu'], is:[2], t:['Vindu og render-loop','Window and render loop'], m:'m2', ml:'2'},
   {d:[16,10], wd:['fre','Fri'], is:[3], t:['Første trekant og kvadrat','First triangle and square'], m:'m3', ml:'3'},
-  {d:[17,10], wd:['lør','Sat'], is:[4,5], t:['VertexBuffer og IndexBuffer','VertexBuffer and IndexBuffer'], m:'later', ml:'4'},
-  {d:[18,10], wd:['søn','Sun'], is:[6], t:['BufferLayout og VertexArray','BufferLayout and VertexArray'], m:'later', ml:'4'},
-  {d:[19,10], wd:['man','Mon'], is:[7,8], t:['Shader og RenderCommands','Shader and RenderCommands'], m:'later', ml:'4'},
+  {d:[17,10], wd:['lør','Sat'], is:[4,5], t:['VertexBuffer og IndexBuffer','VertexBuffer and IndexBuffer'], m:'m4', ml:'4'},
+  {d:[18,10], wd:['søn','Sun'], is:[6], t:['BufferLayout og VertexArray','BufferLayout and VertexArray'], m:'m4', ml:'4'},
+  {d:[19,10], wd:['man','Mon'], is:[7,8], t:['Shader og RenderCommands','Shader and RenderCommands'], m:'m4', ml:'4'},
   {d:[20,10], wd:['tir','Tue'], is:[9,10], t:['Input – rått, så samlet i en klasse','Input – raw, then gathered in a class'], m:'later', ml:'5'},
   {d:[21,10], wd:['ons','Wed'], is:[11,12], t:['GLFWApplication og spillskjelettet','GLFWApplication and the game skeleton'], m:'later', ml:'5'},
   {d:[22,10], wd:['tor','Thu'], is:[14,15], t:['Transformasjoner, MVP og uniforms','Transforms, MVP and uniforms'], m:'later', ml:'6'},
@@ -1206,6 +1393,123 @@ if (olSteps){
   document.getElementById('loopreset').addEventListener('click', resetLoop);
   resetLoop();
 }
+})();
+/* ---------------- module 4: lifetime ---------------- */
+(function(){
+  var list = document.getElementById('lifelist'); if (!list) return;
+  function bi(no, en){ return '<span data-l="no">' + no + '</span><span data-l="en">' + en + '</span>'; }
+  var START = ['event','Start GLFW, lag vindu og kontekst, last GLAD','Start GLFW, create window and context, load GLAD',''];
+  var MAKE = [
+    ['make','VertexBuffer lages – bufferen opprettes','VertexBuffer is created – the buffer is made','+'],
+    ['make','IndexBuffer lages','IndexBuffer is created','+'],
+    ['make','VertexArray lages (husker IndexBuffer)','VertexArray is created (remembers the IndexBuffer)','+'],
+    ['event','Render-loopen kjører til vinduet lukkes','The render loop runs until the window closes','']
+  ];
+  var TERM = ['event','glfwTerminate() – konteksten forsvinner','glfwTerminate() – the context is gone',''];
+  function deaths(ok){
+    var k = ok ? 'ok' : 'bad', ic = ok ? '✓' : '✗';
+    return [
+      [k,'VertexArray dør – sletter VAO-en','VertexArray dies – deletes the VAO',ic],
+      [k,'IndexBuffer dør – sletter bufferen','IndexBuffer dies – deletes the buffer',ic],
+      [k,'VertexBuffer dør – sletter bufferen','VertexBuffer dies – deletes the buffer',ic]
+    ];
+  }
+  var SCEN = {
+    flat: { rows: [START].concat(MAKE, [TERM, ['event','main() slutter, og objektene dør:','main() ends, and the objects die:','']], deaths(false)), offFrom: 6,
+      msg: ['Tre destruktører kjører uten kontekst. Det er udefinert oppførsel: det kan krasje, eller se helt fint ut hos deg og krasje hos sensor.','Three destructors run without a context. That is undefined behaviour: it may crash, or look perfectly fine for you and crash for the examiner.'], good:false },
+    inner: { rows: [START, ['scope','{   indre scope begynner','{   inner scope begins','']].concat(MAKE, [['scope','}   indre scope slutter, og objektene dør:','}   inner scope ends, and the objects die:','']], deaths(true), [TERM, ['event','main() slutter – ingenting igjen å rydde','main() ends – nothing left to clean up','']]), offFrom: 11,
+      msg: ['Alle destruktørene kjører mens konteksten lever. Legg også merke til rekkefølgen: motsatt av den objektene ble laget i.','Every destructor runs while the context is alive. Note the order too: the reverse of the order the objects were made in.'], good:true }
+  };
+  function render(key){
+    var s = SCEN[key];
+    list.innerHTML = s.rows.map(function(r, i){
+      var off = i >= s.offFrom;
+      return '<li class="' + r[0] + (off ? ' off' : '') + '"><span class="ctx"></span><span class="ic">' + r[3] + '</span><span>' + bi(r[1], r[2]) + '</span></li>';
+    }).join('');
+    document.getElementById('lifemsg').innerHTML =
+      '<span class="verdict ' + (s.good ? 'good' : 'badv') + '">' + bi(s.msg[0], s.msg[1]) + '</span>' +
+      '<span class="lifelegend"><span><i style="background:var(--green)"></i>' + bi('konteksten lever','context alive') + '</span><span><i style="background:var(--rule)"></i>' + bi('ingen kontekst','no context') + '</span></span>';
+    document.querySelectorAll('[data-scope]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.scope === key)); });
+  }
+  document.querySelectorAll('[data-scope]').forEach(function(b){ b.addEventListener('click', function(){ render(b.dataset.scope); }); });
+  render('flat');
+})();
+
+/* ---------------- module 4: VAO state machine ---------------- */
+(function(){
+  var ol = document.getElementById('vaosteps'); if (!ol) return;
+  function bi(no, en){ return '<span data-l="no">' + no + '</span><span data-l="en">' + en + '</span>'; }
+  var OPS = {
+    bindVAO:   ['Bind VAO A','Bind VAO A','glBindVertexArray(A)'],
+    unbindVAO: ['Løsne VAO-en','Unbind the VAO','glBindVertexArray(0)'],
+    bindVBO:   ['Bind vertex-bufferen VBO 1','Bind the vertex buffer VBO 1','glBindBuffer(GL_ARRAY_BUFFER, …)'],
+    unbindVBO: ['Løsne vertex-bufferen','Unbind the vertex buffer','glBindBuffer(GL_ARRAY_BUFFER, 0)'],
+    attr0:     ['Beskriv attributt 0 (posisjon)','Describe attribute 0 (position)','glVertexAttribPointer(0, …)'],
+    attr1:     ['Beskriv attributt 1 (farge)','Describe attribute 1 (colour)','glVertexAttribPointer(1, …)'],
+    bindEBO:   ['Bind indeksbufferen EBO 2','Bind the index buffer EBO 2','glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, …)'],
+    unbindEBO: ['Løsne indeksbufferen','Unbind the index buffer','glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)'],
+    draw:      ['Senere, i loopen: tegn med indekser','Later, in the loop: draw indexed','glDrawElements(…)']
+  };
+  var SCEN = {
+    ok:     ['bindVAO','bindVBO','attr0','attr1','unbindVBO','bindEBO','unbindVAO','bindVAO','draw'],
+    unbind: ['bindVAO','bindVBO','attr0','attr1','bindEBO','unbindEBO','unbindVAO','bindVAO','draw'],
+    novao:  ['bindEBO','bindVAO','bindVBO','attr0','attr1','unbindVAO','bindVAO','draw']
+  };
+  var scen = 'ok', i, S, changed;
+  function reset(){
+    i = -1; S = {vao:null, ab:null, a0:null, a1:null, ebo:null}; changed = {};
+    ol.innerHTML = SCEN[scen].map(function(op, k){ var o = OPS[op]; return '<li data-k="' + k + '">' + bi(o[0], o[1]) + '<small>' + o[2] + '</small></li>'; }).join('');
+    paint(bi('Trykk «Neste steg».','Press «Next step».'));
+  }
+  function set(k, v){ if (S[k] !== v) changed[k] = true; S[k] = v; }
+  function paint(msg){
+    ol.querySelectorAll('li').forEach(function(li){ var k = Number(li.dataset.k); li.className = k === i ? 'cur' : (k < i ? 'done' : ''); });
+    var map = {vao:'s-vao', ab:'s-ab', a0:'s-a0', a1:'s-a1', ebo:'s-ebo'};
+    Object.keys(map).forEach(function(k){
+      var el = document.getElementById(map[k]);
+      el.textContent = S[k] || '–';
+      el.className = (S[k] ? 'set' : '') + (changed[k] ? ' chg' : '');
+    });
+    changed = {};
+    document.getElementById('vaomsg').innerHTML = msg;
+    document.getElementById('vaonext').disabled = i >= SCEN[scen].length - 1;
+  }
+  function step(){
+    var ops = SCEN[scen]; if (i >= ops.length - 1) return;
+    i++; var op = ops[i], m;
+    if (op === 'bindVAO'){ set('vao','A'); m = bi('VAO A er nå den gjeldende. Det som er VAO-tilstand, havner i boksen.','VAO A is now current. Whatever is VAO state lands in the box.'); }
+    else if (op === 'unbindVAO'){ set('vao',null); m = bi('Ingen VAO er bundet. Innholdet i boksen er tatt vare på.','No VAO is bound. The contents of the box are kept.'); }
+    else if (op === 'bindVBO'){ set('ab','VBO 1'); m = bi('VBO 1 er bundet som ARRAY_BUFFER. Legg merke til at det står <em>utenfor</em> VAO-boksen.','VBO 1 is bound as ARRAY_BUFFER. Note that it sits <em>outside</em> the VAO box.'); }
+    else if (op === 'unbindVBO'){ set('ab',null); m = bi('ARRAY_BUFFER er tom igjen – men attributtene beholder VBO 1. Helt trygt.','ARRAY_BUFFER is empty again – but the attributes keep VBO 1. Perfectly safe.'); }
+    else if (op === 'attr0' || op === 'attr1'){
+      var key = op === 'attr0' ? 'a0' : 'a1';
+      if (S.vao && S.ab){ set(key, S.ab); m = bi('Attributtet tar med seg den vertex-bufferen som er bundet akkurat nå. Fra nå av leser det fra ' + S.ab + ', uansett hva som bindes senere.','The attribute captures whichever vertex buffer is bound right now. From now on it reads from ' + S.ab + ', whatever is bound later.'); }
+      else { m = bi('Det mangler en bundet VAO eller vertex-buffer, så beskrivelsen havner ingen steder.','A bound VAO or vertex buffer is missing, so the description goes nowhere.'); }
+    }
+    else if (op === 'bindEBO'){
+      if (S.vao){ set('ebo','EBO 2'); m = bi('Indeksbufferen havner rett i VAO-boksen, fordi den bindingen <em>er</em> VAO-tilstand.','The index buffer lands straight in the VAO box, because that binding <em>is</em> VAO state.'); }
+      else { m = bi('Ingen VAO er bundet, så bindingen blir ikke husket av VAO A.','No VAO is bound, so VAO A does not remember the binding.'); }
+    }
+    else if (op === 'unbindEBO'){
+      if (S.vao){ set('ebo',null); m = bi('Siden VAO A er bundet, blir indeksbufferen i boksen overskrevet med «ingenting». Ingen feilmelding sier fra.','Since VAO A is bound, the index buffer in the box is overwritten with «nothing». No error tells you.'); }
+      else { m = bi('Ingen VAO er bundet, så ingen VAO påvirkes.','No VAO is bound, so no VAO is affected.'); }
+    }
+    else if (op === 'draw'){
+      if (S.vao && S.a0 && S.a1 && S.ebo){ m = '<span class="verdict good">' + bi('Kvadratet tegnes. VAO A hadde alt den trengte: begge attributtene og indeksbufferen.','The square is drawn. VAO A had everything it needed: both attributes and the index buffer.') + '</span>'; }
+      else { m = '<span class="verdict badv">' + bi('Ingenting tegnes – og det kommer ingen feilmelding. VAO A mangler indeksbufferen.','Nothing is drawn – and there is no error. VAO A is missing the index buffer.') + '</span>'; }
+    }
+    paint(m);
+  }
+  document.querySelectorAll('[data-scen]').forEach(function(b){
+    b.addEventListener('click', function(){
+      scen = b.dataset.scen;
+      document.querySelectorAll('[data-scen]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      reset();
+    });
+  });
+  document.getElementById('vaonext').addEventListener('click', step);
+  document.getElementById('vaoreset').addEventListener('click', reset);
+  reset();
 })();
 </script>
 </body>
